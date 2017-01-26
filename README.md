@@ -52,4 +52,65 @@ All ntuples are located in
 
 The directory datacards contains all datacards for
 statistical inference and results of the fits.
+
+# Instructions for running AnalysisNTupleProducer macro.
+
+The macro AnalysisNTupleProducer is executed with two
+arguments, configuration file and filelist.
+
+Examples of configuration files are
+
+- analysisNTupleProducer.conf (to run on data) 
+
+- analysisNTupleProducer_MC.conf (to run on MC)
+
+
+Examples of filelists :
+
+MET_Run2016G
+
+WToTauNu_M-200_13TeV-pythia8
+
+WToMuNu_M-200_13TeV-pythia8
+
+
+Examples of running macro
+
+> AnalysisNTupleProducer analysisNTupleProducer.conf MET_Run2016G
+
+> AnalysisNTupleProducer analysisNTupleProducer_MC.conf WToMuNu_M-200_13TeV-pythia8
+
+Useful scripts :
+
+qsub.sh - submits job to batch system. This script
+requires three arguments :
+
+1) code name
+
+2) config file
+
+3) filelist
+
+Example :
+
+> qsub.sh AnalysisNTupleProducer analysisNTupleProducer.conf MET_Run2016G
+
+
+qsub_seq.sh - submits several jobs per filelist. The script requires
+four arguments :
+
+1) code name
+
+2) config file
+
+3) filelist
+
+4) files per job
+
+The script creates directory named $filelis_files.
+The directory will contain all RooT and output files
+created by separate jobs. Once all jobs are finished,
+all RooT files can be merged by executing script hadd.sh
+
+> hadd.sh $filelist.
  
