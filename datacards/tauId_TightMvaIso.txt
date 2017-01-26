@@ -1,0 +1,44 @@
+Combination of mtmuon_WMuNu.txt  mttau_TightMvaIso_WTauNu.txt
+imax 2 number of bins
+jmax 4 number of processes minus 1
+kmax 27 number of nuisance parameters
+----------------------------------------------------------------------------------------------------------------------------------
+shapes *    ch1  mtmuon_WMuNu.root $PROCESS $PROCESS_$SYSTEMATIC
+shapes *    ch2  mttau_TightMvaIso_WTauNu.root $PROCESS $PROCESS_$SYSTEMATIC
+----------------------------------------------------------------------------------------------------------------------------------
+bin          ch1      ch2    
+observation  26888.0  1887.0 
+----------------------------------------------------------------------------------------------------------------------------------
+bin                               ch1         ch1         ch1         ch2         ch2         ch2       
+process                           W           EWK         TT          W           Bkgd        Fakes     
+process                           0           1           2           0           3           4         
+rate                              24369.4000  1591.6800   371.3160    1369.2000   190.6960    526.3390  
+----------------------------------------------------------------------------------------------------------------------------------
+BkgdNorm                lnN       -           -           -           -           1.3         -         
+EWKnorm                 lnN       -           1.15        -           -           -           -         
+JES                     shape     1.0         -           -           1.0         -           -         
+Mu                      shape     1.0         -           -           -           -           -         
+MuEff                   lnN       1.04        1.04        1.04        -           -           -         
+N1                      shape     -           -           -           -           -           1.5       
+N2                      shape     -           -           -           -           -           1.5       
+N3                      shape     -           -           -           -           -           1.5       
+TTnorm                  lnN       -           -           1.15        -           -           -         
+TauES                   shape     -           -           -           1.0         -           -         
+UES                     shape     1.0         -           -           1.0         -           -         
+WMuNuBin10              shape     1.0         -           -           -           -           -         
+WMuNuBin3               shape     1.0         -           -           -           -           -         
+WMuNuBin4               shape     1.0         -           -           -           -           -         
+WMuNuBin5               shape     1.0         -           -           -           -           -         
+WMuNuBin6               shape     1.0         -           -           -           -           -         
+WMuNuBin7               shape     1.0         -           -           -           -           -         
+WMuNuBin8               shape     1.0         -           -           -           -           -         
+WMuNuBin9               shape     1.0         -           -           -           -           -         
+WTauNuBin10             shape     -           -           -           1.0         -           -         
+WTauNuBin3              shape     -           -           -           1.0         -           -         
+WTauNuBin4              shape     -           -           -           1.0         -           -         
+WTauNuBin5              shape     -           -           -           1.0         -           -         
+WTauNuBin6              shape     -           -           -           1.0         -           -         
+WTauNuBin7              shape     -           -           -           1.0         -           -         
+WTauNuBin8              shape     -           -           -           1.0         -           -         
+WTauNuBin9              shape     -           -           -           1.0         -           -         
+tauId         rateParam ch2 W 1 [0.5,1.0] 
