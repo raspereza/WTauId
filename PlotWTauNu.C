@@ -3,7 +3,8 @@
 void PlotWTauNu(TString iso = "MediumMva") {
 
   TString DataFile = "MET_Run2016";
-  TString Variable = "tauPhi";
+  TString Variable = "mttau"; // mT(tau,MET)
+  // TString Variable = "tauPt"; // tau Pt;
   TString dir = "/nfs/dust/cms/user/rasp/Run/Run2016/TauID_2016/"; 
   float yUpper = 2000;
   if (iso=="Tight")
@@ -31,19 +32,18 @@ void PlotWTauNu(TString iso = "MediumMva") {
   // 100 - MediumMva
   // 120 - Medium
 
-  yUpper = 200;
-
-  bool plotLegend = false;
+  bool plotLegend = true;
   bool equidistant = true;
 
-  int nBins  =     20;
-  float xmin =  -TMath::Pi();
-  float xmax =   TMath::Pi();
-  TString xtitle = "#tau #phi";
-  TString ytitle = "Events / 0.314";
+  // Binning and titles of axis
+  int nBins  =     10;
+  float xmin =      0;
+  float xmax =   1000;
+  TString xtitle = "m_{T} [GeV]";
+  TString ytitle = "Events / 100 GeV";
 
   TString Weight = "puWeight*genWeight*trigWeight*";
-  TString wnorm("1.3*");
+  TString wnorm("1.3*"); // W* K-factor (PYTHIA8 -> NNLO) 
   TString cutsTrigger("trigger>0.5&&");
   //  TString cutsTrigger("");
   TString cutsTopology("Selection==3&&recoilRatio<1.2&&recoilRatio>0.75&&recoilDPhi>2.4&&met>120&&tauPt>100&&");
@@ -89,12 +89,12 @@ void PlotWTauNu(TString iso = "MediumMva") {
     "WZTo1L1Nu2Q_13TeV_amcatnloFXFX", // WZTo1L1Nu2Q   (20)
     "WZTo1L3Nu_13TeV_amcatnloFXFX",   // WZTo1L3Nu     (21)
     "WZTo2L2Q_13TeV_amcatnloFXFX",    // WZTo2L2Q      (22)
-    "WZTo2L2Q_13TeV_amcatnloFXFX",    // ZZTo2L2Q      (23)
-    "DYJetsToLL_M-50_13TeV-madgraphMLM", // DYJetsToLL (24)
-    "ZJetsToNuNu_HT-100To200_13TeV-madgraph", // ZNuNu-HT100to200 (25)
-    "ZJetsToNuNu_HT-200To400_13TeV-madgraph", // ZNuNu-HT200to400 (26)
-    "ZJetsToNuNu_HT-400To600_13TeV-madgraph", // ZNuNu-HT400to600 (27)
-    "ZJetsToNuNu_HT-600To800_13TeV-madgraph", // ZNuNu-HT600to800 (28)
+    "DYJetsToLL_M-50_13TeV-madgraphMLM", // DYJetsToLL (23)
+    "ZJetsToNuNu_HT-100To200_13TeV-madgraph", // ZNuNu-HT100to200 (24)
+    "ZJetsToNuNu_HT-200To400_13TeV-madgraph", // ZNuNu-HT200to400 (25)
+    "ZJetsToNuNu_HT-400To600_13TeV-madgraph", // ZNuNu-HT400to600 (26)
+    "ZJetsToNuNu_HT-600To800_13TeV-madgraph", // ZNuNu-HT600to800 (27)
+    "",
     ""
   };
 
@@ -121,12 +121,12 @@ void PlotWTauNu(TString iso = "MediumMva") {
 		     10.71,  // WZTo1L1Nu2Q (20)
 		     3.05,   // WZTo1L3Nu   (21)
 		     5.595,  // WZTo2L2Q    (22)
-		     0.001,  // ZZTo2L2Q    (23)  
-		     5765,   // DYJets      (24)
-		     1.164*280.4, // ZNuNu-HT100to200 (25) 
-		     1.164*77.67, // ZNuNu-HT200to400 (26)
-		     1.164*10.73, // ZNuNu-HT400to600 (27) 
-		     1.164*4.116, // ZNuNu-HT600toInf (28)
+		     5765,   // DYJets      (23)
+		     1.164*280.4, // ZNuNu-HT100to200 (24) 
+		     1.164*77.67, // ZNuNu-HT200to400 (25)
+		     1.164*10.73, // ZNuNu-HT400to600 (26) 
+		     1.164*4.116, // ZNuNu-HT600toInf (27)
+		     0,
 		     0
   };
 
@@ -170,7 +170,8 @@ void PlotWTauNu(TString iso = "MediumMva") {
 
   // filling histograms
   float ewkNorm = 0;
-  for (int i=0; i<=28; ++i) {
+  int nSamples = 27;
+  for (int i=0; i<=nSamples; ++i) {
     //    std::cout << sampleNames[i] << std::endl;
     TFile * file = new TFile(dir+"/"+sampleNames[i]+".root");
     TH1D * histWeightsH = (TH1D*)file->Get("histWeightsH");
@@ -207,7 +208,7 @@ void PlotWTauNu(TString iso = "MediumMva") {
     hist[13]->Add(hist[13],hist[i]);
 
   // adding up electroweak samples
-  for (int i=19; i<=28; ++i) 
+  for (int i=19; i<=27; ++i) 
     hist[18]->Add(hist[18],hist[i]);
   
   TH1D * histData = NULL; 
@@ -391,21 +392,6 @@ void PlotWTauNu(TString iso = "MediumMva") {
   histData->SetMarkerSize(1.2);
   histData->GetXaxis()->SetLabelSize(0);
   histData->GetYaxis()->SetLabelSize(0.06);
-
-  if (Variable=="tauEta"&&iso=="Medium") {
-    histData->SetBinContent(4,40);
-    histData->SetBinError(4,TMath::Sqrt(40));
-  }
-
-  if (Variable=="tauEta"&&iso=="MediumMva") {
-    histData->SetBinContent(4,38);
-    histData->SetBinError(4,TMath::Sqrt(38));
-  }
-
-  if (Variable=="tauPhi"&&iso=="Medium") {
-    histData->SetBinContent(4,41);
-    histData->SetBinError(4,TMath::Sqrt(41));
-  }
 
   //  nData = histData->GetSum();
   //  float nMC   = TT->GetSum();

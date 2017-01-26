@@ -49,12 +49,12 @@ void PlotWMuNu() {
     "WZTo1L1Nu2Q_13TeV_amcatnloFXFX", // WZTo1L1Nu2Q  (16)
     "WZTo1L3Nu_13TeV_amcatnloFXFX",   // WZTo1L3Nu    (17)
     "WZTo2L2Q_13TeV_amcatnloFXFX",    // WZTo2L2Q     (18)
-    "WZTo2L2Q_13TeV_amcatnloFXFX",    // ZZTo2L2Q     (19)
-    "DYJetsToLL_M-50_13TeV-madgraphMLM", // DYJetsToLL (20)
-    "ZJetsToNuNu_HT-100To200_13TeV-madgraph", // ZNuNu-HT100to200 (21)
-    "ZJetsToNuNu_HT-200To400_13TeV-madgraph", // ZNuNu-HT200to400 (22)
-    "ZJetsToNuNu_HT-400To600_13TeV-madgraph", // ZNuNu-HT400to600 (23)
-    "ZJetsToNuNu_HT-600To800_13TeV-madgraph"  // ZNuNu-HT600to800 (24)
+    "DYJetsToLL_M-50_13TeV-madgraphMLM", // DYJetsToLL (19)
+    "ZJetsToNuNu_HT-100To200_13TeV-madgraph", // ZNuNu-HT100to200 (20)
+    "ZJetsToNuNu_HT-200To400_13TeV-madgraph", // ZNuNu-HT200to400 (21)
+    "ZJetsToNuNu_HT-400To600_13TeV-madgraph", // ZNuNu-HT400to600 (22)
+    "ZJetsToNuNu_HT-600To800_13TeV-madgraph",  // ZNuNu-HT600to800 (23)
+    ""
   };
 
   double xsec[25] = {1, // data (0)
@@ -76,12 +76,12 @@ void PlotWMuNu() {
 		     10.71,  // WZTo1L1Nu2Q (16)
 		     3.05,   // WZTo1L3Nu   (17)
 		     5.595,  // WZTo2L2Q    (18)
-		     0.001,  // ZZTo2L2Q    (19)  
-		     5765, // DYJets      (20)
-		     1.164*280.4, // ZNuNu-HT100to200 (21) 
-		     1.164*77.67, // ZNuNu-HT200to400 (22)
-		     1.164*10.73, // ZNuNu-HT400to600 (23) 
-		     1.164*4.116  // ZNuNu-HT600toInf (24)
+		     5765, // DYJets      (19)
+		     1.164*280.4, // ZNuNu-HT100to200 (20) 
+		     1.164*77.67, // ZNuNu-HT200to400 (21)
+		     1.164*10.73, // ZNuNu-HT400to600 (22) 
+		     1.164*4.116, // ZNuNu-HT600toInf (23)
+		     0
   };
 
   TString cuts[31];
@@ -109,8 +109,11 @@ void PlotWMuNu() {
       bins[5] = 1000;
     }
   }
+
+  int nSamples = 24;
+
   // filling histograms
-  for (int i=0; i<25; ++i) {
+  for (int i=0; i<nSamples; ++i) {
     std::cout << sampleNames[i] << std::endl;
     TFile * file = new TFile(dir+"/"+sampleNames[i]+".root");
     TH1D * histWeightsH = (TH1D*)file->Get("histWeightsH");
@@ -145,13 +148,10 @@ void PlotWMuNu() {
     hist[9]->Add(hist[9],hist[i]);
 
   // adding up electroweak samples
-  for (int i=15; i<=24; ++i) 
+  for (int i=15; i<=23; ++i) 
     hist[14]->Add(hist[14],hist[i]);
   
-  // adding up QCD samples
-  //  for (int i=23; i<=29; ++i) 
-  //    hist[22]->Add(hist[20],hist[i]);
-  hist[1]->Add(hist[1],hist[2]);
+  hist[1]->Add(hist[1],hist[2]); // adding W->TauNu->MuNuNu and W->MuNu
   for (int i=3; i<9; ++i)
     hist[i]->Add(hist[i],hist[2]);
 

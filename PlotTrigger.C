@@ -56,7 +56,7 @@ void PlotTrigger() {
   TH2::SetDefaultSumw2();
 
   TFile * fileData = new TFile(dir+"/SingleMuon_Run2016.root");
-  TFile * fileMC   = new TFile(dir+"/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM.root");
+  TFile * fileMC   = new TFile(dir+"/WJetsToLNu_13TeV-madgraphMLM.root");
 
   TTree * ntupleData = (TTree*)fileData->Get("TriggerNTuple");
   TTree * ntupleMC = (TTree*)fileMC->Get("TriggerNTuple");

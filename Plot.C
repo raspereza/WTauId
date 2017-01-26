@@ -9,7 +9,7 @@ void Plot() {
   int nBins  =  25;
   float xmin =  0;
   float xmax =  500;
-  TString Weight("puWeight*genWeight*mueffweight*mutrigweight*");
+  TString Weight("puWeight*genWeight*mutrigweight*");
   //  TString   Cuts("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30<=1&&nJetsForward30==0&&nSelTaus==1&&tauPt>100&&recoilRatio>0.8&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40");
   TString   Cuts("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30<=1&&nJetsForward30==0&&recoilDPhi>2.4&&mtmuon>40");
   //  TString Cuts("Selection==1&&nMuon==1&&nElec==0&&nSelTaus==1&&recoilRatio>0.7&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40&&tauDM>0.5&&tauAntiMuonLoose3&&tauAntiElectronLooseMVA5");
@@ -26,8 +26,7 @@ void Plot() {
 
   bool logY = true;
 
-  double lumi = 36000;
-  //  double lumi = 12892;
+  double lumi = 36800;
 
   TH1::SetDefaultSumw2();
   TH2::SetDefaultSumw2();
