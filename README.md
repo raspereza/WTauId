@@ -148,13 +148,10 @@ and pass as an argument tau isolation working point
 
 Example :
 
-./Fitting.sh tauId_MediumIso.txt
+./Fitting.sh MediumIso
 
-This will create mlfit.root mlfit_tau_MediumIso.root. This file
+This will create mlfit_tauId_MediumIso.root. This file
 is then used to plot posfit distributions of fitted variables
 (mT(mu,MET) in the W*->mu+v control region and mT(tau,MET) 
-in the W*->tau+v signal region). One can also inspect result of
-the fit as follows:
-
-root -l mlfit_tau_MediumIso.root
+in the W*->tau+v signal region).
 
