@@ -1,6 +1,6 @@
 #include "HttStylesNew.cc"
 #include "CMS_lumi.C"
-void PlotWMuNuPostFit() {
+void PlotWMuNuPostFit(TString iso="MediumIso") {
 
   SetStyle();
   //  gStyle->SetErrorX(0);
@@ -11,7 +11,7 @@ void PlotWMuNuPostFit() {
   TString ytitle = "Events / 100 GeV";
 
   TString inputFileName("mtmuon_WMuNu");
-  TString mlfitFileName("mlfit_WMuNu");
+  TString mlfitFileName = "mlfit_tauId_"+iso;
 
   TFile * inputs = new TFile(dir+"/datacards/"+inputFileName+".root");
   TFile * mlfit  = new TFile(dir+"/datacards/"+mlfitFileName+".root"); 
@@ -24,15 +24,17 @@ void PlotWMuNuPostFit() {
   TH1D * EWK  = (TH1D*)inputs->Get("EWK");
   TH1D * W    = (TH1D*)inputs->Get("W");
   TH1D * TT   = (TH1D*)inputs->Get("TT");
-  TH1D * EWKx = (TH1D*)mlfit->Get("shapes_fit_s/WtoMuNu/EWK");
-  TH1D * TTx  = (TH1D*)mlfit->Get("shapes_fit_s/WtoMuNu/TT");
-  TH1D * Wx   = (TH1D*)mlfit->Get("shapes_fit_s/WtoMuNu/W");
-  TH1D * tot  = (TH1D*)mlfit->Get("shapes_fit_s/WtoMuNu/total");
+  TH1D * EWKx = (TH1D*)mlfit->Get("shapes_fit_s/ch1/EWK");
+  TH1D * TTx  = (TH1D*)mlfit->Get("shapes_fit_s/ch1/TT");
+  TH1D * Wx   = (TH1D*)mlfit->Get("shapes_fit_s/ch1/W");
+  TH1D * tot  = (TH1D*)mlfit->Get("shapes_fit_s/ch1/total");
 
   float WNORM = Wx->GetSumOfWeights();
   float WDATA = histData->GetSumOfWeights() - TTx->GetSumOfWeights() - EWKx->GetSumOfWeights();
   float wscale = WDATA/WNORM;
+  //  float wscale = 1;
   float total = TTx->GetSumOfWeights()+EWKx->GetSumOfWeights()+wscale*Wx->GetSumOfWeights();
+
 
   std::cout << "TT  : " << TTx->GetSumOfWeights() << std::endl;
   std::cout << "EWK : " << EWKx->GetSumOfWeights() << std::endl;

@@ -21,6 +21,10 @@ JetHT_Run2016, and ${tauIsolation} is tauId
 working point : LooseIso, MediumIso, TightIso,
 LooseMvaIso, MediumMvaIso or TightMvaIso.
 
+PlotWTauNuBkgd.C - computes fraction of electroweak
+events in the anti-isolated tau region of the 
+W*->tau+v selection.
+
 PlotFakeRate.C - plot fake rates and compute
 combined fake rate for measurements in
 W(->mu+v)+Jets or dijet samples. The macro prints out
@@ -50,8 +54,6 @@ with combine tool.
 All ntuples are located in
 /nfs/dust/cms/user/rasp/Run/Run2016/TauID_2016
 
-The directory datacards contains all datacards for
-statistical inference and results of the fits.
 
 # Instructions for running AnalysisNTupleProducer macro.
 
@@ -114,3 +116,45 @@ all RooT files can be merged by executing script hadd.sh
 
 > hadd.sh $filelist.
  
+# Instruction to run fits
+
+The directory datacards contains all datacards for
+statistical inference and results of the fits.
+
+The datacards from two regions - signal (W*->tau+v) 
+and control region (W*->mu+v) are combined using script
+CombineCards.sh. This will produce datacards for various
+tau ID working points
+
+tauId_LooseMvaIso.txt
+
+tauId_MediumMvaIso.txt
+
+tauId_TightMvaIso.txt
+
+tauId_LooseIso.txt
+
+tauId_MediumIso.txt
+
+tauId_TightIso.txt
+
+
+To run computation of the tauId, one needs to execute script 
+
+Fitting.csh
+
+and pass as an argument tau isolation working point
+(LooseMvaIso, MediumMvaIso, TightMvaIso, LooseIso, MediumIso or TightIso)
+
+Example :
+
+./Fitting.sh tauId_MediumIso.txt
+
+This will create mlfit.root mlfit_tau_MediumIso.root. This file
+is then used to plot posfit distributions of fitted variables
+(mT(mu,MET) in the W*->mu+v control region and mT(tau,MET) 
+in the W*->tau+v signal region). One can also inspect result of
+the fit as follows:
+
+root -l mlfit_tau_MediumIso.root
+

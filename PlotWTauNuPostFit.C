@@ -1,6 +1,6 @@
 #include "HttStylesNew.cc"
 #include "CMS_lumi.C"
-void PlotWTauNuPostFit(TString iso="LooseIso") {
+void PlotWTauNuPostFit(TString iso="TightMvaIso") {
 
   SetStyle();
   //  gStyle->SetErrorX(0);
@@ -12,32 +12,26 @@ void PlotWTauNuPostFit(TString iso="LooseIso") {
 
   TString inputFileName = "mttau_"+iso+"_WTauNu";
   TString mlfitFileName = "mlfit_tauId_"+iso;
+  //  TString mlfitFileName = "mlfit_WMuNu";
   float yUpper = 2200;
-  float uncert = 0.02;
   TString legHeader = iso;
 
   if (inputFileName.Contains("MediumIso")) {
-    uncert = 0.02;
     yUpper = 1600;
   }
   else if (inputFileName.Contains("TightIso")) {
-    uncert = 0.02;
     yUpper = 1200;
   }
   else if (inputFileName.Contains("LooseMvaIso")) {
-    uncert = 0.02;
     yUpper = 2200;
   }
   else if (inputFileName.Contains("MediumMvaIso")) {
-    uncert = 0.02;
     yUpper = 1600;
   }
   else if (inputFileName.Contains("TightMvaIso")) {
-    uncert = 0.02;
     yUpper = 1200;
   }
   else if (inputFileName.Contains("VTightMvaIso")) {
-    uncert = 0.08;
     yUpper = 1200;
   }
 
@@ -55,14 +49,15 @@ void PlotWTauNuPostFit(TString iso="LooseIso") {
   TH1F * Wx    = (TH1F*)mlfit->Get("shapes_fit_s/ch2/W");
   TH1F * tot   = (TH1F*)mlfit->Get("shapes_fit_s/ch2/total");
 
-  float total  = QCDx->GetSumOfWeights()+Wx->GetSumOfWeights()+Bkgdx->GetSumOfWeights();
-  float scale = histData->GetSumOfWeights()/tot->GetSumOfWeights();
+  float WNORM = Wx->GetSumOfWeights();
+  float WDATA = histData->GetSumOfWeights() - Bkgdx->GetSumOfWeights() - QCDx->GetSumOfWeights();
+  float wscale = WDATA/WNORM;
+  float total = QCDx->GetSumOfWeights()+Bkgdx->GetSumOfWeights()+wscale*Wx->GetSumOfWeights();
 
-  std::cout << "QCD  : " << scale*QCDx->GetSumOfWeights() << std::endl;
-  std::cout << "W    : " << scale*Wx->GetSumOfWeights() << std::endl;
-  std::cout << "Bkgd : " << scale*Bkgdx->GetSumOfWeights() << std::endl;
-  std::cout << "SUM  : " << scale*total << std::endl;
-  std::cout << "Tot  : " << scale*tot->GetSumOfWeights() << std::endl;
+  std::cout << "QCD  : " << QCDx->GetSumOfWeights() << std::endl;
+  std::cout << "W    : " << wscale*Wx->GetSumOfWeights() << std::endl;
+  std::cout << "Bkgd : " << Bkgdx->GetSumOfWeights() << std::endl;
+  std::cout << "SUM  : " << total << std::endl;
   std::cout << "DAT  : " << histData->GetSumOfWeights() << std::endl;
 
   TH1F * bkgdErr = (TH1F*)W->Clone("bkgdErr");
@@ -74,22 +69,19 @@ void PlotWTauNuPostFit(TString iso="LooseIso") {
   int nBins = histData->GetNbinsX();
 
   for (int iB=1; iB<=nBins; ++iB) {
-    float QDC_E = scale*QCDx->GetBinError(iB);
-    float W_E   = scale*Wx->GetBinError(iB);
+    float QDC_E = QCDx->GetBinError(iB);
+    float W_E   = wscale*Wx->GetBinError(iB);
 
-    float QCD_X  = scale*QCDx->GetBinContent(iB); 
-    float W_X    = scale*Wx->GetBinContent(iB); 
-    float Bkgd_X = scale*Bkgdx->GetBinContent(iB);
+    float QCD_X  = QCDx->GetBinContent(iB); 
+    float W_X    = wscale*Wx->GetBinContent(iB); 
+    float Bkgd_X = Bkgdx->GetBinContent(iB);
     float total_X = QCD_X + W_X + Bkgd_X;
 
     QCD->SetBinError(iB,0);
     W->SetBinError(iB,0);
     Bkgd->SetBinError(iB,0);
 
-    float errSubtr = uncert*W_X;
-    float fitErr = tot->GetBinError(iB);
-
-    float error = TMath::Sqrt(fitErr*fitErr-errSubtr*errSubtr);
+    float error = tot->GetBinError(iB);
     //    float error = fitErr;
 
     Bkgd->SetBinContent(iB,Bkgd_X);
