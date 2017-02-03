@@ -1,10 +1,8 @@
 #include "HttStylesNew.cc"
 
-void PlotFakeRate(bool ratioMethod = true) {
+void PlotFakeRate(TString iso = "TightMvaIso", bool ratioMethod = true) {
 
   SetStyle();
-
-  TString iso("TightIso");
 
   //  float ratio[3]  = {0.76, 0.79, 0.63};
   //  float eratio[3] = {0.07, 0.08, 0.12};
