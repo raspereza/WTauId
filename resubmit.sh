@@ -9,7 +9,6 @@ do
     for file in $(ls *.zsh)
     do
 	list=$(echo $file | sed 's/.zsh//g')
-	echo $list
 	checkRoot ${list}.root
 	exit=$?
 	if [[ $exit -ne 0 ]]; then
@@ -20,6 +19,7 @@ do
 	   stringarray=($params)
 	   echo $params
 	   ./qsub.sh "${stringarray[0]}" "${stringarray[1]}" "${stringarray[2]}"
+	   echo ""
 	fi
     done
     cd ../
