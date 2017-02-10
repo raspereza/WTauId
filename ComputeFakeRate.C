@@ -75,7 +75,7 @@ void ComputeFakeRate(bool isDijet = true) {
 
     // filling histograms
     for (int i=0; i<nSamples; ++i) {
-      TFile * file = new TFile(dir+"/"+sampleNames[i]+".root");
+      TFile * file = new TFile("ouput/"+dir+"/"+sampleNames[i]+".root");
       TH1D * histWeightsH = (TH1D*)file->Get("histWeightsH");
       TTree * tree = (TTree*)file->Get("NTuple");
       double norm = xsec[i]*lumi/histWeightsH->GetSumOfWeights();
@@ -155,7 +155,7 @@ void ComputeFakeRate(bool isDijet = true) {
     canv->Update();
     canv->Print("figures/fakerate_data_mc_"+iso[idx_iso]+suffix+".png");
 
-    TFile * fileOutput = new TFile(DataFile+"_fakeRate"+iso[idx_iso]+".root","recreate");
+    TFile * fileOutput = new TFile("output/"+DataFile+"_fakeRate"+iso[idx_iso]+".root","recreate");
     fileOutput->cd("");
     TGraphAsymmErrors * fakeRate = (TGraphAsymmErrors*)eff->Clone(DataFile+"_fakeRate");
     fakeRate->Write(DataFile+"_fakeRate");
