@@ -27,6 +27,8 @@ void PlotFakeRate(bool ratioMethod = true) {
     eratio[i] = h_fEWK->GetBinError(i+1); 
   }
 
+  TFile* out = new TFile("output/fakerates.root","RECREATE");
+    
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
     TFile * DataFileJetHT = new TFile("JetHT_Run2016_fakeRate"+iso[idx_iso]+".root");
@@ -116,5 +118,9 @@ void PlotFakeRate(bool ratioMethod = true) {
       canv->Print("figures/FakeRate_"+iso[idx_iso]+".png");
       canv->Print("figures/FakeRate_"+iso[idx_iso]+".pdf","Portrait pdf");
     }
-  }
+
+    out->cd();
+    graph->Write(iso[idx_iso]);
+
+  }// end loop over iso vector
 }
