@@ -120,22 +120,9 @@ int PlotWTauNuBkgd() {
     tree->Draw(Variable+">>"+histNameX,cutsX[i]);
     tree->Draw(Variable+">>"+histNameInvIso,cutsInvIso[i]);
     if (i>0) {
-      for (int iB=1; iB<=nBins; ++iB) {
-	double x = hist[i]->GetBinContent(iB);
-	double e = hist[i]->GetBinError(iB);
-    	hist[i]->SetBinContent(iB,norm*x);
-    	hist[i]->SetBinError(iB,norm*e);
-
-	x = histX[i]->GetBinContent(iB);
-	e = histX[i]->GetBinError(iB);
-    	histX[i]->SetBinContent(iB,norm*x);
-    	histX[i]->SetBinError(iB,norm*e);
-
-	x = histInvIso[i]->GetBinContent(iB);
-	e = histInvIso[i]->GetBinError(iB);
-    	histInvIso[i]->SetBinContent(iB,norm*x);
-    	histInvIso[i]->SetBinError(iB,norm*e);
-      }
+      hist[i] -> Scale(norm);
+      histX[i] -> Scale(norm);
+      histInvIso[i] -> Scale(norm);
     }
   }
 
@@ -178,21 +165,32 @@ int PlotWTauNuBkgd() {
   std::cout << std::endl;
 
   histInvIso[1]->Add(histInvIso[1],histInvIso[7]); // adding DY+VV and W+Jets
-  float errStat2 = 0 ;
-  for (int i=1; i<=nBins; ++i) {
-    errStat2 += histInvIso[1]->GetBinError(i)*histInvIso[1]->GetBinError(i);
-  }
-  float errStat = TMath::Sqrt(errStat2);
-  float totErr  = TMath::Sqrt(errStat*errStat+errW*errW+errZ*errZ+errX*errX+histInvIso[0]->GetSumOfWeights());
+
+  TH1D* h_fEWK = new TH1D("fEWK","fEWK",nBins,bins);
+  h_fEWK = (TH1D*) histInvIso[1]->Clone();
+  h_fEWK->Divide(histInvIso[0]);
+  h_fEWK->SetName("h_fEWK");
+  double nEWK_err = 0 ;
+  double nData_err = 0;
+  double fEWK_err = 0;
+  double nData = histInvIso[0]->IntegralAndError(1,nBins,nData_err);
+  double nEWK  = histInvIso[1]->IntegralAndError(1,nBins,nEWK_err);
+  double fEWK  = histInvIso[1]->IntegralAndError(1,nBins,fEWK_err);
 
   std::cout << "Fraction of electroweak events in antiisolated region -> " << std::endl;
-  std::cout << "EWK (from MC)     = " << histInvIso[1]->GetSumOfWeights() << " +/- " << errStat << std::endl;
-  std::cout << "Total (from data) = " << histInvIso[0]->GetSumOfWeights() << " +/- " << TMath::Sqrt(histInvIso[0]->GetSumOfWeights()) << std::endl;
-  std::cout << "EWK/Total         = " << histInvIso[1]->GetSumOfWeights()/histInvIso[0]->GetSumOfWeights() << " +/- " << totErr/histInvIso[0]->GetSumOfWeights() << std::endl;
-  std::cout << "  pt > 100 GeV    = " << histInvIso[1]->GetBinContent(1)/histInvIso[0]->GetBinContent(1) << " +/- " << histInvIso[1]->GetBinError(1)/histInvIso[0]->GetBinContent(1) << endl;
-  std::cout << "  pt > 150 GeV    = " << histInvIso[1]->GetBinContent(2)/histInvIso[0]->GetBinContent(2) << " +/- " << histInvIso[1]->GetBinError(2)/histInvIso[0]->GetBinContent(2) << endl;
-  std::cout << "  pt > 200 GeV    = " << histInvIso[1]->GetBinContent(3)/histInvIso[0]->GetBinContent(3) << " +/- " << histInvIso[1]->GetBinError(3)/histInvIso[0]->GetBinContent(3) << endl;
+  std::cout << "EWK (from MC)     = " << nEWK  << " +/- " << nEWK_err << std::endl;
+  std::cout << "Total (from data) = " << nData << " +/- " << nData_err << std::endl;
+  std::cout << "EWK/Total         = " << fEWK  << " +/- " << fEWK_err << std::endl;
+  std::cout << "  pt > 100 GeV    = " << h_fEWK->GetBinContent(1) << " +/- " << h_fEWK->GetBinError(1) << endl;
+  std::cout << "  pt > 150 GeV    = " << h_fEWK->GetBinContent(2) << " +/- " << h_fEWK->GetBinError(2) << endl;
+  std::cout << "  pt > 200 GeV    = " << h_fEWK->GetBinContent(3) << " +/- " << h_fEWK->GetBinError(3) << endl;
   std::cout << std::endl;
+
+  // Save fraction of EWK events in root file
+  TFile* out = new TFile("output/fraction_EWK.root","RECREATE");
+  out->cd();
+  h_fEWK->Write();
+  out->Close();
 
   return 0;
 }
