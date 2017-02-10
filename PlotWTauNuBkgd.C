@@ -1,11 +1,12 @@
 #include "HttStylesNew.cc"
 #include "CMS_lumi.C"
-void PlotWTauNuBkgd() {
+int PlotWTauNuBkgd() {
 
-  TString dir = "/nfs/dust/cms/user/rasp/Run/Run2016/TauID_2016/";
+  TString dir = "NTuples";
+  //TString dir = "/nfs/dust/cms/user/rasp/Run/Run2016/TauID_2016/";
   TString DataFile = "MET_Run2016";
-  //  TString DataFile = "MET_Run2016BCD";
-  //  TString DataFile = "MET_Run2016BCD-PromptReco";
+  //TString DataFile = "MET_Run2016BCD";  // Re-Reco
+  //TString DataFile = "MET_Run2016BCD-PromptReco";   // PromptReco
   TString Variable = "tauPt";
   TString iso("TightMva");
   int nBins  =     3;
@@ -39,8 +40,8 @@ void PlotWTauNuBkgd() {
     DataFile, // data (signal region) (0)
     "WJetsToLNu_13TeV-madgraphMLM", // WToTauNu (1)
     "TTJets_13TeV-powheg",               // TTJets (2) 
-    "ST_t-channel_top_4f_leptonDecays_13TeV-powheg",     // t-channel_top     (3)
-    "ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg", // t-channel_antitop (4)
+    "ST_t-channel_top_4f_inclusiveDecays_13TeV-powheg",     // t-channel_top     (3)
+    "ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powheg", // t-channel_antitop (4)
     "ST_tW_top_5f_inclusiveDecays_13TeV-powheg",         // topW              (5)
     "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg",     // antitopW          (6)
     "VVTo2L2Nu_13TeV_amcatnloFXFX",   // VVTo2L2Nu    (7)
@@ -59,8 +60,8 @@ void PlotWTauNuBkgd() {
   double xsec[18] = {1, // data (signal region)    (0)
 		     61526.7,    // WJets (1)
  		     831.76,     // TTJets (2)
-		     136.95*3*0.108, // t-channel_top     (3)
-		     80.95*3*0.108,  // t-channel_antitop (4)
+		     136.02, // t-channel_top     (3)
+		     80.95,  // t-channel_antitop (4)
 		     35.6,           // topW              (5)
 		     35.6,           // antitopW          (6)
 		     11.95,  // VVTo2L2Nu   (7)
@@ -83,9 +84,9 @@ void PlotWTauNuBkgd() {
   cutsX[0] = cutsTrigger+Cuts+"&&metFilters"; // data
   cutsInvIso[0] = cutsTrigger+CutsInvIso+"&&metFilters"; // data
   for (int i=1; i<30; ++i) { // MC samples
-    cuts[i]       = Weight+"("+Cuts+cutsTauDecayMode+")";
-    cutsX[i]      = Weight+"("+Cuts+cutsTauDecayModeX+")";
-    cutsInvIso[i] = Weight+"("+CutsInvIso+cutsTauDecayMode+")";
+    cuts[i]       = Weight+"("+cutsTrigger+Cuts+cutsTauDecayMode+")";
+    cutsX[i]      = Weight+"("+cutsTrigger+Cuts+cutsTauDecayModeX+")";
+    cutsInvIso[i] = Weight+"("+cutsTrigger+CutsInvIso+cutsTauDecayMode+")";
   }
   cuts[1]       = Weight+"("+cutsTrigger+Cuts+cutsTauDecayMode+")";
   cutsX[1]      = Weight+"("+cutsTrigger+Cuts+cutsTauDecayModeX+")";
@@ -101,6 +102,7 @@ void PlotWTauNuBkgd() {
   // filling histograms
   float ewkNorm = 0;
   for (int i=0; i<17; ++i) {
+    std::cout << sampleNames[i] << std::endl;
     TFile * file = new TFile(dir+"/"+sampleNames[i]+".root");
     TH1D * histWeightsH = (TH1D*)file->Get("histWeightsH");
     TTree * tree = (TTree*)file->Get("NTuple");
@@ -117,7 +119,6 @@ void PlotWTauNuBkgd() {
     tree->Draw(Variable+">>"+histName,cuts[i]);
     tree->Draw(Variable+">>"+histNameX,cutsX[i]);
     tree->Draw(Variable+">>"+histNameInvIso,cutsInvIso[i]);
-    std::cout << sampleNames[i] << std::endl;
     if (i>0) {
       for (int iB=1; iB<=nBins; ++iB) {
 	double x = hist[i]->GetBinContent(iB);
@@ -193,4 +194,5 @@ void PlotWTauNuBkgd() {
   std::cout << "  pt > 200 GeV    = " << histInvIso[1]->GetBinContent(3)/histInvIso[0]->GetBinContent(3) << " +/- " << histInvIso[1]->GetBinError(3)/histInvIso[0]->GetBinContent(3) << endl;
   std::cout << std::endl;
 
+  return 0;
 }
