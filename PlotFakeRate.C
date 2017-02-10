@@ -17,7 +17,7 @@ void PlotFakeRate(bool ratioMethod = true) {
   //float ratio[3]  = {0.49, 0.66, 0.43};
   //float eratio[3] = {0.04, 0.09, 0.09};
 
-  TFile* file = new TFile("fraction_EWK.root","READ");
+  TFile* file = new TFile("output/fraction_EWK.root","READ");
   TH1D* h_fEWK = 0;
   file->GetObject("h_fEWK", h_fEWK);
   double *ratio  = new double[h_fEWK->GetNbinsX()];
