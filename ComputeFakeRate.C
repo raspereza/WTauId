@@ -75,7 +75,7 @@ void ComputeFakeRate(bool isDijet = true) {
 
     // filling histograms
     for (int i=0; i<nSamples; ++i) {
-      TFile * file = new TFile("ouput/"+dir+"/"+sampleNames[i]+".root");
+      TFile * file = new TFile(dir+"/"+sampleNames[i]+".root");
       TH1D * histWeightsH = (TH1D*)file->Get("histWeightsH");
       TTree * tree = (TTree*)file->Get("NTuple");
       double norm = xsec[i]*lumi/histWeightsH->GetSumOfWeights();
