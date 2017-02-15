@@ -12,6 +12,7 @@ void ComputeFakeRate(bool isDijet = true) {
   iso.push_back("LooseIso");
 
   TString dir("NTuples/");
+  //TString dir("/nfs/dust/cms/user/rasp/Run/Run2016/TauID_2016/");
 
   TString DataFile("SingleMuon_Run2016");
   TString suffix("_wjets");
@@ -27,7 +28,8 @@ void ComputeFakeRate(bool isDijet = true) {
 		     61526.7    // WJets (1)
   }; 
 
-
+  TFile *fileOutput = new TFile("output/"+DataFile+"_fakeRate"+suffix+".root","recreate");
+  
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
     cout<<endl<<endl<<"Process "<<iso[idx_iso]<<endl;
@@ -38,8 +40,8 @@ void ComputeFakeRate(bool isDijet = true) {
     
     if (isDijet) {
       // ****************** Cuts for dijet events ************************
-      selCuts = "Selection==4&&nMuon==0&&nElec==0&&nSelTaus==1&&nJetsCentral30<=2&&tauPt>100&&recoilDPhi>2.6&&recoilRatio>0.8&&recoilRatio<1.2&&(pfJet80>0.5||pfJet140>0.5)&&tauPt>100";
-      selCutsMC = "Selection==4&&nMuon==0&&nElec==0&&nSelTaus==1&&nJetsCentral30<=2&&tauPt>100&&recoilDPhi>2.6&&recoilRatio>0.8&&recoilRatio<1.2&&(pfJet80>0.5||pfJet140>0.5)&&tauPt>100";
+      selCuts = "Selection==4&&nMuon==0&&nElec==0&&nSelTaus==1&&nJetsCentral30==2&&tauPt>100&&recoilDPhi>2.6&&recoilRatio>0.8&&recoilRatio<1.2&&(pfJet80>0.5||pfJet140>0.5)&&tauPt>100";
+      selCutsMC = "Selection==4&&nMuon==0&&nElec==0&&nSelTaus==1&&nJetsCentral30==2&&tauPt>100&&recoilDPhi>2.6&&recoilRatio>0.8&&recoilRatio<1.2&&(pfJet80>0.5||pfJet140>0.5)&&tauPt>100";
     }
     
     TString numCuts("&&tauDM>0.5&&tauAntiMuonLoose3&&tauAntiElectronLooseMVA6&&tau"+iso[idx_iso]+">0.5");
@@ -76,8 +78,9 @@ void ComputeFakeRate(bool isDijet = true) {
     // filling histograms
     for (int i=0; i<nSamples; ++i) {
       TFile * file = new TFile(dir+"/"+sampleNames[i]+".root");
-      TH1D * histWeightsH = (TH1D*)file->Get("histWeightsH");
+      
       TTree * tree = (TTree*)file->Get("NTuple");
+      TH1D * histWeightsH = (TH1D*)file->Get("histWeightsH");
       double norm = xsec[i]*lumi/histWeightsH->GetSumOfWeights();
       TString histNameNum = sampleNames[i] + "_Num";
       TString histNameDen = sampleNames[i] + "_Den";
@@ -87,7 +90,6 @@ void ComputeFakeRate(bool isDijet = true) {
       histDen[i]->Sumw2();
       tree->Draw("tauPt>>"+histNameNum,cutsNum[i]);
       tree->Draw("tauPt>>"+histNameDen,cutsDen[i]);
-      std::cout << sampleNames[i] << " : " <<  histNum[i]->GetEntries() << " vs. " << histDen[i]->GetEntries() << std::endl;
       if (i==0) norm = 1;
       if (i>0&&i<23) {
 	for (int iB=1; iB<=nBins; ++iB) {
@@ -125,13 +127,13 @@ void ComputeFakeRate(bool isDijet = true) {
     std::cout << std::endl;
 
     TGraphAsymmErrors * eff = new TGraphAsymmErrors();
-    eff->Divide(histNum[0],histDen[0]);
+    eff->Divide(histNum[0],histDen[0],"n");
     eff->SetMarkerStyle(20);
     eff->SetMarkerColor(1);
     eff->SetMarkerSize(2);
 
     TGraphAsymmErrors * effMC = new TGraphAsymmErrors();
-    effMC->Divide(histNum[1],histDen[1]);
+    effMC->Divide(histNum[1],histDen[1],"n");
     effMC->SetMarkerStyle(21);
     effMC->SetMarkerColor(2);
     effMC->SetLineColor(2);
@@ -155,10 +157,11 @@ void ComputeFakeRate(bool isDijet = true) {
     canv->Update();
     canv->Print("figures/fakerate_data_mc_"+iso[idx_iso]+suffix+".png");
 
-    TFile * fileOutput = new TFile("output/"+DataFile+"_fakeRate"+iso[idx_iso]+".root","recreate");
     fileOutput->cd("");
     TGraphAsymmErrors * fakeRate = (TGraphAsymmErrors*)eff->Clone(DataFile+"_fakeRate");
-    fakeRate->Write(DataFile+"_fakeRate");
-    fileOutput->Close();
+    fakeRate->Write(iso[idx_iso]);
+    
+    delete canv;
   }
+  fileOutput->Close();
 }
