@@ -8,7 +8,7 @@
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer.conf JetHT_Run2016 20
 
 # For n_EWK (including trigger efficiencies)
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer.conf MET_Run2016 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer.conf MET_Run2016 20
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WJetsToLNu_13TeV-madgraphMLM 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf TTJets_13TeV-powheg 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ST_t-channel_top_4f_inclusiveDecays_13TeV-powheg 10
@@ -25,6 +25,8 @@
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-200To400_13TeV-madgraph 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-400To600_13TeV-madgraph 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-600To800_13TeV-madgraph 10
+
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WToTauNu_M-200_13TeV-pythia8 10
 
 # For tauID (including trigger efficiencies + fake rate)
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer.conf MET_Run2016 20
