@@ -28,15 +28,15 @@ void ComputeFakeRate(bool isDijet = true) {
 		     61526.7    // WJets (1)
   }; 
 
-  TFile *fileOutput = new TFile("output/"+DataFile+"_fakeRate"+suffix+".root","recreate");
+  TFile *fileOutput = new TFile("output/"+DataFile+"_fakeRate.root","recreate");
   
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
     cout<<endl<<endl<<"Process "<<iso[idx_iso]<<endl;
 
     // ****************** Cuts for W->muv+jet ************************
-    TString   selCuts("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30<=1&&nJetsForward30==0&&nSelTaus==1&&tauPt>100&&recoilRatio>0.7&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40"); 
-    TString selCutsMC("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30<=1&&nJetsForward30==0&&nSelTaus==1&&tauPt>100&&recoilRatio>0.7&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40");
+    TString   selCuts("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30==1&&nJetsForward30==0&&nSelTaus==1&&tauPt>100&&recoilRatio>0.7&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40"); 
+    TString selCutsMC("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30==1&&nJetsForward30==0&&nSelTaus==1&&tauPt>100&&recoilRatio>0.7&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40");
     
     if (isDijet) {
       // ****************** Cuts for dijet events ************************
@@ -107,23 +107,17 @@ void ComputeFakeRate(bool isDijet = true) {
     double dataNum = histNum[0]->GetSumOfWeights();
     double dataDen = histDen[0]->GetSumOfWeights();
 
-    double wjetsNum = histNum[1]->GetSumOfWeights();
-    double wjetsDen = histDen[1]->GetSumOfWeights();
-    double wjetsE2 = 0;
-    for (int iB=1;iB<nBins;++iB) {
-      double error = histNum[1]->GetBinError(iB);
-      wjetsE2 += error*error;
-    }
-    double wjetsE = TMath::Sqrt(wjetsE2);
+    double wjetsNumE = 0;
+    double wjetsDenE = 0;
+    double wjetsNum  = histNum[1]->IntegralAndError(1,nBins,wjetsNumE);
+    double wjetsDen  = histDen[1]->IntegralAndError(1,nBins,wjetsDenE);
     
     delete dummy;
 
     std::cout << std::endl;
     std::cout << "Fake rates -> " << std::endl;
-    std::cout << "Data      : " << int(dataNum) << "/" << int(dataDen) << " = " << dataNum/(dataDen+1e-4) 
-	      << "+/-" << TMath::Sqrt(dataNum)/(dataDen+1e-4) << std::endl;
-    std::cout << "W->lv     : " << int(wjetsNum)<< "/" << int(wjetsDen) << " = " << wjetsNum/(wjetsDen+1e-4) 
-	      << " +/- " << wjetsE/(wjetsDen+1e-4) << std::endl;
+    std::cout << "Data      : " << int(dataNum) << "/" << int(dataDen) << " = " << dataNum/dataDen << " +/- " << TMath::Sqrt(dataNum)/dataDen << std::endl;
+    std::cout << "W->lv     : " << int(wjetsNum)<< "/" << int(wjetsDen) << " = " << wjetsNum/wjetsDen << " +/- " << wjetsNumE/wjetsDen << std::endl;
     std::cout << std::endl;
 
     TGraphAsymmErrors * eff = new TGraphAsymmErrors();
