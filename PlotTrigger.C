@@ -38,7 +38,7 @@ Double_t FitFunc(Double_t * x,
 
 void PlotTrigger() {
 
-  TString dir = "/nfs/dust/cms/user/rasp/Run/Run2016/TauID_2016/";
+  TString dir = "NTuples";
   
   TString numerator   = "IsW>0.5&&trigger>0.5";
   TString denominator = "IsW>0.5";
