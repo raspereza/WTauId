@@ -31,17 +31,19 @@ void PlotFakeRate(bool ratioMethod = true) {
     
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
-    TFile * DataFileJetHT = new TFile("JetHT_Run2016_fakeRate"+iso[idx_iso]+".root");
-    TFile * DataFileSingleMu = new TFile("SingleMuon_Run2016_fakeRate"+iso[idx_iso]+".root");
+    cout<<endl<<"Processing "<<iso[idx_iso]<<endl;
+
+    TFile * DataFileJetHT = new TFile("output/JetHT_Run2016_fakeRate.root");
+    TFile * DataFileSingleMu = new TFile("output/SingleMuon_Run2016_fakeRate.root");
   
-    TGraphAsymmErrors * effJetHT = (TGraphAsymmErrors*)DataFileJetHT->Get("JetHT_Run2016_fakeRate");
+    TGraphAsymmErrors * effJetHT = (TGraphAsymmErrors*)DataFileJetHT->Get(iso[idx_iso]);
     effJetHT->SetMarkerStyle(22);
     effJetHT->SetMarkerColor(2);
     effJetHT->SetLineColor(2);
     effJetHT->SetLineWidth(2);
     effJetHT->SetMarkerSize(1.5);
 
-    TGraphAsymmErrors * effSingleMu = (TGraphAsymmErrors*)DataFileSingleMu->Get("SingleMuon_Run2016_fakeRate");
+    TGraphAsymmErrors * effSingleMu = (TGraphAsymmErrors*)DataFileSingleMu->Get(iso[idx_iso]);
     effSingleMu->SetMarkerStyle(21);
     effSingleMu->SetMarkerColor(4);
     effSingleMu->SetLineColor(4);
@@ -49,7 +51,6 @@ void PlotFakeRate(bool ratioMethod = true) {
     effSingleMu->SetMarkerSize(1.5);
 
     int nPoints = effJetHT->GetN();
-    cout << nPoints << endl;
 
     double x[10];
     double y[10];
@@ -118,9 +119,10 @@ void PlotFakeRate(bool ratioMethod = true) {
       canv->Print("figures/FakeRate_"+iso[idx_iso]+".png");
       canv->Print("figures/FakeRate_"+iso[idx_iso]+".pdf","Portrait pdf");
     }
-
+    
     out->cd();
+    graph->SetName(iso[idx_iso]);
     graph->Write(iso[idx_iso]);
-
+    delete canv;
   }// end loop over iso vector
 }
