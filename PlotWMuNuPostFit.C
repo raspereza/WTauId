@@ -5,7 +5,8 @@ void PlotWMuNuPostFit(TString iso="MediumIso") {
   SetStyle();
   //  gStyle->SetErrorX(0);
 
-  TString dir = "/nfs/dust/cms/user/rasp/Run/Run2016/TauID_2016/";
+  //TString dir = "/nfs/dust/cms/user/rasp/Run/Run2016/TauID_2016/";
+  TString dir = "";
 
   TString xtitle = "m_{T} (GeV)";
   TString ytitle = "Events / 100 GeV";
@@ -13,8 +14,8 @@ void PlotWMuNuPostFit(TString iso="MediumIso") {
   TString inputFileName("mtmuon_WMuNu");
   TString mlfitFileName = "mlfit_tauId_"+iso;
 
-  TFile * inputs = new TFile(dir+"/datacards/"+inputFileName+".root");
-  TFile * mlfit  = new TFile(dir+"/datacards/"+mlfitFileName+".root"); 
+  TFile * inputs = new TFile(dir+"output/"+inputFileName+".root");
+  TFile * mlfit  = new TFile(dir+"datacards/"+mlfitFileName+".root"); 
 
   float yUpper = 16000;
 
