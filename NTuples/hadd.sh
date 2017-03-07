@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for dir in $(find -maxdepth 1 -type d -name "MET_Run2016_files")
+for dir in $(find -maxdepth 1 -type d -name "*")
 do
     filename=${dir:2:${#dir}-8}
     echo $filename
