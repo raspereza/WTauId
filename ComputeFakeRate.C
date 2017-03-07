@@ -28,7 +28,8 @@ void ComputeFakeRate(bool isDijet = true) {
 		     61526.7    // WJets (1)
   }; 
 
-  TFile *fileOutput = new TFile("output/"+DataFile+"_fakeRate.root","recreate");
+  TFile *fileOutput   = new TFile("output/"+DataFile+"_fakeRate.root","recreate");
+  TFile *fileOutputMC = new TFile("output/WJetsToLNu_13TeV-madgraphMLM_fakeRate.root","recreate");
   
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
@@ -152,10 +153,14 @@ void ComputeFakeRate(bool isDijet = true) {
     canv->Print("figures/fakerate_data_mc_"+iso[idx_iso]+suffix+".png");
 
     fileOutput->cd("");
-    TGraphAsymmErrors * fakeRate = (TGraphAsymmErrors*)eff->Clone(DataFile+"_fakeRate");
+    TGraphAsymmErrors * fakeRate   = (TGraphAsymmErrors*)eff->Clone(DataFile+"_fakeRate");
     fakeRate->Write(iso[idx_iso]);
+    fileOutputMC->cd("");
+    TGraphAsymmErrors * fakeRateMC = (TGraphAsymmErrors*)effMC->Clone("WJetsToLNu_13TeV-madgraphMLM_fakeRate");
+    fakeRateMC->Write(iso[idx_iso]);
     
     delete canv;
   }
   fileOutput->Close();
+  fileOutputMC->Close();
 }
