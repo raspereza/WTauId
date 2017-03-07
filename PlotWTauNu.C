@@ -27,8 +27,10 @@ void PlotWTauNu() {
       yUpper = 1600;
     if (iso[idx_iso]=="Loose")
       yUpper = 2200;
-    if (iso[idx_iso]=="TightMva")
+    if (iso[idx_iso]=="VTightMva")
       yUpper = 1200;
+    if (iso[idx_iso]=="TightMva")
+      yUpper = 1400;
     if (iso[idx_iso]=="MediumMva")
       yUpper = 1600;
     if (iso[idx_iso]=="LooseMva")
