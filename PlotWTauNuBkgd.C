@@ -12,6 +12,8 @@ int PlotWTauNuBkgd() {
   int nBins  =     3;
   float bins[4] = {100,150,200,1000};
 
+  cout<<endl<<"Isolation working point : "<<iso<<endl<<endl;
+
   TString Weight = "puWeight*genWeight*trigWeight*";
 
   TString cutsTrigger("trigger>0.5&&");
@@ -30,7 +32,7 @@ int PlotWTauNuBkgd() {
 
   SetStyle();
   bool logY = false;
-  //  double lumi = 12980;
+  //double lumi = 12980;
   double lumi = 36800;
 
   TH1::SetDefaultSumw2();
@@ -84,13 +86,13 @@ int PlotWTauNuBkgd() {
   cutsX[0] = cutsTrigger+Cuts+"&&metFilters"; // data
   cutsInvIso[0] = cutsTrigger+CutsInvIso+"&&metFilters"; // data
   for (int i=1; i<30; ++i) { // MC samples
-    cuts[i]       = Weight+"("+cutsTrigger+Cuts+cutsTauDecayMode+")";
-    cutsX[i]      = Weight+"("+cutsTrigger+Cuts+cutsTauDecayModeX+")";
-    cutsInvIso[i] = Weight+"("+cutsTrigger+CutsInvIso+cutsTauDecayMode+")";
+    cuts[i]       = Weight+"("+cutsTrigger+Cuts+cutsTauDecayMode+"&&metFilters)";
+    cutsX[i]      = Weight+"("+cutsTrigger+Cuts+cutsTauDecayModeX+"&&metFilters)";
+    cutsInvIso[i] = Weight+"("+cutsTrigger+CutsInvIso+cutsTauDecayMode+"&&metFilters)";
   }
-  cuts[1]       = Weight+"("+cutsTrigger+Cuts+cutsTauDecayMode+")";
-  cutsX[1]      = Weight+"("+cutsTrigger+Cuts+cutsTauDecayModeX+")";
-  cutsInvIso[1] = Weight+"("+cutsTrigger+CutsInvIso+cutsTauDecayMode+")";
+  //cuts[1]       = Weight+"("+cutsTrigger+Cuts+cutsTauDecayMode+")";
+  //cutsX[1]      = Weight+"("+cutsTrigger+Cuts+cutsTauDecayModeX+")";
+  //cutsInvIso[1] = Weight+"("+cutsTrigger+CutsInvIso+cutsTauDecayMode+")";
  
 
   TH1D * hist[40];
