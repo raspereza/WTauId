@@ -9,6 +9,6 @@ do
 	hadd -f ${filename}_${i}.root ${filename}_files/*${i}.root
     done
     hadd -f ${filename}.root ${filename}_*.root
-    #rm ${filename}_*.root
+    rm ${filename}_*.root
 done
 
