@@ -26,7 +26,7 @@
 
 # 9.) Run combine
 #cd datacards
-#iniCMSSW_7_4_7()
+#iniCMSSW_7_4_7
 #source CombineCards.sh
 #./Fitting.csh VTightMvaIso
 #./Fitting.csh TightMvaIso
