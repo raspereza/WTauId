@@ -173,7 +173,7 @@ void PlotWMuNu() {
   // *************** 
   TString BaseName = Variable+"_WMuNu";
   TString rootFileName = BaseName+".root";
-  TFile * fileInputs = new TFile(rootFileName,"recreate"); 
+  TFile * fileInputs = new TFile("output/" + rootFileName,"recreate"); 
   fileInputs->cd("");
   histData->Write("data_obs");
   W->Write("W");
@@ -203,7 +203,7 @@ void PlotWMuNu() {
   fileInputs->Close();
 
   ostringstream str;
-  str << BaseName << ".txt";
+  str << "output/" << BaseName << ".txt";
   string nn = str.str();
   const char * p = nn.c_str();
 
