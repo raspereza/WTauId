@@ -161,7 +161,7 @@ void PlotTrigger() {
 
   }
 
-  TFile * fileOutput = new TFile("trigger_eff.root","recreate");
+  TFile * fileOutput = new TFile("output/trigger_eff.root","recreate");
   fileOutput->cd("");  
   TF1 * funcDataMhtLt100 = (TF1*)dataFunc[0]->Clone(bins[0]+"_data");
   TF1 * funcDataMhtGt100 = (TF1*)dataFunc[1]->Clone(bins[1]+"_data");
