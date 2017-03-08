@@ -127,8 +127,9 @@ void ComputeFakeRate(bool isDijet = true) {
     eff->SetMarkerColor(1);
     eff->SetMarkerSize(2);
 
-    TGraphAsymmErrors * effMC = new TGraphAsymmErrors();
-    effMC->Divide(histNum[1],histDen[1],"n");
+    histNum[1]->Divide(histDen[1]);
+    TGraphErrors * effMC = new TGraphErrors(histNum[1]);
+    //effMC->Divide(histNum[1],histDen[1],"n");
     effMC->SetMarkerStyle(21);
     effMC->SetMarkerColor(2);
     effMC->SetLineColor(2);
@@ -156,7 +157,8 @@ void ComputeFakeRate(bool isDijet = true) {
     TGraphAsymmErrors * fakeRate   = (TGraphAsymmErrors*)eff->Clone(DataFile+"_fakeRate");
     fakeRate->Write(iso[idx_iso]);
     fileOutputMC->cd("");
-    TGraphAsymmErrors * fakeRateMC = (TGraphAsymmErrors*)effMC->Clone("WJetsToLNu_13TeV-madgraphMLM_fakeRate");
+    TGraphErrors * fakeRateMC = (TGraphErrors*)effMC->Clone("WJetsToLNu_13TeV-madgraphMLM_fakeRate");
+    fakeRateMC->SetName(iso[idx_iso]);
     fakeRateMC->Write(iso[idx_iso]);
     
     delete canv;
