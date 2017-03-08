@@ -7,8 +7,8 @@
 # root -l -b -q PlotTrigger.C"()" #(used samples: SingleMuon_Run2016.root andWJetsToLNu_13TeV-madgraphMLM.root )
 
 # 3.) Calculate Fake rate in dijet (JetHT) and W+jet->mu nu +jet (SingleMuon) events with data (WJets MC sample only needed for comparison - but is not used for later results)
-#root -l -b -q ComputeFakeRate.C"(true)"
-#root -l -b -q ComputeFakeRate.C"(false)"
+#root -l -b -q ComputeFakeRate.C"(true)"  (dijet)
+#root -l -b -q ComputeFakeRate.C"(false)" (wjets)
 
 # 4.) Make all MC and data samples with trigger efficiency scale factors included
 
@@ -35,7 +35,7 @@
 #./Fitting.csh TightIso
 #./Fitting.csh MediumIso
 #./Fitting.csh LooseIso
- cd ..
+# cd ..
 
 # 10.) Make postfit plots
 #root -l -b -q PlotWTauNuPostFit.C"()"
