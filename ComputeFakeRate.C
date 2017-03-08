@@ -36,8 +36,8 @@ void ComputeFakeRate(bool isDijet = true) {
     cout<<endl<<endl<<"Process "<<iso[idx_iso]<<endl;
 
     // ****************** Cuts for W->muv+jet ************************
-    TString   selCuts("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30==1&&nJetsForward30==0&&nSelTaus==1&&tauPt>100&&recoilRatio>0.7&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40"); 
-    TString selCutsMC("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30==1&&nJetsForward30==0&&nSelTaus==1&&tauPt>100&&recoilRatio>0.7&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40");
+    TString   selCuts("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30==1&&nJetsForward30==0&&nSelTaus==1&&tauPt>100&&recoilRatio>0.7&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40&&metFilters"); 
+    TString selCutsMC("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30==1&&nJetsForward30==0&&nSelTaus==1&&tauPt>100&&recoilRatio>0.7&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40&&metFilters");
     
     if (isDijet) {
       // ****************** Cuts for dijet events ************************
