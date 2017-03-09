@@ -80,7 +80,6 @@ void ClosureTest_FakeRate() {
       hist[i]->Sumw2();
 
       // Loop over tree and fill histogram after cuts
-      cout<<"start loop"<<endl;
       for(unsigned int j=0; j<tree->GetEntries(); j++){
 
 	tree->GetEntry(j);
@@ -90,7 +89,6 @@ void ClosureTest_FakeRate() {
 	double weight = puWeight*trigWeight*genWeight*norm*wnorm;
 	hist[i]->Fill(mttau, weight);
       }
-      cout<<"nEvents = "<<hist[i]->GetSumOfWeights()<<endl;
       observation->Add(hist[i]);
       delete hist[i];
     }
@@ -118,9 +116,12 @@ void ClosureTest_FakeRate() {
       delete hist[i];
     }
 
+    double obsErr, predErr;
+    double Nobs = observation->IntegralAndError(1,observation->GetNbinsX(),obsErr);
+    double Npred = prediction->IntegralAndError(1,prediction->GetNbinsX(),predErr);
 
-    std::cout << "Observation : " << observation->GetSumOfWeights() << " (nevents = " << observation->GetEntries() << ") "<<std::endl;
-    std::cout << "Prediction : " << prediction->GetSumOfWeights() << " (nevents = " << prediction->GetEntries() << ") "<<std::endl;
+    std::cout << "Observation : " << Nobs << " +/- " << obsErr << " (nevents = " << observation->GetEntries() << ") "<<std::endl;
+    std::cout << "Prediction : " << Npred << " +/- " << predErr <<" (nevents = " << prediction->GetEntries() << ") "<<std::endl;
 
     TCanvas * canv1 = MakeCanvas("canv1", "", 700, 800);
     TPad * upper = new TPad("upper", "pad",0,0.31,1,1);
