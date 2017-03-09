@@ -4,6 +4,7 @@
 #include <TCanvas.h>
 #include <TLegend.h>
 #include <TPaveText.h>
+#include <TLatex.h>
 
 /// define common styles
 void SetStyle();
