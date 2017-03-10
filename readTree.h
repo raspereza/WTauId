@@ -1,8 +1,12 @@
 #include "TTree.h"
+#include "TTreeReader.h"
+#include "TTreeReaderArray.h"
+#include<iostream>
 
 
 // ----------------------------------------------------------------------------------------------------
 // Global variables
+
 float mttau;
 float puWeight;
 float genWeight;
@@ -25,63 +29,63 @@ bool  tauAntiElectronLooseMVA6;
 bool  tauIso;
 float fakeAntiLiso;
 int tauGenMatchDecay;
+
 // ----------------------------------------------------------------------------------------------------
-TTree* readTree(TString filename, TString treename, TString iso)
+void makeSelection(TString filename, TString treename, TString iso, selectionCuts)
 {
 
   TFile * file = new TFile(filename);
   if(!file){
     cout<<"The following tree does not exit: "<<filename<<" .   Please Check."<<endl;
   }
-  TTree * tree = (TTree*)file->Get(treename);
+  TTreeReader *myReader = new TTreeReader(treename, file);
   
-  tree->SetBranchStatus("*",0);
-  tree->SetBranchStatus("mttau",1);
-  tree->SetBranchAddress("mttau",&mttau);
-  tree->SetBranchStatus("puWeight",1);
-  tree->SetBranchAddress("puWeight",&puWeight);
-  tree->SetBranchStatus("genWeight",1);
-  tree->SetBranchAddress("genWeight",&genWeight);
-  tree->SetBranchStatus("trigWeight",1);
-  tree->SetBranchAddress("trigWeight",&trigWeight);
-  tree->SetBranchStatus("trigger",1);
-  tree->SetBranchAddress("trigger",&trig);
-  tree->SetBranchStatus("Selection",1);
-  tree->SetBranchAddress("Selection",&Selection);
-  tree->SetBranchStatus("recoilRatio",1);
-  tree->SetBranchAddress("recoilRatio",&recoilRatio);
-  tree->SetBranchStatus("recoilDPhi",1);
-  tree->SetBranchAddress("recoilDPhi",&recoilDPhi);
-  tree->SetBranchStatus("met",1);
-  tree->SetBranchAddress("met",&met);
-  tree->SetBranchStatus("tauPt",1);
-  tree->SetBranchAddress("tauPt",&tauPt);
-  tree->SetBranchStatus("metFilters",1);
-  tree->SetBranchAddress("metFilters",&metFilters);
-  tree->SetBranchStatus("nMuon",1);
-  tree->SetBranchAddress("nMuon",&nMuon);
-  tree->SetBranchStatus("nElec",1);
-  tree->SetBranchAddress("nElec",&nElec);
-  tree->SetBranchStatus("nSelTaus",1);
-  tree->SetBranchAddress("nSelTaus",&nSelTaus);
-  tree->SetBranchStatus("nJetsCentral30",1);
-  tree->SetBranchAddress("nJetsCentral30",&nJetsCentral30);
-  tree->SetBranchStatus("nJetsForward30",1);
-  tree->SetBranchAddress("nJetsForward30",&nJetsForward30);
-  tree->SetBranchStatus("tauDM",1);
-  tree->SetBranchAddress("tauDM",&tauDM);
-  tree->SetBranchStatus("tauAntiMuonLoose3",1);
-  tree->SetBranchAddress("tauAntiMuonLoose3",&tauAntiMuonLoose3);
-  tree->SetBranchStatus("tauAntiElectronLooseMVA6",1);
-  tree->SetBranchAddress("tauAntiElectronLooseMVA6",&tauAntiElectronLooseMVA6);
-  tree->SetBranchStatus("tau"+iso+"Iso",1);
-  tree->SetBranchAddress("tau"+iso+"Iso",&tauIso);
-  tree->SetBranchStatus("fakeAntiL"+iso,1);
-  tree->SetBranchAddress("fakeAntiL"+iso,&fakeAntiLiso);
-  tree->SetBranchStatus("tauGenMatchDecay",1);
-  tree->SetBranchAddress("tauGenMatchDecay",&tauGenMatchDecay);
+  TTreeReaderValue< Float_t >  mttau(*myReader,       "mttau");
+  TTreeReaderValue< Float_t >  puWeight(*myReader,    "puWeight");
+  TTreeReaderValue< Float_t >  genWeight(*myReader,       "genWeight");
+  TTreeReaderValue< Float_t >  trigWeight(*myReader,       "trigWeight");
+  TTreeReaderValue< Bool_t  >  trig(*myReader,       "trigger");
+  TTreeReaderValue< Int_t   >  Selection(*myReader,       "Selection");
+  TTreeReaderValue< Float_t >  recoilRatio(*myReader,       "recoilRatio");
+  TTreeReaderValue< Float_t >  recoilDPhi(*myReader,       "recoilDPhi");
+  TTreeReaderValue< Float_t >  met(*myReader,       "met");
+  TTreeReaderValue< Float_t >  tauPt(*myReader,       "tauPt");
+  TTreeReaderValue< Bool_t  >  metFilters(*myReader,       "metFilters");
+  TTreeReaderValue< UInt_t  >  nMuon(*myReader,       "nMuon");
+  TTreeReaderValue< UInt_t  >  nElec(*myReader,       "nElec");
+  TTreeReaderValue< UInt_t  >  nSelTaus(*myReader,       "nSelTaus");
+  TTreeReaderValue< UInt_t  >  nJetsCentral30(*myReader,       "nJetsCentral30");
+  TTreeReaderValue< UInt_t  >  nJetsForward30(*myReader,       "nJetsForward30");
+  TTreeReaderValue< Bool_t  >  tauDM(*myReader,       "tauDM");
+  TTreeReaderValue< Bool_t  >  tauAntiMuonLoose3(*myReader,       "tauAntiMuonLoose3");
+  TTreeReaderValue< Bool_t  >  tauAntiElectronLooseMVA6(*myReader,       "tauAntiElectronLooseMVA6");
+  TTreeReaderValue< Bool_t  >  tauIso(*myReader,       "tau"+iso+"Iso");
+  TTreeReaderValue< Float_t >  fakeAntiL(*myReader,       "fakeAntiL"+iso);
+  TTreeReaderValue< Int_t   >  tauGenMatchDecay(*myReader,       "tauGenMatchDecay");
 
-  return tree;
+  while(myReader->Next()){
+
+    if(*trig != sel.trigger) continue;
+    if(*Selection != sel.selection) continue;
+    if(*recoilRatio < sel.recoilRatioLow || *recoilRatio > sel.recoilRatioHigh) continue;
+    if(*recoilDPhi < sel.recoilDPhiLow) continue;
+    if(*met < sel.metLow) continue;
+    if(*tauPt < sel.tauPtLow) continue;
+    if(*metFilters != sel.metFilters) continue;
+  
+    if(*nMuon<sel.nMuonLow || *nMuon>sel.nMuonHigh) continue;
+    if(*nElec<sel.nElecLow || *nElec>sel.nElecHigh) continue;
+    if(*nSelTaus<sel.nSelTausLow || nSelTaus>sel.nSelTausHigh) continue;
+    if(*nJetsCentral30<sel.nJetsCentral30Low || *nJetsCentral30>sel.nJetsCentral30High) continue;
+    if(*nJetsForward30<sel.nJetsForward30Low || *nJetsForward30>sel.nJetsForward30High) continue;
+  
+    if(*tauDM != sel.tauDM) continue;
+    if(*tauAntiMuonLoose3 != sel.tauAntiMuonLoose3) continue;
+    if(*tauAntiElectronLooseMVA6 != sel.tauAntiElectronLooseMVA6) continue;
+    if(*tauIso != sel.tauIso) continue;
+    if(*tauGenMatchDecay < sel.tauGenMatchDecayLow || *tauGenMatchDecay > sel.tauGenMatchDecayHigh ) continue;
+
+  }
 
 }
 // ----------------------------------------------------------------------------------------------------
