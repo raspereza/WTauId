@@ -14,6 +14,7 @@ void ClosureTest_FakeRate() {
 
   loadWorkingPoints();
   initCuts();
+  loadFakeRates("output/WJetsToLNu_13TeV-madgraphMLM_fakeRate.root");
 
   std::vector<TString> obs;
   obs.push_back("W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
@@ -35,9 +36,6 @@ void ClosureTest_FakeRate() {
   double wnorm = 1.3; // W* K-factor (PYTHIA8 -> NNLO) 
 
   // Binning and titles of axis
-  int nBins  =     10;
-  float xmin =      0;
-  float xmax =   1000;
   TString xtitle = "m_{T} [GeV]";
   TString ytitle = "Events / 100 GeV";
   
@@ -46,82 +44,30 @@ void ClosureTest_FakeRate() {
     cout<<endl<<endl<<"Processing "<<iso[idx_iso]<<endl<<endl;
 
     SetStyle();
-    bool logY = false;
-    double lumi = 35867;
-
     TH1::SetDefaultSumw2();
     TH2::SetDefaultSumw2();
 
-    TH1D * hist[40];
-
-    float bins[50];
-    nBins = 8;
-    bins[0] = 0;
-    bins[1] = 200;
-    bins[2] = 250;
-    bins[3] = 300;
-    bins[4] = 350;
-    bins[5] = 400;
-    bins[6] = 500;
-    bins[7] = 800;
-    bins[8] = 10000;
-    
     TH1D * observation = new TH1D("observation","",nBins,xmin,xmax); 
     TH1D * prediction  = new TH1D("prediction","",nBins,xmin,xmax); 
 
-    // filling histograms (obs)
+    // Make selection and fill histograms for sr and cr
     for (unsigned int i=0; i<obs.size(); ++i) {
-
-      TTree* tree = readTree(dir+"/"+obs[i]+".root", "NTuple", iso[idx_iso]);
-      int nevtsProcessed = getNEventsProcessed(dir+"/"+obs[i]+".root");
-      double norm = obs_xsec[i]*lumi/nevtsProcessed;
-      TString histName = obs[i];
-      hist[i] = new TH1D(histName,"",nBins,xmin,xmax);
-      hist[i]->Sumw2();
-
-      // Loop over tree and fill histogram after cuts
-      for(unsigned int j=0; j<tree->GetEntries(); j++){
-
-	tree->GetEntry(j);
-	bool passed = applyCuts(sr);
-	if(!passed) continue;
-
-	double weight = puWeight*trigWeight*genWeight*norm*wnorm;
-	hist[i]->Fill(mttau, weight);
-      }
-      observation->Add(hist[i]);
-      delete hist[i];
+      TH1D* histo = makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i]*wnorm, iso[idx_iso],sr);
+      observation->Add(histo);
     }
     for (unsigned int i=0; i<pred.size(); ++i) {
-
-      TTree* tree = readTree(dir+"/"+pred[i]+".root", "NTuple", iso[idx_iso]);
-      int nevtsProcessed = getNEventsProcessed(dir+"/"+pred[i]+".root");
-      double norm = pred_xsec[i]*lumi/nevtsProcessed;
-      TString histName = pred[i];
-      hist[i] = new TH1D(histName,"",nBins,xmin,xmax);
-      hist[i]->Sumw2();
-
-      // Loop over tree and fill histogram after cuts
-      for(unsigned int j=0; j<tree->GetEntries(); j++){
-
-	tree->GetEntry(j);
-	bool passed = applyCuts(cr_antiiso);
-	if(!passed) continue;
-
-	double weight = puWeight*trigWeight*genWeight*norm*wnorm*fakeAntiLiso;
-
-	hist[i]->Fill(mttau, weight);
-      }
-      prediction->Add(hist[i]);
-      delete hist[i];
+      TH1D* histo = makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i]*wnorm,iso[idx_iso],cr_antiiso);
+      prediction->Add(histo);
     }
 
-    double obsErr, predErr;
-    double Nobs = observation->IntegralAndError(1,observation->GetNbinsX(),obsErr);
-    double Npred = prediction->IntegralAndError(1,prediction->GetNbinsX(),predErr);
+    double obsE, predE;
+    double nObs  = observation -> IntegralAndError(0,observation->GetNbinsX(),obsE);
+    double nPred = prediction  -> IntegralAndError(0,prediction->GetNbinsX(),predE);
+    
 
-    std::cout << "Observation : " << Nobs << " +/- " << obsErr << " (nevents = " << observation->GetEntries() << ") "<<std::endl;
-    std::cout << "Prediction : " << Npred << " +/- " << predErr <<" (nevents = " << prediction->GetEntries() << ") "<<std::endl;
+    cout<<"Observation : "<<nObs<< " +/- "<<obsE<< " (nevents = "<<observation->GetEntries()<<") "<<endl;
+    cout<<"Prediction  : "<<nPred<<" +/- "<<predE<<" (nevents = "<<prediction ->GetEntries()<<") "<<endl;
+
 
     TCanvas * canv1 = MakeCanvas("canv1", "", 700, 800);
     TPad * upper = new TPad("upper", "pad",0,0.31,1,1);
@@ -226,7 +172,7 @@ void ClosureTest_FakeRate() {
     canv1->cd();
     canv1->SetSelected(canv1);
     canv1->Update();
-    canv1->Print("figures/mttau_"+iso[idx_iso]+"Iso_WTauNu.png");
+    canv1->Print("figures/mttau_"+iso[idx_iso]+"Iso_WTauNu_closure.png");
     delete canv1;
     std::cout << std::endl;
 
