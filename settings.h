@@ -11,6 +11,9 @@
 #include "TROOT.h"
 #include "TKey.h"
 #include "TGraphErrors.h"
+#include "TGraphAsymmErrors.h"
+#include "TH1.h"
+#include "TH2.h"
 
 double luminosity = 35867;
 int nBins  =      8;
@@ -25,7 +28,8 @@ map<TString, double> xsecs = {
 {"W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", 9644.5}, 
 {"W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", 3144.5}, 
 {"W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", 954.8}, 
-{"W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", 485.6}
+{"W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", 485.6},
+{"WJetsToLNu_13TeV-madgraphMLM"                      , 61526.7}
 };
 // ----------------------------------------------------------------------------------------------------
 void loadWorkingPoints()
@@ -41,6 +45,7 @@ void loadWorkingPoints()
 // ----------------------------------------------------------------------------------------------------
 double getXSec(TString sampleName)
 {
+  if( xsecs.find(sampleName) == xsecs.end() ) return 1;
   return xsecs[sampleName];
 }
 // ----------------------------------------------------------------------------------------------------
@@ -60,7 +65,8 @@ struct selectionCuts {
   unsigned int nJetsForward30Low, nJetsForward30High;
   bool tauDM, tauAntiMuonLoose3, tauAntiElectronLooseMVA6, tauIso;
   int tauGenMatchDecayLow, tauGenMatchDecayHigh;
-} sr, cr_antiiso;
+  float mtmuonLow, mtmuonHigh;
+} sr, cr_antiiso, cr_fakerate_den, cr_fakerate_num;
 // ----------------------------------------------------------------------------------------------------
 void initCuts()
 {
@@ -90,11 +96,35 @@ void initCuts()
   sr.tauIso = true;
   sr.tauGenMatchDecayLow  = -10000000;
   sr.tauGenMatchDecayHigh = -1;
+  sr.mtmuonLow  = -1;
+  sr.mtmuonHigh = 100000000;
 
   // antiiso region
   cr_antiiso = sr;
   cr_antiiso.name = "cr_antiiso";
   cr_antiiso.tauIso = false;
+
+  // cr_fakerate_den
+  cr_fakerate_den = sr;
+  cr_fakerate_den.name = "cr_fakerate_den";
+  cr_fakerate_den.selection = 1;
+  cr_fakerate_den.trigger = true; // trigger already applied on ntuple level
+  cr_fakerate_den.nMuonLow  = 1;
+  cr_fakerate_den.nMuonHigh = 1;
+  cr_fakerate_den.nJetsCentral30Low  = 1;
+  cr_fakerate_den.nJetsCentral30High = 1;
+  cr_fakerate_den.recoilRatioLow  = 0.70;
+  cr_fakerate_den.recoilRatioHigh = 1.30;
+  cr_fakerate_den.mtmuonLow = 40;
+  cr_fakerate_den.metLow = -1;
+  cr_fakerate_den.tauIso = false;
+
+  // cr_fakerate_num
+  cr_fakerate_num = cr_fakerate_den;
+  cr_fakerate_num.name = "cr_fakerate_num";
+  cr_fakerate_num.tauIso = true;
+
+
 }
 // ----------------------------------------------------------------------------------------------------
 int getNEventsProcessed(TString filename)
@@ -149,7 +179,7 @@ double getFakeRates(float tauPt, TString iso)
 
 }
 // ----------------------------------------------------------------------------------------------------
-TH1D* makeSelection(TString filename, TString treename, double xsec, TString iso, selectionCuts sel)
+void makeSelection(TString filename, TString treename, double xsec, TString iso, selectionCuts sel, TH1D* histo, TString variableToFill)
 {
 
   TFile * file = new TFile(filename);
@@ -158,6 +188,7 @@ TH1D* makeSelection(TString filename, TString treename, double xsec, TString iso
   }
   TTreeReader *myReader = new TTreeReader(treename, file);
   
+  TTreeReaderValue< UInt_t  >  event(            *myReader,       "event");
   TTreeReaderValue< Float_t >  mttau(            *myReader,       "mttau");
   TTreeReaderValue< Float_t >  puWeight(         *myReader,       "puWeight");
   TTreeReaderValue< Float_t >  genWeight(        *myReader,       "genWeight");
@@ -180,47 +211,51 @@ TH1D* makeSelection(TString filename, TString treename, double xsec, TString iso
   TTreeReaderValue< Bool_t  >  tauIso(           *myReader,       "tau"+iso+"Iso");
   TTreeReaderValue< Float_t >  fakeAntiL(        *myReader,       "fakeAntiL"+iso);
   TTreeReaderValue< Int_t   >  tauGenMatchDecay( *myReader,       "tauGenMatchDecay");
+  TTreeReaderValue< Float_t >  mtmuon(           *myReader,       "mtmuon");
+  TTreeReaderValue< Float_t >  variable(         *myReader,       variableToFill);
 
 
   int nevtsProcessed = getNEventsProcessed(filename);
   double norm = xsec*luminosity/nevtsProcessed;
-  TH1D* histo = new TH1D(iso,"",nBins,xmin,xmax);
-  histo->Sumw2();
 
   while(myReader->Next()){
 
-    if(*trig != sel.trigger) continue;
+    if(*trig != sel.trigger && sel.selection != 1) continue;
     if(*Selection != sel.selection) continue;
     if(*recoilRatio < sel.recoilRatioLow || *recoilRatio > sel.recoilRatioHigh) continue;
     if(*recoilDPhi < sel.recoilDPhiLow) continue;
     if(*met < sel.metLow) continue;
     if(*tauPt < sel.tauPtLow) continue;
     if(*metFilters != sel.metFilters) continue;
-  
+    
     if(*nMuon<sel.nMuonLow || *nMuon>sel.nMuonHigh) continue;
     if(*nElec<sel.nElecLow || *nElec>sel.nElecHigh) continue;
     if(*nSelTaus<sel.nSelTausLow || *nSelTaus>sel.nSelTausHigh) continue;
     if(*nJetsCentral30<sel.nJetsCentral30Low || *nJetsCentral30>sel.nJetsCentral30High) continue;
     if(*nJetsForward30<sel.nJetsForward30Low || *nJetsForward30>sel.nJetsForward30High) continue;
-  
+    
     if(*tauDM != sel.tauDM) continue;
     if(*tauAntiMuonLoose3 != sel.tauAntiMuonLoose3) continue;
     if(*tauAntiElectronLooseMVA6 != sel.tauAntiElectronLooseMVA6) continue;
     if(*tauIso != sel.tauIso) continue;
     if(*tauGenMatchDecay < sel.tauGenMatchDecayLow || *tauGenMatchDecay > sel.tauGenMatchDecayHigh ) continue;
-
+    
+    if(*mtmuon < sel.mtmuonLow || *mtmuon > sel.mtmuonHigh ) continue;
+    
     Float_t scale = 1;
-    if(sel.name.Contains("cr")){
-      scale = getFakeRates(*tauPt,iso + "Iso");
-      //cout<<"scale = "<<scale<<endl;
-      //cout<<"fakeAntiL = "<<*fakeAntiL<<endl;
-    }
-    histo->Fill( *mttau,  *puWeight*(*trigWeight)*(*genWeight)*norm*scale );
-
+    if(sel.name.Contains("cr_antiiso")) scale = getFakeRates(*tauPt,iso + "Iso");
+    if(sel.name.Contains("cr_fakerate")) *trigWeight = 1;
+    //cout<<"tau pt = "<<*tauPt<<endl;
+    //cout<<"*puWeight   = "<<*puWeight<<endl;
+    //cout<<"*genWeight  = "<<*genWeight<<endl;
+    //cout<<"*trigWeight = "<<*trigWeight<<endl;
+    //cout<<"norm        = "<<norm<<endl;
+    ///cout<<"scale       = "<<scale<<endl;
+    //cout<<"weight = "<<(*puWeight)*(*trigWeight)*(*genWeight)*norm*scale<<endl;
+    histo->Fill( *variable,  (*puWeight)*(*trigWeight)*(*genWeight)*norm*scale );
   }
 
   delete myReader;
-  return histo;
 
 }
 
