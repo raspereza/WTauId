@@ -52,11 +52,13 @@ void ClosureTest_FakeRate() {
 
     // Make selection and fill histograms for sr and cr
     for (unsigned int i=0; i<obs.size(); ++i) {
-      TH1D* histo = makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i]*wnorm, iso[idx_iso],sr);
+      TH1D* histo = new TH1D("","",8,0,1000);
+      makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i]*wnorm, iso[idx_iso],sr,histo,"mttau");
       observation->Add(histo);
     }
     for (unsigned int i=0; i<pred.size(); ++i) {
-      TH1D* histo = makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i]*wnorm,iso[idx_iso],cr_antiiso);
+      TH1D* histo = new TH1D("","",8,0,1000);
+      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i]*wnorm,iso[idx_iso],cr_antiiso,histo,"mttau");
       prediction->Add(histo);
     }
 
