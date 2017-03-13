@@ -101,6 +101,7 @@ void ClosureTest_FakeRate() {
 
     observation->Draw("e1");
     prediction->Draw("sameh");
+    if(prediction->GetMaximum()>observation->GetMaximum()) observation->GetYaxis()->SetRangeUser(0,prediction->GetMaximum()*1.5);
 
     TLegend * leg = new TLegend(0.55,0.4,0.85,0.78);
     SetLegendStyle(leg);
@@ -123,7 +124,7 @@ void ClosureTest_FakeRate() {
     ratioH->SetMarkerStyle(20);
     ratioH->SetMarkerSize(1.2);
     ratioH->SetLineColor(1);
-    ratioH->GetYaxis()->SetRangeUser(0.201,1.799);
+    ratioH->GetYaxis()->SetRangeUser(0.0,2.);
     ratioH->GetYaxis()->SetNdivisions(505);
     ratioH->GetXaxis()->SetLabelFont(42);
     ratioH->GetXaxis()->SetLabelOffset(0.04);
