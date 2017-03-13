@@ -1,168 +1,87 @@
 #include "HttStylesNew.cc"
+#include "settings.h"
 
-void ComputeFakeRate(bool isDijet = true) {
+void ComputeFakeRate() {
 
-  std::vector<TString> iso;
-  iso.push_back("VTightMvaIso");
-  iso.push_back("TightMvaIso");
-  iso.push_back("MediumMvaIso");
-  iso.push_back("LooseMvaIso");
-  iso.push_back("TightIso");
-  iso.push_back("MediumIso");
-  iso.push_back("LooseIso");
+  loadWorkingPoints();
+  initCuts();
 
   TString dir("NTuples/");
-  //TString dir("/nfs/dust/cms/user/rasp/Run/Run2016/TauID_2016/");
+  SetStyle();
+  TH1::SetDefaultSumw2();
+  TH2::SetDefaultSumw2();
+  int nBins = 3;
+  double bins[4] = {100,150,200,500};
 
-  TString DataFile("SingleMuon_Run2016");
-  TString suffix("_wjets");
-  if (isDijet) {
-      DataFile="JetHT_Run2016";
-      suffix = "_dijet";
-  }
+  std::vector<TString> samples;
+  //samples.push_back("SingleMuon_Run2016");
+  //samples.push_back("JetHT_Run2016");
+  samples.push_back("WJetsToLNu_13TeV-madgraphMLM");
 
-  TString sampleNames[30] = {DataFile,
-			     "WJetsToLNu_13TeV-madgraphMLM"
-  };
-  double xsec[30] = {1, // data (0)
-		     61526.7    // WJets (1)
-  }; 
+  std::vector<double> xsec;
+  for(unsigned int i=0; i<samples.size(); i++) xsec.push_back( getXSec(samples[i]) );
 
-  TFile *fileOutput   = new TFile("output/"+DataFile+"_fakeRate.root","recreate");
-  TFile *fileOutputMC = new TFile("output/WJetsToLNu_13TeV-madgraphMLM_fakeRate.root","recreate");
-  
-  for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
-    cout<<endl<<endl<<"Process "<<iso[idx_iso]<<endl;
-
-    // ****************** Cuts for W->muv+jet ************************
-    TString   selCuts("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30==1&&nJetsForward30==0&&nSelTaus==1&&tauPt>100&&recoilRatio>0.7&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40&&metFilters"); 
-    TString selCutsMC("Selection==1&&nMuon==1&&nElec==0&&nJetsCentral30==1&&nJetsForward30==0&&nSelTaus==1&&tauPt>100&&recoilRatio>0.7&&recoilRatio<1.3&&recoilDPhi>2.4&&mtmuon>40&&metFilters");
-    
+  /*
     if (isDijet) {
-      // ****************** Cuts for dijet events ************************
-      selCuts = "Selection==4&&nMuon==0&&nElec==0&&nSelTaus==1&&nJetsCentral30==2&&tauPt>100&&recoilDPhi>2.6&&recoilRatio>0.8&&recoilRatio<1.2&&(pfJet80>0.5||pfJet140>0.5)&&tauPt>100";
-      selCutsMC = "Selection==4&&nMuon==0&&nElec==0&&nSelTaus==1&&nJetsCentral30==2&&tauPt>100&&recoilDPhi>2.6&&recoilRatio>0.8&&recoilRatio<1.2&&(pfJet80>0.5||pfJet140>0.5)&&tauPt>100";
+    // ****************** Cuts for dijet events ************************
+    selCuts = "Selection==4&&nMuon==0&&nElec==0&&nSelTaus==1&&nJetsCentral30==2&&tauPt>100&&recoilDPhi>2.6&&recoilRatio>0.8&&recoilRatio<1.2&&(pfJet80>0.5||pfJet140>0.5)&&tauPt>100";
+    selCutsMC = "Selection==4&&nMuon==0&&nElec==0&&nSelTaus==1&&nJetsCentral30==2&&tauPt>100&&recoilDPhi>2.6&&recoilRatio>0.8&&recoilRatio<1.2&&(pfJet80>0.5||pfJet140>0.5)&&tauPt>100";
     }
-    
-    TString numCuts("&&tauDM>0.5&&tauAntiMuonLoose3&&tauAntiElectronLooseMVA6&&tau"+iso[idx_iso]+">0.5");
-    TString denCuts("&&tauDM>0.5&&tauAntiMuonLoose3&&tauAntiElectronLooseMVA6&&tau"+iso[idx_iso]+"<0.5");
-    TString mcCuts("&&tauGenMatchDecay<0");
-    //  TString mcCuts("");
-    
-    SetStyle();
-    TH1::SetDefaultSumw2();
-    TH2::SetDefaultSumw2();
+  */
+  //TString numCuts("&&tauDM>0.5&&tauAntiMuonLoose3&&tauAntiElectronLooseMVA6&&tau"+iso[idx_iso]+">0.5");
+  //TString denCuts("&&tauDM>0.5&&tauAntiMuonLoose3&&tauAntiElectronLooseMVA6&&tau"+iso[idx_iso]+"<0.5");
 
-    bool logY = false;
-    double lumi = 36800;
+  for (unsigned int i=0; i<samples.size(); ++i) {
 
-    TString cutsNum[30];
-    TString cutsDen[30];
-    for (int i=1; i<30; ++i) {
-      cutsNum[i] = "puWeight*genWeight*("+selCutsMC+numCuts+mcCuts+")";
-      cutsDen[i] = "puWeight*genWeight*("+selCutsMC+denCuts+mcCuts+")";
-    }
-    cutsNum[0] = selCuts+numCuts;
-    cutsDen[0] = selCuts+denCuts;
-
-    TH1D * histNum[25];
-    TH1D * histDen[25];
-
-    int nBins = 3;
-    double bins[4] = {100,150,200,500};
-
-    TCanvas * dummy = new TCanvas("dummy","",500,500);
-
-    int nSamples = 2;
-
-    // filling histograms
-    for (int i=0; i<nSamples; ++i) {
-      TFile * file = new TFile(dir+"/"+sampleNames[i]+".root");
+    cout<<endl<<"---------- Sample "<<samples[i]<<" processing. ---------- "<<endl<<endl;
+    TFile *fileOutput   = new TFile("output/"+samples[i]+"_fakeRate.root","recreate");
       
-      TTree * tree = (TTree*)file->Get("NTuple");
-      TH1D * histWeightsH = (TH1D*)file->Get("histWeightsH");
-      double norm = xsec[i]*lumi/histWeightsH->GetSumOfWeights();
-      TString histNameNum = sampleNames[i] + "_Num";
-      TString histNameDen = sampleNames[i] + "_Den";
-      histNum[i] = new TH1D(histNameNum,"",nBins,bins);
-      histDen[i] = new TH1D(histNameDen,"",nBins,bins);
-      histNum[i]->Sumw2();
-      histDen[i]->Sumw2();
-      tree->Draw("tauPt>>"+histNameNum,cutsNum[i]);
-      tree->Draw("tauPt>>"+histNameDen,cutsDen[i]);
-      if (i==0) norm = 1;
-      if (i>0&&i<23) {
-	for (int iB=1; iB<=nBins; ++iB) {
-	  double x = histNum[i]->GetBinContent(iB);
-	  double e = histNum[i]->GetBinError(iB);
-	  histNum[i]->SetBinContent(iB,norm*x);
-	  histNum[i]->SetBinError(iB,norm*e);
-	  x = histDen[i]->GetBinContent(iB);
-	  e = histDen[i]->GetBinError(iB);
-	  histDen[i]->SetBinContent(iB,norm*x);
-	  histDen[i]->SetBinError(iB,norm*e);
-	}
-      }
+    for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
+
+      cout<<endl<<"Process "<<iso[idx_iso]<<" : "<<endl;
+	
+      // filling histograms
+      TH1D* h_den = new TH1D(samples[i]+"_"+iso[idx_iso]+"_den",samples[i]+"_"+iso[idx_iso]+"_den",nBins,bins);
+      TH1D* h_num = new TH1D(samples[i]+"_"+iso[idx_iso]+"_num",samples[i]+"_"+iso[idx_iso]+"_num",nBins,bins);
+      makeSelection(dir+"/"+samples[i]+".root","NTuple",xsec[i],iso[idx_iso],cr_fakerate_num,h_num,"tauPt");
+      makeSelection(dir+"/"+samples[i]+".root","NTuple",xsec[i],iso[idx_iso],cr_fakerate_den,h_den,"tauPt");
+      double numE = 0;
+      double denE = 0;
+      double num  = h_num -> IntegralAndError(1,h_num->GetNbinsX(),numE);
+      double den  = h_den -> IntegralAndError(1,h_den->GetNbinsX(),denE);
+      //num = h_num -> GetEntries();
+      //den = h_den -> GetEntries();
+
+      cout<<samples[i]<<" : "<<num<<"/"<<den<<" = "<<num/den<<" +/- "<<numE/den<<endl;
+      
+      h_num->Divide(h_den);
+      TGraphErrors * eff = new TGraphErrors(h_num);
+      eff->SetMarkerStyle(20+i);
+      eff->SetMarkerColor(20+i);
+      eff->SetMarkerSize(2);
+
+      TCanvas * canv = new TCanvas("canv","",700,600);
+      TH2F * frame = new TH2F("frame","",2,99,501,2,0,0.2);
+      frame->GetYaxis()->SetTitle("Fake Rate");
+      frame->GetXaxis()->SetTitle("fake tau p_{T} [GeV/c]");
+      frame->Draw();
+      eff->Draw("epsame");
+
+      TLegend * leg = new TLegend(0.6,0.7,0.85,0.9);
+      SetLegendStyle(leg);
+      leg->SetHeader(iso[idx_iso]);
+      leg->AddEntry(eff,samples[i],"lp");
+      leg->Draw();
+      canv->Update();
+      canv->Print("figures/fakerate_"+samples[i]+"_"+iso[idx_iso]+".png");
+
+      fileOutput->cd("");
+      TGraphErrors * fakeRate   = (TGraphErrors*)eff->Clone(samples[i]+"_fakeRate");
+      fakeRate->SetName(iso[idx_iso]+"Iso");
+      fakeRate->Write(iso[idx_iso]+"Iso");
+      delete canv;
     }
-    double dataNum = histNum[0]->GetSumOfWeights();
-    double dataDen = histDen[0]->GetSumOfWeights();
-
-    double wjetsNumE = 0;
-    double wjetsDenE = 0;
-    double wjetsNum  = histNum[1]->IntegralAndError(1,nBins,wjetsNumE);
-    double wjetsDen  = histDen[1]->IntegralAndError(1,nBins,wjetsDenE);
-    
-    delete dummy;
-
-    std::cout << std::endl;
-    std::cout << "Fake rates -> " << std::endl;
-    std::cout << "Data      : " << int(dataNum) << "/" << int(dataDen) << " = " << dataNum/dataDen << " +/- " << TMath::Sqrt(dataNum)/dataDen << std::endl;
-    std::cout << "W->lv     : " << int(wjetsNum)<< "/" << int(wjetsDen) << " = " << wjetsNum/wjetsDen << " +/- " << wjetsNumE/wjetsDen << std::endl;
-    std::cout << std::endl;
-
-    TGraphAsymmErrors * eff = new TGraphAsymmErrors();
-    eff->Divide(histNum[0],histDen[0],"n");
-    eff->SetMarkerStyle(20);
-    eff->SetMarkerColor(1);
-    eff->SetMarkerSize(2);
-
-    histNum[1]->Divide(histDen[1]);
-    TGraphErrors * effMC = new TGraphErrors(histNum[1]);
-    //effMC->Divide(histNum[1],histDen[1],"n");
-    effMC->SetMarkerStyle(21);
-    effMC->SetMarkerColor(2);
-    effMC->SetLineColor(2);
-    effMC->SetMarkerSize(2);
-
-    TCanvas * canv = new TCanvas("canv","",700,600);
-    TH2F * frame = new TH2F("frame","",2,99,501,2,0,0.2);
-    frame->GetYaxis()->SetTitle("Fake Rate");
-    frame->GetXaxis()->SetTitle("fake tau p_{T} [GeV/c]");
-    frame->Draw();
-    eff->Draw("epsame");
-    effMC->Draw("epsame");
-    //  canv->SetLogx(true);
-    //  canv->SetLogy(true);
-    TLegend * leg = new TLegend(0.6,0.7,0.85,0.9);
-    SetLegendStyle(leg);
-    leg->SetHeader(iso[idx_iso]);
-    leg->AddEntry(eff,"Data","lp");
-    leg->AddEntry(effMC,"Simulation","lp");
-    leg->Draw();
-    canv->Update();
-    canv->Print("figures/fakerate_data_mc_"+iso[idx_iso]+suffix+".png");
-
-    fileOutput->cd("");
-    TGraphAsymmErrors * fakeRate   = (TGraphAsymmErrors*)eff->Clone(DataFile+"_fakeRate");
-    fakeRate->Write(iso[idx_iso]);
-    fileOutputMC->cd("");
-    TGraphErrors * fakeRateMC = (TGraphErrors*)effMC->Clone("WJetsToLNu_13TeV-madgraphMLM_fakeRate");
-    fakeRateMC->SetName(iso[idx_iso]);
-    fakeRateMC->Write(iso[idx_iso]);
-    
-    delete canv;
+    fileOutput->Close();
   }
-  fileOutput->Close();
-  fileOutputMC->Close();
 }
