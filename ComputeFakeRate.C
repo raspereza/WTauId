@@ -10,8 +10,8 @@ void ComputeFakeRate() {
   SetStyle();
   TH1::SetDefaultSumw2();
   TH2::SetDefaultSumw2();
-  int nBins = 1;
-  double bins[2] = {100,1000};
+  int nBins = 10;
+  double bins[11] = {100,110,120,130,140,150,160,180,200,300,1000};
 
   std::vector< std::pair<TString,std::vector<TString>> > samples;
   //samples.push_back("SingleMuon_Run2016");
@@ -39,8 +39,8 @@ void ComputeFakeRate() {
       
       for(unsigned int idx_list=0; idx_list<samples[i].second.size(); idx_list++){
 	cout<<"---------- Sample "<<samples[i].second[idx_list]<<" processing. ---------- "<<endl;
-	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_fakerate_num,h_num,"tauPt");
-	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_fakerate_den,h_den,"tauPt");
+	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_fakerate_num,h_num,"tauJetPt");
+	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_fakerate_den,h_den,"tauJetPt");
       }
 
       double numE = 0;
@@ -57,7 +57,7 @@ void ComputeFakeRate() {
       eff->SetMarkerSize(2);
 
       TCanvas * canv = new TCanvas("canv","",700,600);
-      TH2F * frame = new TH2F("frame","",2,99,501,2,0,0.2);
+      TH2F * frame = new TH2F("frame","",2,99,1001,2,0,0.2);
       frame->GetYaxis()->SetTitle("Fake Rate");
       frame->GetXaxis()->SetTitle("fake tau p_{T} [GeV/c]");
       frame->Draw();
