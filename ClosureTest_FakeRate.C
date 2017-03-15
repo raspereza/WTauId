@@ -17,6 +17,7 @@ void ClosureTest_FakeRate() {
   loadFakeRates("output/WJetsToLNu_13TeV-madgraphMLM_fakeRate.root");
 
   std::vector<TString> obs;
+  obs.push_back("WJetsToLNu_13TeV-madgraphMLM");
   obs.push_back("W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   obs.push_back("W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   obs.push_back("W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
@@ -25,6 +26,7 @@ void ClosureTest_FakeRate() {
   for(unsigned int i=0; i<obs.size(); i++) obs_xsec.push_back( getXSec(obs[i]) );
   
   std::vector<TString> pred;
+  pred.push_back("WJetsToLNu_13TeV-madgraphMLM");
   pred.push_back("W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   pred.push_back("W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   pred.push_back("W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
@@ -47,24 +49,25 @@ void ClosureTest_FakeRate() {
     TH1::SetDefaultSumw2();
     TH2::SetDefaultSumw2();
 
-    TH1D * observation = new TH1D("observation","",nBins,xmin,xmax); 
-    TH1D * prediction  = new TH1D("prediction","",nBins,xmin,xmax); 
+    TH1D * observation = new TH1D("observation","",nBins,bins); 
+    TH1D * prediction  = new TH1D("prediction","",nBins,bins); 
 
     // Make selection and fill histograms for sr and cr
     for (unsigned int i=0; i<obs.size(); ++i) {
-      TH1D* histo = new TH1D("","",8,0,1000);
-      makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i]*wnorm, iso[idx_iso],sr,histo,"mttau");
+      TH1D* histo = new TH1D("","",nBins,bins);
+      makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,"tauPt");
       observation->Add(histo);
+      observation->SetName(histo->GetName());
     }
     for (unsigned int i=0; i<pred.size(); ++i) {
-      TH1D* histo = new TH1D("","",8,0,1000);
-      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i]*wnorm,iso[idx_iso],cr_antiiso,histo,"mttau");
+      TH1D* histo = new TH1D("","",nBins,bins);
+      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,"tauPt");
       prediction->Add(histo);
     }
 
     double obsE, predE;
-    double nObs  = observation -> IntegralAndError(0,observation->GetNbinsX(),obsE);
-    double nPred = prediction  -> IntegralAndError(0,prediction->GetNbinsX(),predE);
+    double nObs  = observation -> IntegralAndError(1,observation->GetNbinsX(),obsE);
+    double nPred = prediction  -> IntegralAndError(1,prediction->GetNbinsX(),predE);
     
 
     cout<<"Observation : "<<nObs<< " +/- "<<obsE<< " (nevents = "<<observation->GetEntries()<<") "<<endl;
@@ -93,15 +96,20 @@ void ClosureTest_FakeRate() {
     upper->SetFrameLineWidth(2);
     upper->SetFrameBorderMode(0);
     upper->SetFrameBorderSize(10);
-
+    //upper->SetLogy();
 
     prediction->SetLineColor(kRed);
     prediction->SetMarkerColor(kRed);
 
 
+    observation->SetMinimum(0);
+    observation->GetXaxis()->SetTitle(observation->GetName());
     observation->Draw("e1");
     prediction->Draw("sameh");
-    if(prediction->GetMaximum()>observation->GetMaximum()) observation->GetYaxis()->SetRangeUser(0,prediction->GetMaximum()*1.5);
+    if(prediction->GetMaximum()>observation->GetMaximum()){
+      observation->SetMaximum(prediction->GetMaximum()*1.2);
+    }
+    if(observation->GetMinimum() == 0) observation->SetMinimum(prediction->GetMinimum()*0.5);
 
     TLegend * leg = new TLegend(0.55,0.4,0.85,0.78);
     SetLegendStyle(leg);
@@ -124,7 +132,7 @@ void ClosureTest_FakeRate() {
     ratioH->SetMarkerStyle(20);
     ratioH->SetMarkerSize(1.2);
     ratioH->SetLineColor(1);
-    ratioH->GetYaxis()->SetRangeUser(0.0,2.);
+    ratioH->GetYaxis()->SetRangeUser(0.0,3.);
     ratioH->GetYaxis()->SetNdivisions(505);
     ratioH->GetXaxis()->SetLabelFont(42);
     ratioH->GetXaxis()->SetLabelOffset(0.04);
@@ -142,7 +150,7 @@ void ClosureTest_FakeRate() {
     ratioH->GetYaxis()->SetLabelOffset(0.01);
 
     // ------------>Primitives in pad: lower
-    TPad * lower = new TPad("lower", "pad",0,0,1,0.30);
+    TPad * lower = new TPad("lower", "pad",0,0,1,0.28);
     lower->Draw();
     lower->cd();
     lower->SetFillColor(0);
@@ -175,7 +183,7 @@ void ClosureTest_FakeRate() {
     canv1->cd();
     canv1->SetSelected(canv1);
     canv1->Update();
-    canv1->Print("figures/mttau_"+iso[idx_iso]+"Iso_WTauNu_closure.png");
+    canv1->Print("figures/"+(TString)observation->GetName()+"_"+iso[idx_iso]+"Iso_WTauNu_closure.png");
     delete canv1;
     std::cout << std::endl;
 
