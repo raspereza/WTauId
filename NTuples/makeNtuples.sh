@@ -2,7 +2,14 @@
 
 # For trigger efficiencies
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer.conf SingleMuon_Run2016 20
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WJetsToLNu_13TeV-madgraphMLM 5
+
+
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WJetsToLNu_13TeV-madgraphMLM-ext2-v1 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WJetsToLNu_13TeV-madgraphMLM-v1 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 10
 
 # For fake rate (no trigger efficiencies need to be included)
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer.conf JetHT_Run2016 20
