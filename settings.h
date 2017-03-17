@@ -22,11 +22,11 @@ double luminosity = 35867;
 //double luminosity = 36800;
 int nBins  = 4;
 float bins[5] = {100,150,200,250,400};
-TString fakerateVar = "tauJetPt";
 
 std::vector<TString> iso;
 map<std::pair<TString,int>, double>* fakerate  = 0;
 map<std::pair<TString,int>, double>* fakerateE = 0;
+//TF1* fakerateFunc = 0;
 
 map<TString, double> xsecs = {
 {"W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", 1.221*9644.5}, 
@@ -57,10 +57,10 @@ double getXSec(TString sampleName)
 struct selectionCuts {
   TString name;
   int  selection;
-  bool trigger;
+  bool trigger = false;
   float recoilRatioLow, recoilRatioHigh;
   float recoilDPhiLow;
-  float metLow;
+  float metLow = 0;
   float tauPtLow,tauPtHigh;
   bool metFilters;
   unsigned int nMuonLow, nMuonHigh;
@@ -70,8 +70,12 @@ struct selectionCuts {
   unsigned int nJetsForward30Low, nJetsForward30High;
   bool tauDM, tauAntiMuonLoose3, tauAntiElectronLooseMVA6, tauIso;
   int tauGenMatchDecayLow, tauGenMatchDecayHigh;
-  float mtmuonLow, mtmuonHigh, mttauLow, mttauHigh;
-} sr, cr_antiiso, cr_fakerate_den, cr_fakerate_num;
+  float mtmuonLow=0;
+  float mtmuonHigh=10000.;
+  float mttauLow=0;
+  float mttauHigh = 1000.;
+  float recoilPtLow = 0.;
+} sr, cr_antiiso, cr_fakerate_den, cr_fakerate_num,cr_fakerate_dijet_den, cr_fakerate_dijet_num;
 // ----------------------------------------------------------------------------------------------------
 void initCuts()
 {
@@ -81,7 +85,7 @@ void initCuts()
   sr.trigger   = true;
   sr.recoilRatioLow  = 0.00;
   sr.recoilRatioHigh = 100000.;
-  sr.recoilDPhiLow = 2.4;
+  sr.recoilDPhiLow = 2.8;
   sr.metLow = 120;
   sr.tauPtLow = 100;
   sr.tauPtHigh = 10000000;
@@ -122,18 +126,49 @@ void initCuts()
   cr_fakerate_den.nElecHigh = 0;
   cr_fakerate_den.nJetsCentral30Low  = 0;
   cr_fakerate_den.nJetsCentral30High = 1;
-  cr_fakerate_den.recoilRatioLow  = 0.000;
-  cr_fakerate_den.recoilRatioHigh = 1000000000.;
+  cr_fakerate_den.recoilRatioLow  = 0.0;
+  cr_fakerate_den.recoilRatioHigh = 10000.;
   cr_fakerate_den.mtmuonLow = 40;
   cr_fakerate_den.metLow = 0;
   cr_fakerate_den.tauIso = false;
   cr_fakerate_den.mttauLow = 0;
-  cr_fakerate_den.recoilDPhiLow = 2.4;
+  cr_fakerate_den.recoilDPhiLow = 2.8;
   cr_fakerate_den.tauPtLow = 100;
+  //cr_fakerate_den.recoilPtLow = 120;
   // cr_fakerate_num
   cr_fakerate_num = cr_fakerate_den;
   cr_fakerate_num.name = "cr_fakerate_num";
   cr_fakerate_num.tauIso = true;
+
+  // cr_fakerate_dijet_den
+  cr_fakerate_dijet_den.name = "cr_fakerate_dijet_den";
+  cr_fakerate_dijet_den.selection = 4;
+  cr_fakerate_dijet_den.nMuonLow  = 0;
+  cr_fakerate_dijet_den.nMuonHigh = 0;
+  cr_fakerate_dijet_den.nElecLow  = 0;
+  cr_fakerate_dijet_den.nElecHigh = 0;
+  cr_fakerate_dijet_den.nSelTausLow  = 1; 
+  cr_fakerate_dijet_den.nSelTausHigh = 1; 
+  cr_fakerate_dijet_den.nJetsCentral30Low  = 0;
+  cr_fakerate_dijet_den.nJetsCentral30High = 2;
+  cr_fakerate_dijet_den.nJetsForward30Low  = cr_fakerate_den.recoilRatioLow;
+  cr_fakerate_dijet_den.nJetsForward30High = cr_fakerate_den.recoilRatioHigh;
+  cr_fakerate_dijet_den.tauPtLow = 100;
+  cr_fakerate_dijet_den.tauPtHigh = 10000000;
+  cr_fakerate_dijet_den.recoilDPhiLow = 2.8;
+  cr_fakerate_dijet_den.recoilRatioLow  = 0.0;
+  cr_fakerate_dijet_den.recoilRatioHigh = 100000.;
+  cr_fakerate_dijet_den.metFilters = true;  
+  cr_fakerate_dijet_den.tauDM = true;
+  cr_fakerate_dijet_den.tauAntiMuonLoose3 = true;
+  cr_fakerate_dijet_den.tauAntiElectronLooseMVA6 = true;
+  cr_fakerate_dijet_den.tauIso = false;
+  cr_fakerate_dijet_den.tauGenMatchDecayLow  = -10000000; // just for closure
+  cr_fakerate_dijet_den.tauGenMatchDecayHigh = -1;        //just for closure
+  // cr_fakerate_num
+  cr_fakerate_dijet_num = cr_fakerate_dijet_den;
+  cr_fakerate_dijet_num.name = "cr_fakerate_dijet_num";
+  cr_fakerate_dijet_num.tauIso = true;
 }
 // ----------------------------------------------------------------------------------------------------
 int getNEventsProcessed(TString filename)
@@ -154,6 +189,10 @@ void loadFakeRates(TString filename)
     cout<<"File "<<filename<<" does not exists. Exiting."<<endl;
     exit(-1);
   }
+  
+  //TGraphErrors* graph = 0;
+  //f1->GetObject("LooseIso",graph);
+  //fakerateFunc = graph->GetFunction("func");
 
   TIter next(f1->GetListOfKeys());
   TKey *key;
@@ -176,8 +215,13 @@ void loadFakeRates(TString filename)
   if(fakerate && fakerateE) cout<<endl<<"---------  Fakerates succesfully loaded. --------"<<endl;
 }
 // ----------------------------------------------------------------------------------------------------
-double getFakeRates(float tauPt, TString iso)
+double getFakeRates(float tauPt, TString iso, TString err)
 {
+
+  //cout<<"tauPt = "<<tauPt<<endl;
+  //cout<<fakerateFunc->Eval(tauPt)<<endl;
+  //return fakerateFunc->Eval(tauPt);
+
   //cout<<"met = "<<tauPt<<endl;
   int ptBin = -1;
   if(tauPt<110)                    ptBin = 0;
@@ -193,7 +237,9 @@ double getFakeRates(float tauPt, TString iso)
   //ptBin=0;
   //cout<<"Ht = "<<tauPt<<endl;
   //cout<<"fakerate = "<<fakerate->at(std::make_pair(iso, ptBin))<<endl;
-  return fakerate->at(std::make_pair(iso, ptBin));
+  if(err=="up")     return fakerate->at(std::make_pair(iso, ptBin))+fakerateE->at(std::make_pair(iso, ptBin));
+  if(err=="down")   return fakerate->at(std::make_pair(iso, ptBin))-fakerateE->at(std::make_pair(iso, ptBin));
+  return fakerate->at(std::make_pair(iso, ptBin));//-fakerateE->at(std::make_pair(iso, ptBin));
 
 }
 // ----------------------------------------------------------------------------------------------------
@@ -259,9 +305,11 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   int nevtsProcessed = getNEventsProcessed(filename);
   double norm = xsec*luminosity/nevtsProcessed;
 
+  bool isData = filename.Contains("SingleMuon") || filename.Contains("JetHT");
+
   while(myReader->Next()){
 
-    //if(*trig != sel.trigger && sel.selection != 1) continue;
+    //if(*trig != sel.trigger && sel.selection != 1  && sel.selection != 4) continue;
     
     if(*Selection != sel.selection) continue;
     if(*recoilRatio < sel.recoilRatioLow || *recoilRatio > sel.recoilRatioHigh) continue;
@@ -280,12 +328,12 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if(*tauAntiMuonLoose3 != sel.tauAntiMuonLoose3) continue;
     if(*tauAntiElectronLooseMVA6 != sel.tauAntiElectronLooseMVA6) continue;
     if(*tauIso != sel.tauIso) continue;
-    if(*tauGenMatchDecay < sel.tauGenMatchDecayLow || *tauGenMatchDecay > sel.tauGenMatchDecayHigh ) continue;
+    if((*tauGenMatchDecay<sel.tauGenMatchDecayLow || *tauGenMatchDecay>sel.tauGenMatchDecayHigh) && !isData) continue;
     
     if(*mtmuon < sel.mtmuonLow || *mtmuon > sel.mtmuonHigh ) continue;
         
-    Float_t scale = 1;
-    if(sel.name.Contains("cr_antiiso")) scale = getFakeRates(*tauJetPt, iso + "Iso");
+    Float_t fakerate = 1;
+    if(sel.name.Contains("cr_antiiso")) fakerate = getFakeRates(*tauJetPt, iso + "Iso","");
     if(sel.name.Contains("cr_fakerate")) *trigWeight = 1;
     if(!sel.name.Contains("cr_fakerate")){*mueffweight=1;*mutrigweight=1;}
 
@@ -310,7 +358,13 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
       else                     norm = luminosity/( nevtsProcessedIncl/xsecIncl );
     }
 
-    histo->Fill( abs(*variable),  (*mueffweight)*(*mutrigweight)*(*puWeight)*(*trigWeight)*(*genWeight)*norm*scale );
+    if(*recoilPt<sel.recoilPtLow) continue;
+    //if(*recoilPt/(*tauJetPt)<0.7 || *recoilPt/(*tauJetPt)>1.3) continue;
+
+    double weight = (*mueffweight)*(*mutrigweight)*(*puWeight)*(*trigWeight)*(*genWeight)*norm*fakerate;
+    if(isData) weight =1;
+
+    histo    -> Fill( abs(*variable), weight );
   }
 
   delete myReader;
