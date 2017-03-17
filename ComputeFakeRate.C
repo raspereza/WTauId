@@ -11,9 +11,7 @@ void ComputeFakeRate() {
   TH1::SetDefaultSumw2();
   TH2::SetDefaultSumw2();
   int nBins = 8;
-  //double bins[11] = {100,110,120,130,140,150,160,180,200,300,1000};
   double bins[9] = {0,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.};
-  //double bins[11] = {0,999,999,999,999,999,999,999,999,999,1000};
 
   std::vector< std::pair<TString,std::vector<TString>> > samples;
   std::vector<TString> data_SingleMuon;
