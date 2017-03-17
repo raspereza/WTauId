@@ -76,6 +76,7 @@ struct selectionCuts {
   float mttauLow=0;
   float mttauHigh = 1000.;
   float recoilPtLow = 0.;
+  bool pfJetTrigger=false;
 } sr, cr_antiiso, cr_fakerate_den, cr_fakerate_num,cr_fakerate_dijet_den, cr_fakerate_dijet_num;
 // ----------------------------------------------------------------------------------------------------
 void initCuts()
@@ -150,16 +151,16 @@ void initCuts()
   cr_fakerate_dijet_den.nElecHigh = 0;
   cr_fakerate_dijet_den.nSelTausLow  = 1; 
   cr_fakerate_dijet_den.nSelTausHigh = 1; 
-  cr_fakerate_dijet_den.nJetsCentral30Low  = 0;
+  cr_fakerate_dijet_den.nJetsCentral30Low  = 2;
   cr_fakerate_dijet_den.nJetsCentral30High = 2;
-  cr_fakerate_dijet_den.nJetsForward30Low  = cr_fakerate_den.recoilRatioLow;
-  cr_fakerate_dijet_den.nJetsForward30High = cr_fakerate_den.recoilRatioHigh;
+  cr_fakerate_dijet_den.nJetsForward30Low  = 0;
+  cr_fakerate_dijet_den.nJetsForward30High = 1000000.;
   cr_fakerate_dijet_den.tauPtLow = 100;
   cr_fakerate_dijet_den.tauPtHigh = 10000000;
   cr_fakerate_dijet_den.recoilDPhiLow = 2.8;
   cr_fakerate_dijet_den.recoilRatioLow  = 0.0;
   cr_fakerate_dijet_den.recoilRatioHigh = 100000.;
-  cr_fakerate_dijet_den.metFilters = true;  
+  cr_fakerate_dijet_den.metFilters = true;
   cr_fakerate_dijet_den.tauDM = true;
   cr_fakerate_dijet_den.tauAntiMuonLoose3 = true;
   cr_fakerate_dijet_den.tauAntiElectronLooseMVA6 = true;
@@ -167,6 +168,7 @@ void initCuts()
   cr_fakerate_dijet_den.tauGenMatchDecayLow  = -10000000;
   cr_fakerate_dijet_den.tauGenMatchDecayHigh = -1;
   cr_fakerate_dijet_den.recoilPtLow = 120.;
+  cr_fakerate_dijet_den.pfJetTrigger  = true;
   // cr_fakerate_num
   cr_fakerate_dijet_num = cr_fakerate_dijet_den;
   cr_fakerate_dijet_num.name = "cr_fakerate_dijet_num";
@@ -291,6 +293,10 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   TTreeReaderValue< Float_t >  Ht(               *myReader,       "Ht");
   TTreeReaderValue< Float_t >  mhtNoMu(          *myReader,       "mhtNoMu");
   TTreeReaderValue< Float_t >  metNoMu(          *myReader,       "metNoMu");
+  TTreeReaderValue< Bool_t  >  pfJet40(          *myReader,       "pfJet40");
+  TTreeReaderValue< Bool_t  >  pfJet60(          *myReader,       "pfJet60");
+  TTreeReaderValue< Bool_t  >  pfJet80(          *myReader,       "pfJet80");
+  TTreeReaderValue< Bool_t  >  pfJet140(         *myReader,       "pfJet140");
   TTreeReaderValue< Float_t >  variable1(        *myReader,       variableToFill_1);
   TTreeReaderValue< Float_t >  variable2(        *myReader,       variableToFill_2);
   
@@ -302,6 +308,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   while(myReader->Next()){
 
     if(*trig != sel.trigger && sel.selection != 1  && sel.selection != 4) continue;
+    if(sel.selection == 4 && (*pfJet80 != sel.pfJetTrigger && *pfJet140 != sel.pfJetTrigger && *pfJet60 != sel.pfJetTrigger && *pfJet40 != sel.pfJetTrigger)) continue;
     
     if(*Selection != sel.selection) continue;
     if(*recoilRatio < sel.recoilRatioLow || *recoilRatio > sel.recoilRatioHigh) continue;
