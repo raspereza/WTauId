@@ -27,8 +27,8 @@ void ComputeFakeRate() {
   wjets.push_back("W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
 
   samples.push_back(make_pair("WJetsToLNu_13TeV-madgraphMLM" , wjets));
-  //samples.push_back(make_pair("JetHT_Run2016" , data_JetHT));
   //samples.push_back(make_pair("SingleMuon_Run2016" , data_SingleMuon));
+  //samples.push_back(make_pair("JetHT_Run2016" , data_JetHT));
 
   for (unsigned int i=0; i<samples.size(); ++i) {
 
@@ -41,11 +41,16 @@ void ComputeFakeRate() {
       // filling histograms
       TH1D* h_den = new TH1D(samples[i].first+"_"+iso[idx_iso]+"_den",samples[i].first+"_"+iso[idx_iso]+"_den",nBins,bins);
       TH1D* h_num = new TH1D(samples[i].first+"_"+iso[idx_iso]+"_num",samples[i].first+"_"+iso[idx_iso]+"_num",nBins,bins);
-      
+
+      TString var = "tauJetPt";
       for(unsigned int idx_list=0; idx_list<samples[i].second.size(); idx_list++){
 	cout<<"---------- Sample "<<samples[i].second[idx_list]<<" processing. ---------- "<<endl;
-	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_fakerate_num,h_num,fakerateVar);
-	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_fakerate_den,h_den,fakerateVar);
+	selectionCuts select = cr_fakerate_num;
+	if(samples[i].second[idx_list].Contains("JetHT")) select =  cr_fakerate_dijet_num;
+	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,h_num,var);
+	select = cr_fakerate_den;
+	if(samples[i].second[idx_list].Contains("JetHT")) select =  cr_fakerate_dijet_den;
+	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,h_den,var);
       }
 
       double numE = 0;
@@ -60,6 +65,16 @@ void ComputeFakeRate() {
       eff->SetMarkerStyle(20+i);
       eff->SetMarkerColor(20+i);
       eff->SetMarkerSize(2);
+
+      // Fit the fakerate
+      /*
+      TF1* f = new TF1("func","[0]+expo(1)");
+      f->SetParLimits(0,0.,1000.);
+      eff->Fit("func","IR","",100,1000);
+      cout<<"Chi2 = "<<f->GetChisquare()<<endl;
+      cout<<"NFD  = "<<f->GetNDF()<<endl;
+      f->SetLineColor(kRed);
+      */
 
       TCanvas * canv = new TCanvas("canv","",700,600);
       TH2F * frame = new TH2F("frame","",2,99,1001,2,0,0.2);
