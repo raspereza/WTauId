@@ -52,15 +52,16 @@ void ClosureTest_FakeRate() {
     TH1D * prediction  = new TH1D("prediction","",nBins,bins); 
 
     // Make selection and fill histograms for sr and cr
+    TString var = "tauPt";
     for (unsigned int i=0; i<obs.size(); ++i) {
       TH1D* histo = new TH1D("","",nBins,bins);
-      makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,fakerateVar);
+      makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,var);
       observation->Add(histo);
       observation->SetName(histo->GetName());
     }
     for (unsigned int i=0; i<pred.size(); ++i) {
       TH1D* histo = new TH1D("","",nBins,bins);
-      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,fakerateVar);
+      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,var);
       prediction->Add(histo);
     }
 
@@ -107,7 +108,7 @@ void ClosureTest_FakeRate() {
     if(prediction->GetMaximum()>observation->GetMaximum()){
       observation->SetMaximum(prediction->GetMaximum()*1.2);
     }
-    
+
     TLegend * leg = new TLegend(0.55,0.4,0.85,0.78);
     SetLegendStyle(leg);
     leg->SetTextSize(0.047);
