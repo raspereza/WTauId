@@ -10,8 +10,9 @@ void ComputeFakeRate() {
   SetStyle();
   TH1::SetDefaultSumw2();
   TH2::SetDefaultSumw2();
-  int nBins = 10;
-  double bins[11] = {100,110,120,130,140,150,160,180,200,300,1000};
+  int nBins = 8;
+  //double bins[11] = {100,110,120,130,140,150,160,180,200,300,1000};
+  double bins[9] = {0,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.};
   //double bins[11] = {0,999,999,999,999,999,999,999,999,999,1000};
 
   std::vector< std::pair<TString,std::vector<TString>> > samples;
@@ -42,15 +43,16 @@ void ComputeFakeRate() {
       TH1D* h_den = new TH1D(samples[i].first+"_"+iso[idx_iso]+"_den",samples[i].first+"_"+iso[idx_iso]+"_den",nBins,bins);
       TH1D* h_num = new TH1D(samples[i].first+"_"+iso[idx_iso]+"_num",samples[i].first+"_"+iso[idx_iso]+"_num",nBins,bins);
 
-      TString var = "tauJetPt";
+      TString var1 = "tauPt";
+      TString var2 = "tauJetPt";
       for(unsigned int idx_list=0; idx_list<samples[i].second.size(); idx_list++){
 	cout<<"---------- Sample "<<samples[i].second[idx_list]<<" processing. ---------- "<<endl;
 	selectionCuts select = cr_fakerate_num;
 	if(samples[i].second[idx_list].Contains("JetHT")) select =  cr_fakerate_dijet_num;
-	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,h_num,var);
+	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,h_num,var1,var2);
 	select = cr_fakerate_den;
 	if(samples[i].second[idx_list].Contains("JetHT")) select =  cr_fakerate_dijet_den;
-	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,h_den,var);
+	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,h_den,var1,var2);
       }
 
       double numE = 0;

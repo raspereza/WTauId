@@ -22,6 +22,7 @@ double luminosity = 35867;
 //double luminosity = 36800;
 int nBins  = 4;
 float bins[5] = {100,150,200,250,400};
+//float bins[5] = {0,0.5,1.1,1.5,2.3};
 
 std::vector<TString> iso;
 map<std::pair<TString,int>, double>* fakerate  = 0;
@@ -104,8 +105,8 @@ void initCuts()
   sr.tauAntiMuonLoose3 = true;
   sr.tauAntiElectronLooseMVA6 = true;
   sr.tauIso = true;
-  sr.tauGenMatchDecayLow  = -10000000; // just for closure
-  sr.tauGenMatchDecayHigh = -1;        //just for closure
+  sr.tauGenMatchDecayLow  = -10000000;
+  sr.tauGenMatchDecayHigh = -1;
   sr.mtmuonLow  = 0;
   sr.mtmuonHigh = 100000000;
   sr.mttauLow  = 0;
@@ -134,7 +135,7 @@ void initCuts()
   cr_fakerate_den.mttauLow = 0;
   cr_fakerate_den.recoilDPhiLow = 2.8;
   cr_fakerate_den.tauPtLow = 100;
-  //cr_fakerate_den.recoilPtLow = 120;
+  cr_fakerate_den.recoilPtLow = 120.;
   // cr_fakerate_num
   cr_fakerate_num = cr_fakerate_den;
   cr_fakerate_num.name = "cr_fakerate_num";
@@ -163,8 +164,9 @@ void initCuts()
   cr_fakerate_dijet_den.tauAntiMuonLoose3 = true;
   cr_fakerate_dijet_den.tauAntiElectronLooseMVA6 = true;
   cr_fakerate_dijet_den.tauIso = false;
-  cr_fakerate_dijet_den.tauGenMatchDecayLow  = -10000000; // just for closure
-  cr_fakerate_dijet_den.tauGenMatchDecayHigh = -1;        //just for closure
+  cr_fakerate_dijet_den.tauGenMatchDecayLow  = -10000000;
+  cr_fakerate_dijet_den.tauGenMatchDecayHigh = -1;
+  cr_fakerate_dijet_den.recoilPtLow = 120.;
   // cr_fakerate_num
   cr_fakerate_dijet_num = cr_fakerate_dijet_den;
   cr_fakerate_dijet_num.name = "cr_fakerate_dijet_num";
@@ -218,34 +220,24 @@ void loadFakeRates(TString filename)
 double getFakeRates(float tauPt, TString iso, TString err)
 {
 
-  //cout<<"tauPt = "<<tauPt<<endl;
-  //cout<<fakerateFunc->Eval(tauPt)<<endl;
-  //return fakerateFunc->Eval(tauPt);
-
-  //cout<<"met = "<<tauPt<<endl;
   int ptBin = -1;
-  if(tauPt<110)                    ptBin = 0;
-  else if(tauPt<120 && tauPt>110 ) ptBin = 1;
-  else if(tauPt<130 && tauPt>120 ) ptBin = 2;
-  else if(tauPt<140 && tauPt>130 ) ptBin = 3;
-  else if(tauPt<150 && tauPt>140 ) ptBin = 4;
-  else if(tauPt<160 && tauPt>150 ) ptBin = 5;
-  else if(tauPt<180 && tauPt>160 ) ptBin = 6;
-  else if(tauPt<200 && tauPt>180 ) ptBin = 7;
-  else if(tauPt<300 && tauPt>200 ) ptBin = 8;
-  else                             ptBin = 9;
-  //ptBin=0;
-  //cout<<"Ht = "<<tauPt<<endl;
-  //cout<<"fakerate = "<<fakerate->at(std::make_pair(iso, ptBin))<<endl;
-  if(err=="up")     return fakerate->at(std::make_pair(iso, ptBin))+fakerateE->at(std::make_pair(iso, ptBin));
-  if(err=="down")   return fakerate->at(std::make_pair(iso, ptBin))-fakerateE->at(std::make_pair(iso, ptBin));
-  return fakerate->at(std::make_pair(iso, ptBin));//-fakerateE->at(std::make_pair(iso, ptBin));
+  if(tauPt<0.4)                    ptBin = 0;
+  else if(tauPt<0.5 && tauPt>0.4 ) ptBin = 1;
+  else if(tauPt<0.6 && tauPt>0.5 ) ptBin = 2;
+  else if(tauPt<0.7 && tauPt>0.6 ) ptBin = 3;
+  else if(tauPt<0.8 && tauPt>0.7 ) ptBin = 4;
+  else if(tauPt<0.9 && tauPt>0.8 ) ptBin = 5;
+  else if(tauPt<1.0 && tauPt>0.9 ) ptBin = 6;
+  else                             ptBin = 7;
+
+  return fakerate->at(std::make_pair(iso, ptBin));
 
 }
 // ----------------------------------------------------------------------------------------------------
-void makeSelection(TString filename, TString treename, double xsec, TString iso, selectionCuts sel, TH1D* histo, TString variableToFill)
+void makeSelection(TString filename, TString treename, double xsec, TString iso, selectionCuts sel, TH1D* histo, TString variableToFill_1, TString variableToFill_2)
 {
-  histo->SetName(variableToFill);
+  if(variableToFill_1 == variableToFill_2) histo->SetName(variableToFill_1);
+  else                                     histo->SetName(variableToFill_1 + "_" + variableToFill_2);
 
   TFile * file = new TFile(filename);
   if(!file){
@@ -300,7 +292,8 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   TTreeReaderValue< Float_t >  Ht(               *myReader,       "Ht");
   TTreeReaderValue< Float_t >  mhtNoMu(          *myReader,       "mhtNoMu");
   TTreeReaderValue< Float_t >  metNoMu(          *myReader,       "metNoMu");
-  TTreeReaderValue< Float_t >  variable(         *myReader,       variableToFill);
+  TTreeReaderValue< Float_t >  variable1(        *myReader,       variableToFill_1);
+  TTreeReaderValue< Float_t >  variable2(        *myReader,       variableToFill_2);
   
   int nevtsProcessed = getNEventsProcessed(filename);
   double norm = xsec*luminosity/nevtsProcessed;
@@ -309,7 +302,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
 
   while(myReader->Next()){
 
-    //if(*trig != sel.trigger && sel.selection != 1  && sel.selection != 4) continue;
+    if(*trig != sel.trigger && sel.selection != 1  && sel.selection != 4) continue;
     
     if(*Selection != sel.selection) continue;
     if(*recoilRatio < sel.recoilRatioLow || *recoilRatio > sel.recoilRatioHigh) continue;
@@ -333,7 +326,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if(*mtmuon < sel.mtmuonLow || *mtmuon > sel.mtmuonHigh ) continue;
         
     Float_t fakerate = 1;
-    if(sel.name.Contains("cr_antiiso")) fakerate = getFakeRates(*tauJetPt, iso + "Iso","");
+    if(sel.name.Contains("cr_antiiso")) fakerate = getFakeRates(*tauPt/(*tauJetPt), iso + "Iso","");
     if(sel.name.Contains("cr_fakerate")) *trigWeight = 1;
     if(!sel.name.Contains("cr_fakerate")){*mueffweight=1;*mutrigweight=1;}
 
@@ -359,12 +352,11 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     }
 
     if(*recoilPt<sel.recoilPtLow) continue;
-    //if(*recoilPt/(*tauJetPt)<0.7 || *recoilPt/(*tauJetPt)>1.3) continue;
 
     double weight = (*mueffweight)*(*mutrigweight)*(*puWeight)*(*trigWeight)*(*genWeight)*norm*fakerate;
     if(isData) weight =1;
-
-    histo    -> Fill( abs(*variable), weight );
+    if(variableToFill_1==variableToFill_2) histo    -> Fill( abs(*variable1), weight );
+    else                                   histo    -> Fill( abs(*variable1)/abs(*variable2), weight );
   }
 
   delete myReader;

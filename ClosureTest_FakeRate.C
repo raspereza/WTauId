@@ -55,13 +55,13 @@ void ClosureTest_FakeRate() {
     TString var = "tauPt";
     for (unsigned int i=0; i<obs.size(); ++i) {
       TH1D* histo = new TH1D("","",nBins,bins);
-      makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,var);
+      makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,var,var);
       observation->Add(histo);
       observation->SetName(histo->GetName());
     }
     for (unsigned int i=0; i<pred.size(); ++i) {
       TH1D* histo = new TH1D("","",nBins,bins);
-      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,var);
+      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,var,var);
       prediction->Add(histo);
     }
 
@@ -130,7 +130,7 @@ void ClosureTest_FakeRate() {
     ratioH->SetMarkerStyle(20);
     ratioH->SetMarkerSize(1.2);
     ratioH->SetLineColor(1);
-    ratioH->GetYaxis()->SetRangeUser(0.0,3.);
+    ratioH->GetYaxis()->SetRangeUser(0.0,2.);
     ratioH->GetYaxis()->SetNdivisions(505);
     ratioH->GetXaxis()->SetLabelFont(42);
     ratioH->GetXaxis()->SetLabelOffset(0.04);
