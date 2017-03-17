@@ -22,7 +22,7 @@ double luminosity = 35867;
 //double luminosity = 36800;
 int nBins  = 4;
 float bins[5] = {100,150,200,250,400};
-
+TString fakerateVar = "tauJetPt";
 
 std::vector<TString> iso;
 map<std::pair<TString,int>, double>* fakerate  = 0;

@@ -12,18 +12,23 @@ void ComputeFakeRate() {
   TH2::SetDefaultSumw2();
   int nBins = 10;
   double bins[11] = {100,110,120,130,140,150,160,180,200,300,1000};
+  //double bins[11] = {0,999,999,999,999,999,999,999,999,999,1000};
 
   std::vector< std::pair<TString,std::vector<TString>> > samples;
-  //samples.push_back("SingleMuon_Run2016");
-  //samples.push_back("JetHT_Run2016");
+  std::vector<TString> data_SingleMuon;
+  data_SingleMuon.push_back("SingleMuon_Run2016");
+  std::vector<TString> data_JetHT;
+  data_JetHT.push_back("JetHT_Run2016");
   std::vector<TString> wjets;
   wjets.push_back("WJetsToLNu_13TeV-madgraphMLM");
   wjets.push_back("W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   wjets.push_back("W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   wjets.push_back("W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   wjets.push_back("W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  samples.push_back(make_pair("WJetsToLNu_13TeV-madgraphMLM" , wjets));
 
+  samples.push_back(make_pair("WJetsToLNu_13TeV-madgraphMLM" , wjets));
+  //samples.push_back(make_pair("JetHT_Run2016" , data_JetHT));
+  //samples.push_back(make_pair("SingleMuon_Run2016" , data_SingleMuon));
 
   for (unsigned int i=0; i<samples.size(); ++i) {
 
@@ -39,8 +44,8 @@ void ComputeFakeRate() {
       
       for(unsigned int idx_list=0; idx_list<samples[i].second.size(); idx_list++){
 	cout<<"---------- Sample "<<samples[i].second[idx_list]<<" processing. ---------- "<<endl;
-	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_fakerate_num,h_num,"tauJetPt");
-	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_fakerate_den,h_den,"tauJetPt");
+	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_fakerate_num,h_num,fakerateVar);
+	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_fakerate_den,h_den,fakerateVar);
       }
 
       double numE = 0;
