@@ -20,8 +20,8 @@
 double luminosity = 35867;
 //double luminosity = 1.;
 //double luminosity = 36800;
-int nBins  = 4;
-float bins[5] = {100,150,200,250,400};
+int nBins  = 3;
+float bins[4] = {100,150,200,400};
 //float bins[5] = {0,0.5,1.1,1.5,2.3};
 
 std::vector<TString> iso;
@@ -125,7 +125,7 @@ void initCuts()
   cr_fakerate_den.nMuonHigh = 1;
   cr_fakerate_den.nElecLow  = 0;
   cr_fakerate_den.nElecHigh = 0;
-  cr_fakerate_den.nJetsCentral30Low  = 0;
+  cr_fakerate_den.nJetsCentral30Low  = 1;
   cr_fakerate_den.nJetsCentral30High = 1;
   cr_fakerate_den.recoilRatioLow  = 0.0;
   cr_fakerate_den.recoilRatioHigh = 10000.;
@@ -193,7 +193,7 @@ void loadFakeRates(TString filename)
   }
   
   //TGraphErrors* graph = 0;
-  //f1->GetObject("LooseIso",graph);
+  //f1->GetObject("MediumMvaIso",graph);
   //fakerateFunc = graph->GetFunction("func");
 
   TIter next(f1->GetListOfKeys());
@@ -231,7 +231,6 @@ double getFakeRates(float tauPt, TString iso, TString err)
   else                             ptBin = 7;
 
   return fakerate->at(std::make_pair(iso, ptBin));
-
 }
 // ----------------------------------------------------------------------------------------------------
 void makeSelection(TString filename, TString treename, double xsec, TString iso, selectionCuts sel, TH1D* histo, TString variableToFill_1, TString variableToFill_2)
@@ -355,6 +354,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
 
     double weight = (*mueffweight)*(*mutrigweight)*(*puWeight)*(*trigWeight)*(*genWeight)*norm*fakerate;
     if(isData) weight =1;
+
     if(variableToFill_1==variableToFill_2) histo    -> Fill( abs(*variable1), weight );
     else                                   histo    -> Fill( abs(*variable1)/abs(*variable2), weight );
   }
