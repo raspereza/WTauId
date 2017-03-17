@@ -35,7 +35,6 @@ void ClosureTest_FakeRate() {
   for(unsigned int i=0; i<pred.size(); i++) pred_xsec.push_back( getXSec(pred[i]) );
 
   TString dir      = "NTuples/"; 
-  double wnorm = 1.3; // W* K-factor (PYTHIA8 -> NNLO) 
 
   // Binning and titles of axis
   TString xtitle = "m_{T} [GeV]";
@@ -53,15 +52,16 @@ void ClosureTest_FakeRate() {
     TH1D * prediction  = new TH1D("prediction","",nBins,bins); 
 
     // Make selection and fill histograms for sr and cr
+    TString variable = "tauJetPt";
     for (unsigned int i=0; i<obs.size(); ++i) {
       TH1D* histo = new TH1D("","",nBins,bins);
-      makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,"tauPt");
+      makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,variable);
       observation->Add(histo);
       observation->SetName(histo->GetName());
     }
     for (unsigned int i=0; i<pred.size(); ++i) {
       TH1D* histo = new TH1D("","",nBins,bins);
-      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,"tauPt");
+      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,variable);
       prediction->Add(histo);
     }
 
@@ -101,7 +101,6 @@ void ClosureTest_FakeRate() {
     prediction->SetLineColor(kRed);
     prediction->SetMarkerColor(kRed);
 
-
     observation->SetMinimum(0);
     observation->GetXaxis()->SetTitle(observation->GetName());
     observation->Draw("e1");
@@ -109,8 +108,7 @@ void ClosureTest_FakeRate() {
     if(prediction->GetMaximum()>observation->GetMaximum()){
       observation->SetMaximum(prediction->GetMaximum()*1.2);
     }
-    if(observation->GetMinimum() == 0) observation->SetMinimum(prediction->GetMinimum()*0.5);
-
+    
     TLegend * leg = new TLegend(0.55,0.4,0.85,0.78);
     SetLegendStyle(leg);
     leg->SetTextSize(0.047);
