@@ -26,8 +26,8 @@ void ComputeFakeRate() {
   wjets.push_back("W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
 
   samples.push_back(make_pair("WJetsToLNu_13TeV-madgraphMLM" , wjets));
-  //samples.push_back(make_pair("SingleMuon_Run2016" , data_SingleMuon));
-  //samples.push_back(make_pair("JetHT_Run2016" , data_JetHT));
+  samples.push_back(make_pair("SingleMuon_Run2016" , data_SingleMuon));
+  samples.push_back(make_pair("JetHT_Run2016" , data_JetHT));
 
   for (unsigned int i=0; i<samples.size(); ++i) {
 
@@ -62,28 +62,26 @@ void ComputeFakeRate() {
       
       h_num->Divide(h_den);
       TGraphErrors * eff = new TGraphErrors(h_num);
-      eff->SetMarkerStyle(20+i);
-      eff->SetMarkerColor(20+i);
+      eff->GetXaxis()->SetTitle("pt (tau) / pt (jet faking the tau)");
+      eff->GetYaxis()->SetTitle("fake rate");
+      eff->SetTitle("");
       eff->SetMarkerSize(2);
+      eff->SetMaximum(1);
+      eff->SetMinimum(0);
 
       // Fit the fakerate
       /*
-      TF1* f = new TF1("func","[0]+expo(1)");
-      f->SetParLimits(0,0.,1000.);
-      eff->Fit("func","IR","",100,1000);
+      TF1* f = new TF1("func","expo(0)");
+      eff->Fit("func","IR","",0.5,1);
       cout<<"Chi2 = "<<f->GetChisquare()<<endl;
       cout<<"NFD  = "<<f->GetNDF()<<endl;
       f->SetLineColor(kRed);
       */
-
       TCanvas * canv = new TCanvas("canv","",700,600);
-      TH2F * frame = new TH2F("frame","",2,99,1001,2,0,0.2);
-      frame->GetYaxis()->SetTitle("Fake Rate");
-      frame->GetXaxis()->SetTitle("fake tau p_{T} [GeV/c]");
-      frame->Draw();
-      eff->Draw("epsame");
+      eff->Draw("epa");
 
-      TLegend * leg = new TLegend(0.6,0.7,0.85,0.9);
+      TLegend * leg = new TLegend(0.25,0.7,0.85,0.9);
+      gStyle->SetLegendTextSize(0.04);
       SetLegendStyle(leg);
       leg->SetHeader(iso[idx_iso]);
       leg->AddEntry(eff,samples[i].first,"lp");

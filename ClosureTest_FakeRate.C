@@ -68,11 +68,9 @@ void ClosureTest_FakeRate() {
     double obsE, predE;
     double nObs  = observation -> IntegralAndError(1,observation->GetNbinsX(),obsE);
     double nPred = prediction  -> IntegralAndError(1,prediction->GetNbinsX(),predE);
-    
 
     cout<<"Observation : "<<nObs<< " +/- "<<obsE<< " (nevents = "<<observation->GetEntries()<<") "<<endl;
     cout<<"Prediction  : "<<nPred<<" +/- "<<predE<<" (nevents = "<<prediction ->GetEntries()<<") "<<endl;
-
 
     TCanvas * canv1 = MakeCanvas("canv1", "", 700, 800);
     TPad * upper = new TPad("upper", "pad",0,0.31,1,1);
@@ -173,6 +171,8 @@ void ClosureTest_FakeRate() {
     lower->SetFrameBorderSize(10);
 
     ratioH->Draw("e1");
+    TLine *line = new TLine(100,1,400,1);
+    line->Draw("same");
 
     lower->Modified();
     lower->RedrawAxis();
