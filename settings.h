@@ -35,7 +35,11 @@ map<TString, double> xsecs = {
 {"W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", 1.221*954.8},
 {"W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", 1.221*485.6},
 {"WJetsToLNu_13TeV-madgraphMLM"                      , 61526.7},
-{"WJetsToLNu_13TeV-madgraphMLM-v1"                   , 61526.7}
+{"WJetsToLNu_13TeV-madgraphMLM-v1"                   , 61526.7},
+{"ZJetsToNuNu_HT-100To200_13TeV-madgraph"            , 1.164*280.4},
+{"ZJetsToNuNu_HT-200To400_13TeV-madgraph"            , 1.164*77.67},
+{"ZJetsToNuNu_HT-400To600_13TeV-madgraph"            , 1.164*10.73},
+{"ZJetsToNuNu_HT-600To800_13TeV-madgraph"            , 1.164*4.116}
 };
 // ----------------------------------------------------------------------------------------------------
 void loadWorkingPoints()
@@ -232,6 +236,8 @@ double getFakeRates(float tauPt, TString iso, TString err)
   else if(tauPt<1.0 && tauPt>0.9 ) ptBin = 6;
   else                             ptBin = 7;
 
+  //if(tauPt<0.5 || tauPt>1.0) return 0;
+  //else return fakerateFunc->Eval(tauPt);
   return fakerate->at(std::make_pair(iso, ptBin));
 }
 // ----------------------------------------------------------------------------------------------------

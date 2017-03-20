@@ -17,20 +17,33 @@ void ClosureTest_FakeRate() {
   loadFakeRates("output/WJetsToLNu_13TeV-madgraphMLM_fakeRate.root");
 
   std::vector<TString> obs;
+  std::vector<TString> pred;
+
   obs.push_back("WJetsToLNu_13TeV-madgraphMLM");
   obs.push_back("W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   obs.push_back("W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   obs.push_back("W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   obs.push_back("W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  std::vector<double> obs_xsec;
-  for(unsigned int i=0; i<obs.size(); i++) obs_xsec.push_back( getXSec(obs[i]) );
-  
-  std::vector<TString> pred;
+
   pred.push_back("WJetsToLNu_13TeV-madgraphMLM");
   pred.push_back("W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   pred.push_back("W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   pred.push_back("W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   pred.push_back("W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
+
+  /*  
+  obs.push_back("ZJetsToNuNu_HT-100To200_13TeV-madgraph");
+  obs.push_back("ZJetsToNuNu_HT-200To400_13TeV-madgraph");
+  obs.push_back("ZJetsToNuNu_HT-400To600_13TeV-madgraph");
+  obs.push_back("ZJetsToNuNu_HT-600To800_13TeV-madgraph");
+  pred.push_back("ZJetsToNuNu_HT-100To200_13TeV-madgraph");
+  pred.push_back("ZJetsToNuNu_HT-200To400_13TeV-madgraph");
+  pred.push_back("ZJetsToNuNu_HT-400To600_13TeV-madgraph");
+  pred.push_back("ZJetsToNuNu_HT-600To800_13TeV-madgraph");
+  */
+  std::vector<double> obs_xsec;
+  for(unsigned int i=0; i<obs.size(); i++) obs_xsec.push_back( getXSec(obs[i]) );
+  
   std::vector<double> pred_xsec;
   for(unsigned int i=0; i<pred.size(); i++) pred_xsec.push_back( getXSec(pred[i]) );
 
@@ -171,7 +184,7 @@ void ClosureTest_FakeRate() {
     lower->SetFrameBorderSize(10);
 
     ratioH->Draw("e1");
-    TLine *line = new TLine(100,1,400,1);
+    TLine *line = new TLine(bins[0],1,bins[3],1);
     line->Draw("same");
 
     lower->Modified();
