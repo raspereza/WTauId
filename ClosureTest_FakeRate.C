@@ -68,13 +68,13 @@ void ClosureTest_FakeRate() {
     TString var = "tauPt";
     for (unsigned int i=0; i<obs.size(); ++i) {
       TH1D* histo = new TH1D("","",nBins,bins);
-      makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,var,var);
+      makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,var,var,var);
       observation->Add(histo);
       observation->SetName(histo->GetName());
     }
     for (unsigned int i=0; i<pred.size(); ++i) {
       TH1D* histo = new TH1D("","",nBins,bins);
-      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,var,var);
+      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,var,var,var);
       prediction->Add(histo);
     }
 

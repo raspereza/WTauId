@@ -25,7 +25,7 @@ float bins[4] = {100,150,200,400};
 //float bins[5] = {0,0.5,1.1,1.5,2.3};
 
 std::vector<TString> iso;
-map<TString,TH1D>* h_fakerate = 0;
+map<TString,TH2D>* h_fakerate = 0;
 //TF1* fakerateFunc = 0;
 
 map<TString, double> xsecs = {
@@ -187,7 +187,7 @@ int getNEventsProcessed(TString filename)
 // ----------------------------------------------------------------------------------------------------
 void loadFakeRates(TString filename)
 {
-  h_fakerate = new map<TString,TH1D>();
+  h_fakerate = new map<TString,TH2D>();
 
   TFile *f1 = TFile::Open(filename);
   if(!f1){
@@ -205,32 +205,36 @@ void loadFakeRates(TString filename)
   while ((key = (TKey*)next())) 
     {
       TClass *c = gROOT->GetClass(key->GetClassName());
-      if (!c->InheritsFrom("TH1")) continue; 
-      TH1D *h = (TH1D*) key->ReadObj();
+      if (!c->InheritsFrom("TH2")) continue; 
+      TH2D *h = (TH2D*) key->ReadObj();
       h_fakerate -> insert( std::make_pair(h->GetName(),*h) );
     }
   f1->Close();
   delete f1;
 }
 // ----------------------------------------------------------------------------------------------------
-double getFakeRates(float tauPt, TString iso, TString err)
+double getFakeRates(float ratio, float jetPt, TString iso, TString err)
 {
 
-  for(unsigned int i=1; i<= h_fakerate->at(iso).GetNbinsX(); i++)
-    {
-      if( tauPt > h_fakerate->at(iso).GetBinLowEdge(i) && tauPt < h_fakerate->at(iso).GetBinLowEdge(i+1))
-	{
-	  return h_fakerate->at(iso).GetBinContent(i);
+  for(int i=1; i<= h_fakerate->at(iso).GetNbinsX(); i++){
+    if( ratio > h_fakerate->at(iso).GetXaxis()->GetBinLowEdge(i) && ratio < h_fakerate->at(iso).GetXaxis()->GetBinUpEdge(i)){
+      //cout<<"found"<<endl;
+      for(int j=1; j<= h_fakerate->at(iso).GetNbinsY(); j++){
+	if( jetPt > h_fakerate->at(iso).GetYaxis()->GetBinLowEdge(j) && jetPt < h_fakerate->at(iso).GetYaxis()->GetBinUpEdge(j)){
+	  return h_fakerate->at(iso).GetBinContent(i,j);
 	}
+      }
     }
-  cout<<"tauPt = "<<tauPt<<endl;
+  }
+  cout<<"ratio = "<<ratio<<endl;
+  cout<<"jetPt = "<<jetPt<<endl;
   cout<<"nothing found"<<endl;
   return 0;
   //if(tauPt<0.5 || tauPt>1.0) return 0;
   //else return fakerateFunc->Eval(tauPt);
 }
 // ----------------------------------------------------------------------------------------------------
-void makeSelection(TString filename, TString treename, double xsec, TString iso, selectionCuts sel, TH1D* histo, TString variableToFill_1, TString variableToFill_2)
+void makeSelection(TString filename, TString treename, double xsec, TString iso, selectionCuts sel, TH1* histo, TString variableToFill_1, TString variableToFill_2, TString variableToFill_3)
 {
   if(variableToFill_1 == variableToFill_2) histo->SetName(variableToFill_1);
   else                                     histo->SetName(variableToFill_1 + "_" + variableToFill_2);
@@ -292,8 +296,9 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   TTreeReaderValue< Bool_t  >  pfJet60(          *myReader,       "pfJet60");
   TTreeReaderValue< Bool_t  >  pfJet80(          *myReader,       "pfJet80");
   TTreeReaderValue< Bool_t  >  pfJet140(         *myReader,       "pfJet140");
-  TTreeReaderValue< Float_t >  variable1(        *myReader,       variableToFill_1);
-  TTreeReaderValue< Float_t >  variable2(        *myReader,       variableToFill_2);
+  TTreeReaderValue< Float_t >  var1(             *myReader,       variableToFill_1);
+  TTreeReaderValue< Float_t >  var2(             *myReader,       variableToFill_2);
+  TTreeReaderValue< Float_t >  var3(             *myReader,       variableToFill_3);
   
   int nevtsProcessed = getNEventsProcessed(filename);
   double norm = xsec*luminosity/nevtsProcessed;
@@ -327,7 +332,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if(*mtmuon < sel.mtmuonLow || *mtmuon > sel.mtmuonHigh ) continue;
         
     Float_t fakerate = 1;
-    if(sel.name.Contains("cr_antiiso")) fakerate = getFakeRates(*tauPt/(*tauJetPt), iso + "Iso","");
+    if(sel.name.Contains("cr_antiiso")) fakerate = getFakeRates(*tauPt/(*tauJetPt), *tauJetPt, iso + "Iso","");
     if(sel.name.Contains("cr_fakerate")) *trigWeight = 1;
     if(!sel.name.Contains("cr_fakerate")){*mueffweight=1;*mutrigweight=1;}
 
@@ -357,8 +362,15 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     double weight = (*mueffweight)*(*mutrigweight)*(*puWeight)*(*trigWeight)*(*genWeight)*norm*fakerate;
     if(isData) weight =1;
 
-    if(variableToFill_1==variableToFill_2) histo    -> Fill( abs(*variable1), weight );
-    else                                   histo    -> Fill( abs(*variable1)/abs(*variable2), weight );
+
+    if( histo->InheritsFrom("TH2") ){
+      if(variableToFill_1==variableToFill_2) ((TH2*) histo) -> Fill(abs(*var1), abs(*var3), weight);
+      else                                   ((TH2*) histo) -> Fill(abs(*var1)/abs(*var2),abs(*var3), weight);
+    }
+    else{
+      if(variableToFill_1==variableToFill_2) histo    -> Fill( abs(*var1), weight );
+      else                                   histo    -> Fill( abs(*var1)/abs(*var2), weight );
+    }
   }
 
   delete myReader;
