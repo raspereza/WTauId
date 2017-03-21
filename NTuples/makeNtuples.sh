@@ -11,6 +11,14 @@
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8 10
 
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WJetsToLNu_HT-70To100_13TeV-madgraphMLM-pythia8 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WJetsToLNu_HT-100To200_13TeV-madgraphMLM-pythia8 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WJetsToLNu_HT-200To400_13TeV-madgraphMLM-pythia8 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WJetsToLNu_HT-400To600_13TeV-madgraphMLM-pythia8 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WJetsToLNu_HT-600To800_13TeV-madgraphMLM-pythia8 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WJetsToLNu_HT-800To1200_13TeV-madgraphMLM-pythia8 10
+
+
 # For fake rate (no trigger efficiencies need to be included)
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer.conf JetHT_Run2016 20
 
