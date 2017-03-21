@@ -20,9 +20,6 @@
 double luminosity = 35867;
 //double luminosity = 1.;
 //double luminosity = 36800;
-int nBins  = 3;
-float bins[4] = {100,150,200,400};
-//float bins[5] = {0,0.5,1.1,1.5,2.3};
 
 std::vector<TString> iso;
 map<TString,TH2D>* h_fakerate = 0;
@@ -361,7 +358,6 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
 
     double weight = (*mueffweight)*(*mutrigweight)*(*puWeight)*(*trigWeight)*(*genWeight)*norm*fakerate;
     if(isData) weight =1;
-
 
     if( histo->InheritsFrom("TH2") ){
       if(variableToFill_1==variableToFill_2) ((TH2*) histo) -> Fill(abs(*var1), abs(*var3), weight);

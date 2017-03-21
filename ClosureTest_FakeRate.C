@@ -31,16 +31,16 @@ void ClosureTest_FakeRate() {
   pred.push_back("W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   pred.push_back("W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
 
-  /*  
   obs.push_back("ZJetsToNuNu_HT-100To200_13TeV-madgraph");
   obs.push_back("ZJetsToNuNu_HT-200To400_13TeV-madgraph");
   obs.push_back("ZJetsToNuNu_HT-400To600_13TeV-madgraph");
   obs.push_back("ZJetsToNuNu_HT-600To800_13TeV-madgraph");
+
   pred.push_back("ZJetsToNuNu_HT-100To200_13TeV-madgraph");
   pred.push_back("ZJetsToNuNu_HT-200To400_13TeV-madgraph");
   pred.push_back("ZJetsToNuNu_HT-400To600_13TeV-madgraph");
   pred.push_back("ZJetsToNuNu_HT-600To800_13TeV-madgraph");
-  */
+
   std::vector<double> obs_xsec;
   for(unsigned int i=0; i<obs.size(); i++) obs_xsec.push_back( getXSec(obs[i]) );
   
@@ -61,6 +61,10 @@ void ClosureTest_FakeRate() {
     TH1::SetDefaultSumw2();
     TH2::SetDefaultSumw2();
 
+    //const int nBins = 10;
+    //double bins[nBins+1] = {0 , 0.4 , 0.5 , 0.6 , 0.7 , 0.75 , 0.8 , 0.85 , 0.9 , 0.95 , 2.};
+    const int nBins  = 4;
+    float bins[nBins+1] = {100,200,300,400,500};
     TH1D * observation = new TH1D("observation","",nBins,bins); 
     TH1D * prediction  = new TH1D("prediction","",nBins,bins); 
 
@@ -184,7 +188,7 @@ void ClosureTest_FakeRate() {
     lower->SetFrameBorderSize(10);
 
     ratioH->Draw("e1");
-    TLine *line = new TLine(bins[0],1,bins[3],1);
+    TLine *line = new TLine(bins[0],1,bins[nBins],1);
     line->Draw("same");
 
     lower->Modified();

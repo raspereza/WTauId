@@ -1,4 +1,5 @@
 #include "HttStylesNew.cc"
+#include "TStyle.h"
 #include "settings.h"
 
 void ComputeFakeRate() {
@@ -10,10 +11,10 @@ void ComputeFakeRate() {
   SetStyle();
   TH1::SetDefaultSumw2();
   TH2::SetDefaultSumw2();
-  const int nBinsRatio = 7;
-  double binsRatio[nBinsRatio+1] = {0,0.4,0.5,0.6,0.7,0.8,0.9,2.};
-  const int nBinsJetPt = 1;
-  double binsJetPt[nBinsJetPt+1] = {0,10000};
+  const int nBinsRatio = 6;
+  double binsRatio[nBinsRatio+1] = {0 , 0.6 , 0.7 , 0.8 , 0.9 , 0.95 , 2.};
+  const int nBinsJetPt = 3;
+  double binsJetPt[nBinsJetPt+1] = {0 , 175 , 250 , 1000};
   TH2D* h_fakerate_2d = new TH2D("h_fakerate_2d","h_fakerate_2d",nBinsRatio,binsRatio,nBinsJetPt,binsJetPt);
 
   std::vector< std::pair<TString,std::vector<TString>> > samples;
@@ -77,11 +78,21 @@ void ComputeFakeRate() {
       // Fit the fakerate
       /*
       TF1* f = new TF1("func","expo(0)");
-      eff->Fit("func","IR","",0.5,1);
-      cout<<"Chi2 = "<<f->GetChisquare()<<endl;
-      cout<<"NFD  = "<<f->GetNDF()<<endl;
+      h_fakerate_2d -> FitSlicesX(f,1,h_fakerate_2d->GetNbinsY(),0,"");
+      TH1D *par0 = (TH1D*)gDirectory->Get("h_fakerate_2d_0");
+      par0->SetName("par0");
+      TH1D *par1 = (TH1D*)gDirectory->Get("h_fakerate_2d_1");
+      par1->SetName("par1");
+      TH1D *chi2 = (TH1D*)gDirectory->Get("h_fakerate_2d_chi2");
+      chi2->SetName("chi2OverNDF");
       f->SetLineColor(kRed);
       */
+     
+      gStyle -> SetPadBottomMargin(0.17);
+      gStyle -> SetPadLeftMargin(0.17);
+      gStyle -> SetPadTopMargin(0.12);
+      gStyle -> SetPadRightMargin(0.20);
+
       TCanvas * canv = new TCanvas("canv","",700,600);
       h_fakerate_2d->Draw("COLZ");
 
