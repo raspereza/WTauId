@@ -25,8 +25,7 @@ float bins[4] = {100,150,200,400};
 //float bins[5] = {0,0.5,1.1,1.5,2.3};
 
 std::vector<TString> iso;
-map<std::pair<TString,int>, double>* fakerate  = 0;
-map<std::pair<TString,int>, double>* fakerateE = 0;
+map<TString,TH1D>* h_fakerate = 0;
 //TF1* fakerateFunc = 0;
 
 map<TString, double> xsecs = {
@@ -188,57 +187,47 @@ int getNEventsProcessed(TString filename)
 // ----------------------------------------------------------------------------------------------------
 void loadFakeRates(TString filename)
 {
-
-  fakerate  = new map<std::pair<TString,int>, double>();
-  fakerateE = new map<std::pair<TString,int>, double>();
+  h_fakerate = new map<TString,TH1D>();
 
   TFile *f1 = TFile::Open(filename);
   if(!f1){
     cout<<"File "<<filename<<" does not exists. Exiting."<<endl;
     exit(-1);
   }
-  
+
   //TGraphErrors* graph = 0;
   //f1->GetObject("MediumMvaIso",graph);
   //fakerateFunc = graph->GetFunction("func");
 
   TIter next(f1->GetListOfKeys());
   TKey *key;
-  
-  while ((key = (TKey*)next())) {
-    TClass *cl = gROOT->GetClass(key->GetClassName());
-    
-    if (!cl->InheritsFrom("TGraphErrors")) continue;
-    
-    TGraphErrors *g = (TGraphErrors*) key->ReadObj();
-    
-    for(int i = 0; i<g->GetN(); i++){
-      fakerate  -> insert( std::make_pair( std::make_pair( g->GetName() , i ) , g->GetY()[i] ) );
-      fakerateE -> insert( std::make_pair( std::make_pair( g->GetName() , i ) , g->GetEY()[i] ) );
+
+  while ((key = (TKey*)next())) 
+    {
+      TClass *c = gROOT->GetClass(key->GetClassName());
+      if (!c->InheritsFrom("TH1")) continue; 
+      TH1D *h = (TH1D*) key->ReadObj();
+      h_fakerate -> insert( std::make_pair(h->GetName(),*h) );
     }
-  }
   f1->Close();
   delete f1;
-
-  if(fakerate && fakerateE) cout<<endl<<"---------  Fakerates succesfully loaded. --------"<<endl;
 }
 // ----------------------------------------------------------------------------------------------------
 double getFakeRates(float tauPt, TString iso, TString err)
 {
 
-  int ptBin = -1;
-  if(tauPt<0.4)                    ptBin = 0;
-  else if(tauPt<0.5 && tauPt>0.4 ) ptBin = 1;
-  else if(tauPt<0.6 && tauPt>0.5 ) ptBin = 2;
-  else if(tauPt<0.7 && tauPt>0.6 ) ptBin = 3;
-  else if(tauPt<0.8 && tauPt>0.7 ) ptBin = 4;
-  else if(tauPt<0.9 && tauPt>0.8 ) ptBin = 5;
-  else if(tauPt<1.0 && tauPt>0.9 ) ptBin = 6;
-  else                             ptBin = 7;
-
+  for(unsigned int i=1; i<= h_fakerate->at(iso).GetNbinsX(); i++)
+    {
+      if( tauPt > h_fakerate->at(iso).GetBinLowEdge(i) && tauPt < h_fakerate->at(iso).GetBinLowEdge(i+1))
+	{
+	  return h_fakerate->at(iso).GetBinContent(i);
+	}
+    }
+  cout<<"tauPt = "<<tauPt<<endl;
+  cout<<"nothing found"<<endl;
+  return 0;
   //if(tauPt<0.5 || tauPt>1.0) return 0;
   //else return fakerateFunc->Eval(tauPt);
-  return fakerate->at(std::make_pair(iso, ptBin));
 }
 // ----------------------------------------------------------------------------------------------------
 void makeSelection(TString filename, TString treename, double xsec, TString iso, selectionCuts sel, TH1D* histo, TString variableToFill_1, TString variableToFill_2)

@@ -10,8 +10,9 @@ void ComputeFakeRate() {
   SetStyle();
   TH1::SetDefaultSumw2();
   TH2::SetDefaultSumw2();
-  int nBins = 8;
-  double bins[9] = {0,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.};
+  const int nBins = 8;
+  double bins[nBins+1] = {0,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.};
+  TH1* h_fakerate = new TH1D("h_fakerate", "h_fakerate", nBins, bins);
 
   std::vector< std::pair<TString,std::vector<TString>> > samples;
   std::vector<TString> data_SingleMuon;
@@ -60,14 +61,14 @@ void ComputeFakeRate() {
 
       cout<<samples[i].first<<" : "<<num<<"/"<<den<<" = "<<num/den<<" +/- "<<numE/den<<" (nevents = "<<h_num->GetEntries()<<"/"<<h_den->GetEntries()<<")"<<endl<<endl;
       
-      h_num->Divide(h_den);
-      TGraphErrors * eff = new TGraphErrors(h_num);
-      eff->GetXaxis()->SetTitle("pt (tau) / pt (jet faking the tau)");
-      eff->GetYaxis()->SetTitle("fake rate");
-      eff->SetTitle("");
-      eff->SetMarkerSize(2);
-      eff->SetMaximum(1);
-      eff->SetMinimum(0);
+      h_fakerate -> Divide(h_num,h_den);
+
+      h_fakerate->GetXaxis()->SetTitle("pt (tau) / pt (jet faking the tau)");
+      h_fakerate->GetYaxis()->SetTitle("fake rate");
+      h_fakerate->SetTitle("");
+      h_fakerate->SetMarkerSize(2);
+      h_fakerate->SetMaximum(1);
+      h_fakerate->SetMinimum(0);
 
       // Fit the fakerate
       /*
@@ -78,21 +79,20 @@ void ComputeFakeRate() {
       f->SetLineColor(kRed);
       */
       TCanvas * canv = new TCanvas("canv","",700,600);
-      eff->Draw("epa");
+      h_fakerate->Draw("e0p");
 
       TLegend * leg = new TLegend(0.25,0.7,0.85,0.9);
       gStyle->SetLegendTextSize(0.04);
       SetLegendStyle(leg);
       leg->SetHeader(iso[idx_iso]);
-      leg->AddEntry(eff,samples[i].first,"lp");
+      leg->AddEntry(h_fakerate,samples[i].first,"lp");
       leg->Draw();
       canv->Update();
       canv->Print("figures/fakerate_"+samples[i].first+"_"+iso[idx_iso]+".png");
-
+      
       fileOutput->cd("");
-      TGraphErrors * fakeRate   = (TGraphErrors*)eff->Clone(samples[i].first+"_fakeRate");
-      fakeRate->SetName(iso[idx_iso]+"Iso");
-      fakeRate->Write(iso[idx_iso]+"Iso");
+      h_fakerate->SetName(iso[idx_iso]+"Iso");
+      h_fakerate->Write(iso[idx_iso]+"Iso");
       delete canv;
       cout<<endl;
     }
