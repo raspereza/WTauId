@@ -18,7 +18,7 @@ void ClosureTest_FakeRate() {
 
   std::vector<TString> obs;
   std::vector<TString> pred;
-
+  /*
   obs.push_back("WJetsToLNu_13TeV-madgraphMLM");
   obs.push_back("W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   obs.push_back("W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
@@ -30,7 +30,7 @@ void ClosureTest_FakeRate() {
   pred.push_back("W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   pred.push_back("W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
   pred.push_back("W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-
+  */
   obs.push_back("ZJetsToNuNu_HT-100To200_13TeV-madgraph");
   obs.push_back("ZJetsToNuNu_HT-200To400_13TeV-madgraph");
   obs.push_back("ZJetsToNuNu_HT-400To600_13TeV-madgraph");
@@ -40,6 +40,20 @@ void ClosureTest_FakeRate() {
   pred.push_back("ZJetsToNuNu_HT-200To400_13TeV-madgraph");
   pred.push_back("ZJetsToNuNu_HT-400To600_13TeV-madgraph");
   pred.push_back("ZJetsToNuNu_HT-600To800_13TeV-madgraph");
+
+  obs.push_back("WJetsToLNu_HT-70To100_13TeV-madgraphMLM-pythia8");
+  obs.push_back("WJetsToLNu_HT-100To200_13TeV-madgraphMLM-pythia8");
+  obs.push_back("WJetsToLNu_HT-200To400_13TeV-madgraphMLM-pythia8");
+  obs.push_back("WJetsToLNu_HT-400To600_13TeV-madgraphMLM-pythia8");
+  obs.push_back("WJetsToLNu_HT-600To800_13TeV-madgraphMLM-pythia8");
+  obs.push_back("WJetsToLNu_HT-800To1200_13TeV-madgraphMLM-pythia8");
+
+  pred.push_back("WJetsToLNu_HT-70To100_13TeV-madgraphMLM-pythia8");
+  pred.push_back("WJetsToLNu_HT-100To200_13TeV-madgraphMLM-pythia8");
+  pred.push_back("WJetsToLNu_HT-200To400_13TeV-madgraphMLM-pythia8");
+  pred.push_back("WJetsToLNu_HT-400To600_13TeV-madgraphMLM-pythia8");
+  pred.push_back("WJetsToLNu_HT-600To800_13TeV-madgraphMLM-pythia8");
+  pred.push_back("WJetsToLNu_HT-800To1200_13TeV-madgraphMLM-pythia8");
 
   std::vector<double> obs_xsec;
   for(unsigned int i=0; i<obs.size(); i++) obs_xsec.push_back( getXSec(obs[i]) );
@@ -63,8 +77,12 @@ void ClosureTest_FakeRate() {
 
     //const int nBins = 10;
     //double bins[nBins+1] = {0 , 0.4 , 0.5 , 0.6 , 0.7 , 0.75 , 0.8 , 0.85 , 0.9 , 0.95 , 2.};
-    const int nBins  = 4;
-    float bins[nBins+1] = {100,200,300,400,500};
+    const int nBins  = 6;
+    float bins[nBins+1] = {100,150,200,250,300,400,500};  // tauPt binning
+    //float bins[nBins+1] = {100,200,300,400,500,600,800};  // met binning
+    //float bins[nBins+1] = {100,200,300,400,500,600,800,1000};  // tauJetPt binning
+    //float bins[nBins+1] = {200,300,400,500,600,800,1000};   // mttau binnign
+    //float bins[nBins+1] = {0,0.5,1.1,2.3}; //tauEta binning
     TH1D * observation = new TH1D("observation","",nBins,bins); 
     TH1D * prediction  = new TH1D("prediction","",nBins,bins); 
 
