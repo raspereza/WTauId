@@ -23,12 +23,18 @@ void ComputeFakeRate() {
   std::vector<TString> data_JetHT;
   data_JetHT.push_back("JetHT_Run2016");
   std::vector<TString> wjets;
-  wjets.push_back("WJetsToLNu_13TeV-madgraphMLM");
-  wjets.push_back("W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  wjets.push_back("W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  wjets.push_back("W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  wjets.push_back("W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-
+  //wjets.push_back("WJetsToLNu_13TeV-madgraphMLM");
+  //wjets.push_back("W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
+  //wjets.push_back("W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
+  //wjets.push_back("W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
+  //wjets.push_back("W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
+  wjets.push_back("WJetsToLNu_HT-70To100_13TeV-madgraphMLM-pythia8");
+  wjets.push_back("WJetsToLNu_HT-100To200_13TeV-madgraphMLM-pythia8");
+  wjets.push_back("WJetsToLNu_HT-200To400_13TeV-madgraphMLM-pythia8");
+  wjets.push_back("WJetsToLNu_HT-400To600_13TeV-madgraphMLM-pythia8");
+  wjets.push_back("WJetsToLNu_HT-600To800_13TeV-madgraphMLM-pythia8");
+  wjets.push_back("WJetsToLNu_HT-800To1200_13TeV-madgraphMLM-pythia8");
+  
   samples.push_back(make_pair("WJetsToLNu_13TeV-madgraphMLM" , wjets));
   //samples.push_back(make_pair("SingleMuon_Run2016" , data_SingleMuon));
   //samples.push_back(make_pair("JetHT_Run2016" , data_JetHT));
