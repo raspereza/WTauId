@@ -35,7 +35,19 @@ map<TString, double> xsecs = {
 {"ZJetsToNuNu_HT-100To200_13TeV-madgraph"            , 1.164*280.4},
 {"ZJetsToNuNu_HT-200To400_13TeV-madgraph"            , 1.164*77.67},
 {"ZJetsToNuNu_HT-400To600_13TeV-madgraph"            , 1.164*10.73},
-{"ZJetsToNuNu_HT-600To800_13TeV-madgraph"            , 1.164*4.116}
+{"ZJetsToNuNu_HT-600To800_13TeV-madgraph"            , 1.164*4.116},
+{"WJetsToLNu_HT-70To100_13TeV-madgraphMLM-pythia8"   , 1.221*2589},
+{"WJetsToLNu_HT-100To200_13TeV-madgraphMLM-pythia8"  , 1.221*1345},
+{"WJetsToLNu_HT-200To400_13TeV-madgraphMLM-pythia8"  , 1.221*359.7},
+{"WJetsToLNu_HT-400To600_13TeV-madgraphMLM-pythia8"  , 1.221*48.91},
+{"WJetsToLNu_HT-600To800_13TeV-madgraphMLM-pythia8"  , 1.221*12.05},
+{"WJetsToLNu_HT-800To1200_13TeV-madgraphMLM-pythia8" , 1.221*5.501},
+{"VVTo2L2Nu_13TeV_amcatnloFXFX"                      , 11.95},
+{"WWToLNuQQ_13TeV_powheg"                            , 49.997},
+{"WZTo1L1Nu2Q_13TeV_amcatnloFXFX"                    , 10.71},
+{"WZTo1L3Nu_13TeV_amcatnloFXFX"                      , 3.05},
+{"WZTo2L2Q_13TeV_amcatnloFXFX"                       , 5.595},
+{"DYJetsToLL_M-50_13TeV-madgraphMLM"                 , 5765}
 };
 // ----------------------------------------------------------------------------------------------------
 void loadWorkingPoints()
@@ -212,10 +224,8 @@ void loadFakeRates(TString filename)
 // ----------------------------------------------------------------------------------------------------
 double getFakeRates(float ratio, float jetPt, TString iso, TString err)
 {
-
   for(int i=1; i<= h_fakerate->at(iso).GetNbinsX(); i++){
     if( ratio > h_fakerate->at(iso).GetXaxis()->GetBinLowEdge(i) && ratio < h_fakerate->at(iso).GetXaxis()->GetBinUpEdge(i)){
-      //cout<<"found"<<endl;
       for(int j=1; j<= h_fakerate->at(iso).GetNbinsY(); j++){
 	if( jetPt > h_fakerate->at(iso).GetYaxis()->GetBinLowEdge(j) && jetPt < h_fakerate->at(iso).GetYaxis()->GetBinUpEdge(j)){
 	  return h_fakerate->at(iso).GetBinContent(i,j);
@@ -300,8 +310,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   int nevtsProcessed = getNEventsProcessed(filename);
   double norm = xsec*luminosity/nevtsProcessed;
 
-  bool isData = filename.Contains("SingleMuon") || filename.Contains("JetHT");
-
+  bool isData = filename.Contains("SingleMuon") || filename.Contains("JetHT") || filename.Contains("MET");
   while(myReader->Next()){
 
     if(*trig != sel.trigger && sel.selection != 1  && sel.selection != 4) continue;
@@ -313,28 +322,28 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if(*met < sel.metLow) continue;
     if(*tauPt < sel.tauPtLow || *tauPt > sel.tauPtHigh) continue;
     if(*metFilters != sel.metFilters) continue;
-    
+
     if(*nMuon<sel.nMuonLow || *nMuon>sel.nMuonHigh) continue;
     if(*nElec<sel.nElecLow || *nElec>sel.nElecHigh) continue;
     if(*nSelTaus<sel.nSelTausLow || *nSelTaus>sel.nSelTausHigh) continue;
     if(*nJetsCentral30<sel.nJetsCentral30Low || *nJetsCentral30>sel.nJetsCentral30High) continue;
     if(*nJetsForward30<sel.nJetsForward30Low || *nJetsForward30>sel.nJetsForward30High) continue;
-    
+
     if(*tauDM != sel.tauDM) continue;
     if(*tauAntiMuonLoose3 != sel.tauAntiMuonLoose3) continue;
     if(*tauAntiElectronLooseMVA6 != sel.tauAntiElectronLooseMVA6) continue;
     if(*tauIso != sel.tauIso) continue;
     if((*tauGenMatchDecay<sel.tauGenMatchDecayLow || *tauGenMatchDecay>sel.tauGenMatchDecayHigh) && !isData) continue;
-    
+
     if(*mtmuon < sel.mtmuonLow || *mtmuon > sel.mtmuonHigh ) continue;
-        
+
     Float_t fakerate = 1;
     if(sel.name.Contains("cr_antiiso")) fakerate = getFakeRates(*tauPt/(*tauJetPt), *tauJetPt, iso + "Iso","");
     if(sel.name.Contains("cr_fakerate")) *trigWeight = 1;
     if(!sel.name.Contains("cr_fakerate")){*mueffweight=1;*mutrigweight=1;}
 
     // Stitching only for wjets MC
-    if(filename.Contains("W") && filename.Contains("JetsToLNu")){
+    if(filename.Contains("W") && filename.Contains("JetsToLNu") && !filename.Contains("HT")){
       double xsecIncl = xsecs["WJetsToLNu_13TeV-madgraphMLM"];
       double xsec1Jet = xsecs["W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"];
       double xsec2Jet = xsecs["W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"];
