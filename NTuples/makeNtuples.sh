@@ -31,7 +31,7 @@
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ST_tW_top_5f_inclusiveDecays_13TeV-powheg 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf VVTo2L2Nu_13TeV_amcatnloFXFX 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WWTo1L1Nu2Q_13TeV_amcatnloFXFX 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WWToLNuQQ_13TeV_powheg 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WZTo1L1Nu2Q_13TeV_amcatnloFXFX 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WZTo1L3Nu_13TeV_amcatnloFXFX 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WZTo2L2Q_13TeV_amcatnloFXFX 10
