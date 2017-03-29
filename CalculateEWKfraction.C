@@ -55,7 +55,7 @@ void CalculateEWKfraction() {
 	for(unsigned int idx_list=0; idx_list<samples[i].second.size(); idx_list++){
 	  cout<<"---------- Sample "<<samples[i].second[idx_list]<<" processing. ---------- "<<endl;
 
-	  makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_antiiso,histo[i],var,var,var);
+	  makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],cr_ewkFraction,histo[i],var,var,var);
 	}
       }
       double nEWK_err;

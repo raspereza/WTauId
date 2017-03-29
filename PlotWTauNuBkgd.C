@@ -3,10 +3,7 @@
 int PlotWTauNuBkgd() {
 
   TString dir = "NTuples";
-  //TString dir = "/nfs/dust/cms/user/rasp/Run/Run2016/TauID_2016/";
   TString DataFile = "MET_Run2016";
-  //TString DataFile = "MET_Run2016BCD";  // Re-Reco
-  //TString DataFile = "MET_Run2016BCD-PromptReco";   // PromptReco
   TString Variable = "tauPt";
   TString iso("TightMva");
   int nBins  =     3;
@@ -17,11 +14,11 @@ int PlotWTauNuBkgd() {
   TString Weight = "puWeight*genWeight*trigWeight*";
 
   TString cutsTrigger("trigger>0.5&&");
-  TString cutsTopology("Selection==3&&recoilRatio<1.2&&recoilRatio>0.75&&recoilDPhi>2.4&&met>120&&tauPt>100&&");
+  TString cutsTopology("Selection==3&&recoilDPhi>2.8&&met>120&&tauPt>100&&");
   TString cutsLeptonVeto("nMuon==0&&nElec==0&&");
-  TString cutsJetVeto("nSelTaus==1&&nJetsCentral30<=1&&nJetsForward30==0&&");
-  TString cutsTauIso   ("tauDM>0.5&&tauAntiMuonLoose3>0.5&&tauAntiElectronLooseMVA6>0.5&&tau"+iso+"Iso>0.5");
-  TString cutsTauInvIso("tauDM>0.5&&tauAntiMuonLoose3>0.5&&tauAntiElectronLooseMVA6>0.5&&tau"+iso+"Iso<0.5");
+  TString cutsJetVeto("nSelTaus==1&&nJetsCentral30==1&&nJetsForward30==0&&");
+  TString cutsTauIso   ("tauDM>0.5&&tauAntiMuonTight3>0.5&&tauAntiElectronVTightMVA6>0.5&&tau"+iso+"Iso>0.5");
+  TString cutsTauInvIso("tauDM>0.5&&tauAntiMuonTight3>0.5&&tauAntiElectronVTightMVA6>0.5&&tau"+iso+"Iso<0.5");
   TString  cutsTauDecayMode("&&tauGenMatchDecay<0");
   TString cutsTauDecayModeX("&&tauGenMatchDecay>=0");
   
@@ -32,13 +29,13 @@ int PlotWTauNuBkgd() {
 
   SetStyle();
   bool logY = false;
-  //double lumi = 12980;
-  double lumi = 36800;
+  //  double lumi = 12980; // Run2016BCD lumi
+  double lumi = 35890; // entire 2016 dataset
 
   TH1::SetDefaultSumw2();
   TH2::SetDefaultSumw2();
 
-  TString sampleNames[18] = {
+  TString sampleNames[23] = {
     DataFile, // data (signal region) (0)
     "WJetsToLNu_13TeV-madgraphMLM", // WToTauNu (1)
     "TTJets_13TeV-powheg",               // TTJets (2) 
@@ -47,7 +44,7 @@ int PlotWTauNuBkgd() {
     "ST_tW_top_5f_inclusiveDecays_13TeV-powheg",         // topW              (5)
     "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg",     // antitopW          (6)
     "VVTo2L2Nu_13TeV_amcatnloFXFX",   // VVTo2L2Nu    (7)
-    "WWTo1L1Nu2Q_13TeV_amcatnloFXFX", // WWTo1L1Nu2Q  (8)
+    "WWToLNuQQ_13TeV_powheg", // WWTo1L1Nu2Q  (8)
     "WZTo1L1Nu2Q_13TeV_amcatnloFXFX", // WZTo1L1Nu2Q  (9)
     "WZTo1L3Nu_13TeV_amcatnloFXFX",   // WZTo1L3Nu    (10)
     "WZTo2L2Q_13TeV_amcatnloFXFX",    // WZTo2L2Q     (11)
@@ -56,16 +53,21 @@ int PlotWTauNuBkgd() {
     "ZJetsToNuNu_HT-200To400_13TeV-madgraph", // ZNuNu-HT200to400 (14)
     "ZJetsToNuNu_HT-400To600_13TeV-madgraph", // ZNuNu-HT400to600 (15)
     "ZJetsToNuNu_HT-600To800_13TeV-madgraph", // ZNuNu-HT600to800 (16)
-    ""
+    "WJetsToLNu_HT-70To100_13TeV-madgraphMLM-pythia8",  // WToLNu-HT70To100 (17)
+    "WJetsToLNu_HT-100To200_13TeV-madgraphMLM-pythia8", // WToLNu-HT100To200 (18)
+    "WJetsToLNu_HT-200To400_13TeV-madgraphMLM-pythia8", // WToLNu-HT200To400 (19)
+    "WJetsToLNu_HT-400To600_13TeV-madgraphMLM-pythia8", // WToLNu-HT400To600 (20)
+    "WJetsToLNu_HT-600To800_13TeV-madgraphMLM-pythia8", // WToLNu-HT600To800 (21)
+    "WJetsToLNu_HT-800To1200_13TeV-madgraphMLM-pythia8" // WToLNu-HT800To1200 (22)
   };
 
-  double xsec[18] = {1, // data (signal region)    (0)
+  double xsec[23] = {1, // data (signal region)    (0)
 		     61526.7,    // WJets (1)
  		     831.76,     // TTJets (2)
-		     136.02, // t-channel_top     (3)
-		     80.95,  // t-channel_antitop (4)
-		     35.6,           // topW              (5)
-		     35.6,           // antitopW          (6)
+		     136.02,     // t-channel_top     (3)
+		     80.95,      // t-channel_antitop (4)
+		     35.6,       // topW              (5)
+		     35.6,       // antitopW          (6)
 		     11.95,  // VVTo2L2Nu   (7)
 		     49.997, // WWTo1L1Nu2Q (8)
 		     10.71,  // WZTo1L1Nu2Q (9)
@@ -76,24 +78,25 @@ int PlotWTauNuBkgd() {
 		     1.164*77.67, // ZNuNu-HT200to400 (14)
 		     1.164*10.73, // ZNuNu-HT400to600 (15) 
 		     1.164*4.116, // ZNuNu-HT600to800 (16)
-		     0
+		     1.221*2589,  // WToLNu-HT70To100 (17)
+		     1.221*1345,  // WToLNu-HT100To200 (18) 
+		     1.221*359.7, // WToLNu-HT200To400 (19)
+		     1.221*48.91, // WToLNu-HT400To600 (20)
+		     1.221*12.05, // WToLNu-HT600To800 (21)
+		     1.221*5.501  // WToLNu-HT800To1200 (22)
   };
 
   TString  cuts[30];
   TString cutsX[30];
   TString cutsInvIso[30];
   cuts[0]  = cutsTrigger+Cuts+"&&metFilters"; // data
-  cutsX[0] = cutsTrigger+Cuts+"&&metFilters"; // data
+  cutsX[0] = cutsTrigger+CutsInvIso+"&&metFilters"; // data
   cutsInvIso[0] = cutsTrigger+CutsInvIso+"&&metFilters"; // data
   for (int i=1; i<30; ++i) { // MC samples
     cuts[i]       = Weight+"("+cutsTrigger+Cuts+cutsTauDecayMode+"&&metFilters)";
-    cutsX[i]      = Weight+"("+cutsTrigger+Cuts+cutsTauDecayModeX+"&&metFilters)";
+    cutsX[i]      = Weight+"("+cutsTrigger+CutsInvIso+cutsTauDecayModeX+"&&metFilters)";
     cutsInvIso[i] = Weight+"("+cutsTrigger+CutsInvIso+cutsTauDecayMode+"&&metFilters)";
   }
-  //cuts[1]       = Weight+"("+cutsTrigger+Cuts+cutsTauDecayMode+")";
-  //cutsX[1]      = Weight+"("+cutsTrigger+Cuts+cutsTauDecayModeX+")";
-  //cutsInvIso[1] = Weight+"("+cutsTrigger+CutsInvIso+cutsTauDecayMode+")";
- 
 
   TH1D * hist[40];
   TH1D * histX[40];
@@ -103,7 +106,7 @@ int PlotWTauNuBkgd() {
 
   // filling histograms
   float ewkNorm = 0;
-  for (int i=0; i<17; ++i) {
+  for (int i=0; i<23; ++i) {
     std::cout << sampleNames[i] << std::endl;
     TFile * file = new TFile(dir+"/"+sampleNames[i]+".root");
     TH1D * histWeightsH = (TH1D*)file->Get("histWeightsH");
@@ -142,6 +145,12 @@ int PlotWTauNuBkgd() {
     histInvIso[7]->Add(histInvIso[7],histInvIso[i]);
   }
 
+  // adding WJets-HT samples
+  for (int i=19; i<=22; ++i) {
+    hist[18]->Add(hist[18],hist[i]);
+    histInvIso[18]->Add(histInvIso[18],histInvIso[i]);
+  }
+
   // adding up genuine taus
   for (int i=2; i<=16; ++i)
     histX[1]->Add(histX[1],histX[i]);
@@ -153,36 +162,39 @@ int PlotWTauNuBkgd() {
 
   std::cout << std::endl;
   std::cout << "Anti-isolated region -> " << std::endl;
-  std::cout << "Data    = " << histInvIso[0]->GetSumOfWeights() << std::endl;
-  std::cout << "Top     = " << histInvIso[2]->GetSumOfWeights() << std::endl;
-  std::cout << "WJets   = " << histInvIso[1]->GetSumOfWeights() << std::endl;
-  std::cout << "DY+VV   = " << histInvIso[7]->GetSumOfWeights() << std::endl;
-  std::cout << "genuine = " << histX[1]->GetSumOfWeights() << std::endl;
+  std::cout << "Data        = " << histInvIso[0]->GetSumOfWeights() << std::endl;
+  std::cout << "Top         = " << histInvIso[2]->GetSumOfWeights() << std::endl;
+  std::cout << "WJets(incl) = " << histInvIso[1]->GetSumOfWeights() << std::endl;
+  std::cout << "WJets HT>70 = " << histInvIso[18]->GetSumOfWeights() << std::endl;
+  std::cout << "DY+VV       = " << histInvIso[7]->GetSumOfWeights() << std::endl;
+  std::cout << "genuine     = " << histX[1]->GetSumOfWeights() << std::endl;
   std::cout << std::endl;
   std::cout << "Isolated region -> " << std::endl;
-  std::cout << "Data    = " << hist[0]->GetSumOfWeights() << std::endl;
-  std::cout << "Top     = " << hist[2]->GetSumOfWeights() << std::endl;
-  std::cout << "WJets   = " << hist[1]->GetSumOfWeights() << std::endl;
-  std::cout << "DY+VV   = " << hist[7]->GetSumOfWeights() << std::endl;
+  std::cout << "Data        = " << hist[0]->GetSumOfWeights() << std::endl;
+  std::cout << "Top         = " << hist[2]->GetSumOfWeights() << std::endl;
+  std::cout << "WJets(incl) = " << hist[1]->GetSumOfWeights() << std::endl;
+  std::cout << "WJets HT>70 = " << hist[18]->GetSumOfWeights() << std::endl;
+  std::cout << "DY+VV       = " << hist[7]->GetSumOfWeights() << std::endl;
   std::cout << std::endl;
 
-  histInvIso[1]->Add(histInvIso[1],histInvIso[7]); // adding DY+VV and W+Jets
+  //histInvIso[1]->Add(histInvIso[1],histInvIso[7]); // adding DY+VV and W+Jets
+  histInvIso[18]->Add(histInvIso[18],histInvIso[7]); // adding DY+VV and W+Jets
 
   TH1D* h_fEWK = new TH1D("fEWK","fEWK",nBins,bins);
-  h_fEWK = (TH1D*) histInvIso[1]->Clone();
+  h_fEWK = (TH1D*) histInvIso[18]->Clone();
   h_fEWK->Divide(histInvIso[0]);
   h_fEWK->SetName("h_fEWK");
   double nEWK_err = 0 ;
   double nData_err = 0;
   double fEWK_err = 0;
-  double nData = histInvIso[0]->IntegralAndError(1,nBins,nData_err);
-  double nEWK  = histInvIso[1]->IntegralAndError(1,nBins,nEWK_err);
-  double fEWK  = histInvIso[1]->IntegralAndError(1,nBins,fEWK_err);
+  double nData = histInvIso[0]  -> IntegralAndError(1,nBins,nData_err);
+  double nEWK  = histInvIso[18] -> IntegralAndError(1,nBins,nEWK_err);
+  double fEWK  = h_fEWK         -> IntegralAndError(1,nBins,fEWK_err);
 
   std::cout << "Fraction of electroweak events in antiisolated region -> " << std::endl;
-  std::cout << "EWK (from MC)     = " << nEWK  << " +/- " << nEWK_err << std::endl;
-  std::cout << "Total (from data) = " << nData << " +/- " << nData_err << std::endl;
-  std::cout << "EWK/Total         = " << fEWK  << " +/- " << fEWK_err << std::endl;
+  std::cout << "EWK (from MC)     = " << nEWK       << " +/- " << nEWK_err << std::endl;
+  std::cout << "Total (from data) = " << nData      << " +/- " << nData_err << std::endl;
+  std::cout << "EWK/Total         = " << nEWK/nData << " +/- " << nEWK_err/nData << std::endl;
   std::cout << "  pt > 100 GeV    = " << h_fEWK->GetBinContent(1) << " +/- " << h_fEWK->GetBinError(1) << endl;
   std::cout << "  pt > 150 GeV    = " << h_fEWK->GetBinContent(2) << " +/- " << h_fEWK->GetBinError(2) << endl;
   std::cout << "  pt > 200 GeV    = " << h_fEWK->GetBinContent(3) << " +/- " << h_fEWK->GetBinError(3) << endl;
