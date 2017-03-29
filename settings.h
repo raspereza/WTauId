@@ -23,7 +23,7 @@ double luminosity = 35867;
 
 std::vector<TString> iso;
 map<TString,TH2D>* h_fakerate = 0;
-//TF1* fakerateFunc = 0;
+//TF2* fakerateFunc;
 
 map<TString, double> xsecs = {
 {"W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", 1.221*9644.5}, 
@@ -204,10 +204,6 @@ void loadFakeRates(TString filename)
     exit(-1);
   }
 
-  //TGraphErrors* graph = 0;
-  //f1->GetObject("MediumMvaIso",graph);
-  //fakerateFunc = graph->GetFunction("func");
-
   TIter next(f1->GetListOfKeys());
   TKey *key;
 
@@ -216,6 +212,8 @@ void loadFakeRates(TString filename)
       TClass *c = gROOT->GetClass(key->GetClassName());
       if (!c->InheritsFrom("TH2")) continue; 
       TH2D *h = (TH2D*) key->ReadObj();
+      h->SetDirectory(0);
+      //fakerateFunc = (TF2*) h->GetFunction("f2d");
       h_fakerate -> insert( std::make_pair(h->GetName(),*h) );
     }
   f1->Close();
@@ -233,12 +231,10 @@ double getFakeRates(float ratio, float jetPt, TString iso, TString err)
       }
     }
   }
-  cout<<"ratio = "<<ratio<<endl;
-  cout<<"jetPt = "<<jetPt<<endl;
-  cout<<"nothing found"<<endl;
   return 0;
-  //if(tauPt<0.5 || tauPt>1.0) return 0;
-  //else return fakerateFunc->Eval(tauPt);
+
+  //if(ratio<0.5 || ratio>1.0 || jetPt<100 || jetPt>1200) return 0;
+  //else return fakerateFunc->Eval(ratio,jetPt);
 }
 // ----------------------------------------------------------------------------------------------------
 void makeSelection(TString filename, TString treename, double xsec, TString iso, selectionCuts sel, TH1* histo, TString variableToFill_1, TString variableToFill_2, TString variableToFill_3)
