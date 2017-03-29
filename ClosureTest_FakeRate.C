@@ -77,11 +77,11 @@ void ClosureTest_FakeRate() {
 
     //const int nBins = 10;
     //double bins[nBins+1] = {0 , 0.4 , 0.5 , 0.6 , 0.7 , 0.75 , 0.8 , 0.85 , 0.9 , 0.95 , 2.};
-    const int nBins  = 6;
-    float bins[nBins+1] = {100,150,200,250,300,400,500};  // tauPt binning
-    //float bins[nBins+1] = {100,200,300,400,500,600,800};  // met binning
-    //float bins[nBins+1] = {100,200,300,400,500,600,800,1000};  // tauJetPt binning
-    //float bins[nBins+1] = {200,300,400,500,600,800,1000};   // mttau binnign
+    const int nBins  = 5;
+    float bins[nBins+1] = {100,150,200,250,300,500};  // tauPt binning
+    //float bins[nBins+1] = {100,200,300,400,500,700};  // met binning
+    //float bins[nBins+1] = {100,170,240,310,400,700};  // tauJetPt binning
+    //float bins[nBins+1] = {200,300,400,500,600,800};  // mttau binnign
     //float bins[nBins+1] = {0,0.5,1.1,2.3}; //tauEta binning
     TH1D * observation = new TH1D("observation","",nBins,bins); 
     TH1D * prediction  = new TH1D("prediction","",nBins,bins); 
@@ -221,5 +221,4 @@ void ClosureTest_FakeRate() {
     std::cout << std::endl;
 
   }
-
 }
