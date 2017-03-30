@@ -42,6 +42,7 @@ void CalculateEWKfraction() {
 	
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
+    if(iso[idx_iso] != "TightMva") continue;
     cout<<endl<<"Process "<<iso[idx_iso]<<" : "<<endl;
     
     for (unsigned int i=0; i<samples.size(); ++i) {
