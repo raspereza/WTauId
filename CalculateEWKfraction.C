@@ -37,12 +37,12 @@ void CalculateEWKfraction() {
   samples.push_back(make_pair("MET_Run2016" , data_MET));
 
   TH1D* histo[2] = {0};  
-  const int nBins  = 3;
-  float bins[nBins+1] = {100,150,200,1000};  // tauPt binning
+  const int nBins  = 1;
+  float bins[nBins+1] = {100,1000};  // tauPt binning
 	
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
-    if(iso[idx_iso] != "TightMva") continue;
+    if(iso[idx_iso] != "ghtMva") continue;
     cout<<endl<<"Process "<<iso[idx_iso]<<" : "<<endl;
     
     for (unsigned int i=0; i<samples.size(); ++i) {
@@ -82,5 +82,49 @@ void CalculateEWKfraction() {
     out->cd();
     h_fEWK->Write();
     out->Close();
+  }
+
+  TFile* file = new TFile("output/fraction_EWK.root","READ");
+  TH1D* h_fEWK = 0;
+  file->GetObject("h_fEWK", h_fEWK);
+  double *ratio  = new double[h_fEWK->GetNbinsX()];
+  double *eratio = new double[h_fEWK->GetNbinsX()];
+  for(int i=0; i<h_fEWK->GetNbinsX(); i++){
+    ratio[i]  = h_fEWK->GetBinContent(i+1); 
+    eratio[i] = h_fEWK->GetBinError(i+1); 
+  }
+
+  // Read single fake rates
+  TFile *DataFileJetHT = new TFile("output/JetHT_Run2016_fakeRate.root");
+  TFile *DataFileSingleMu = new TFile("output/SingleMuon_Run2016_fakeRate.root");
+  
+  TFile* out = new TFile("output/fakerates.root","RECREATE");
+
+  cout<<endl<<endl<<"Calculation of combined fake rate"<<endl<<endl;
+  for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
+    
+    TH2D *effJetHT    = (TH2D*)  DataFileJetHT->Get(iso[idx_iso]);
+    TH2D *effSingleMu = (TH2D*)  DataFileSingleMu->Get(iso[idx_iso]);
+    TH2D *effCombined = (TH2D*) effJetHT->Clone();
+
+    for(int i=1; i<=effJetHT->GetNbinsX(); i++){
+      for(int j=1; j<=effJetHT->GetNbinsY(); j++){
+ 
+	double FRJetHT       = effJetHT->GetBinContent(i,j);
+	double FRJetHTErr    = effJetHT->GetBinError(i,j);
+	double FRSingleMu    = effSingleMu->GetBinContent(i,j);
+	double FRSingleMuErr = effSingleMu->GetBinError(i,j);
+
+	double comb = (1-ratio[0])*FRJetHT+ratio[0]*FRSingleMu;
+	double combErr = sqrt( pow(FRSingleMu-FRJetHT,2)*pow(eratio[0],2) + pow(ratio[0],2)*(pow(FRSingleMuErr,2) + pow(FRJetHTErr,2)) );
+
+	effCombined->SetBinContent(i , j , comb);
+	effCombined->SetBinError(i , j , combErr);
+      }
+    }
+    
+    out->cd();
+    effCombined -> SetName(iso[idx_iso]);
+    effCombined -> Write(iso[idx_iso]);
   }
 }
