@@ -169,8 +169,8 @@ void ComputeFakeRate() {
       canv->Print("figures/fakerate_"+samples[i].first+"_"+iso[idx_iso]+"_projectionY.png");
 
       fileOutput->cd("");
-      h_fakerate_2d->SetName(iso[idx_iso]+"Iso");
-      h_fakerate_2d->Write(iso[idx_iso]+"Iso");
+      h_fakerate_2d->SetName(iso[idx_iso]);
+      h_fakerate_2d->Write(iso[idx_iso]);
       delete canv;
       cout<<endl;
     }
