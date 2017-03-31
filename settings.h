@@ -47,7 +47,13 @@ map<TString, double> xsecs = {
 {"WZTo1L1Nu2Q_13TeV_amcatnloFXFX"                    , 10.71},
 {"WZTo1L3Nu_13TeV_amcatnloFXFX"                      , 3.05},
 {"WZTo2L2Q_13TeV_amcatnloFXFX"                       , 5.595},
-{"DYJetsToLL_M-50_13TeV-madgraphMLM"                 , 5765}
+{"DYJetsToLL_M-50_13TeV-madgraphMLM"                 , 5765},
+{"TTJets_13TeV-powheg"                               , 831.76},
+{"ST_t-channel_top_4f_inclusiveDecays_13TeV-powheg"  , 136.95*3*0.108},
+{"ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powheg", 80.95*3*0.108},
+{"ST_tW_top_5f_inclusiveDecays_13TeV-powheg"         , 35.6},
+{"ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg"     , 35.6},
+{"WToTauNu_M-200_13TeV-pythia8"                      , 6.37}
 };
 // ----------------------------------------------------------------------------------------------------
 void loadWorkingPoints()
@@ -89,7 +95,7 @@ struct selectionCuts {
   float mttauHigh = 1000.;
   float recoilPtLow = 0.;
   bool pfJetTrigger=false;
-} sr, cr_antiiso, cr_fakerate_den, cr_fakerate_num,cr_fakerate_dijet_den, cr_fakerate_dijet_num, cr_ewkFraction;
+} sr, sr_trueTaus, cr_antiiso, cr_fakerate_den, cr_fakerate_num,cr_fakerate_dijet_den, cr_fakerate_dijet_num, cr_ewkFraction;
 // ----------------------------------------------------------------------------------------------------
 void initCuts()
 {
@@ -125,6 +131,12 @@ void initCuts()
   sr.mttauLow  = 0;
   sr.mttauHigh = 100000000;
 
+  // sr for true taus
+  sr_trueTaus = sr;
+  sr_trueTaus.name = "sr_trueTaus";
+  sr_trueTaus.tauGenMatchDecayLow  = 0;
+  sr_trueTaus.tauGenMatchDecayHigh = 1000000000;
+  
   // antiiso region
   cr_antiiso = sr;
   cr_antiiso.name = "cr_antiiso";
@@ -315,7 +327,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
 
     if(*trig != sel.trigger && sel.selection != 1  && sel.selection != 4) continue;
     if(sel.selection == 4 && (*pfJet80 != sel.pfJetTrigger && *pfJet140 != sel.pfJetTrigger && *pfJet60 != sel.pfJetTrigger && *pfJet40 != sel.pfJetTrigger)) continue;
-    
+
     if(*Selection != sel.selection) continue;
     if(*recoilRatio < sel.recoilRatioLow || *recoilRatio > sel.recoilRatioHigh) continue;
     if(*recoilDPhi < sel.recoilDPhiLow) continue;
@@ -338,7 +350,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if(*mtmuon < sel.mtmuonLow || *mtmuon > sel.mtmuonHigh ) continue;
 
     Float_t fakerate = 1;
-    if(sel.name.Contains("cr_antiiso")) fakerate = getFakeRates(*tauPt/(*tauJetPt), *tauJetPt, iso + "Iso","");
+    if(sel.name.Contains("cr_antiiso")) fakerate = getFakeRates(*tauPt/(*tauJetPt), *tauJetPt, iso,"");
     if(sel.name.Contains("cr_fakerate")) *trigWeight = 1;
     if(!sel.name.Contains("cr_fakerate")){*mueffweight=1;*mutrigweight=1;}
 
