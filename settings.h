@@ -53,7 +53,7 @@ map<TString, double> xsecs = {
 {"ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powheg", 80.95*3*0.108},
 {"ST_tW_top_5f_inclusiveDecays_13TeV-powheg"         , 35.6},
 {"ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg"     , 35.6},
-{"WToTauNu_M-200_13TeV-pythia8"                      , 6.37}
+{"WToTauNu_M-200_13TeV-pythia8"                      , 1.3*6.37}
 };
 // ----------------------------------------------------------------------------------------------------
 void loadWorkingPoints()
@@ -379,6 +379,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
 
     double weight = (*mueffweight)*(*mutrigweight)*(*puWeight)*(*trigWeight)*(*genWeight)*norm*fakerate;
     if(isData) weight =1;
+    if(isData && sel.name.Contains("cr_antiiso")) weight = fakerate;
 
     if( histo->InheritsFrom("TH2") ){
       if(variableToFill_1==variableToFill_2) ((TH2*) histo) -> Fill(abs(*var1), abs(*var3), weight);
