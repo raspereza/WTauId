@@ -50,21 +50,22 @@ void PlotWTauNu() {
     TString wnorm("1.3*"); // W* K-factor (PYTHIA8 -> NNLO) 
     TString cutsTrigger("trigger>0.5&&");
     //  TString cutsTrigger("");
-    TString cutsTopology("Selection==3&&recoilRatio<1.2&&recoilRatio>0.75&&recoilDPhi>2.4&&met>120&&tauPt>100&&");
+    TString cutsTopology("Selection==3&&recoilDPhi>2.8&&met>120&&tauPt>100&&");
     //  TString cutsPhi("TMath::Abs(tauPhi)>0.5&&TMath::Abs(tauPhi)<2.6&&");
     TString cutsPhi("");
     TString cutsLeptonVeto("nMuon==0&&nElec==0&&");
     //  TString cutsLeptonVeto("nMuon==0&&");
-    TString cutsJetVeto("nSelTaus==1&&nJetsCentral30<=1&&nJetsForward30==0&&");
-    TString         cutsTauId("tauDM>0.5&&tauAntiMuonLoose3>0.5&&tauAntiElectronLooseMVA6>0.5&&tau"+iso[idx_iso]+"Iso>0.5");
-    TString cutsInverseTauIso("tauDM>0.5&&tauAntiMuonLoose3>0.5&&tauAntiElectronLooseMVA6>0.5&&tau"+iso[idx_iso]+"Iso<0.5");
+    TString cutsJetVeto("nSelTaus==1&&nJetsCentral30==1&&nJetsForward30==0&&");
+    TString         cutsTauId("tauDM>0.5&&tauAntiMuonTight3>0.5&&tauAntiElectronVTightMVA6>0.5&&tau"+iso[idx_iso]+"Iso>0.5");
+    TString cutsInverseTauIso("tauDM>0.5&&tauAntiMuonTight3>0.5&&tauAntiElectronVTightMVA6>0.5&&tau"+iso[idx_iso]+"Iso<0.5");
   
     TString CutsBkg = cutsTopology+cutsPhi+cutsLeptonVeto+cutsJetVeto+cutsInverseTauIso;
     TString CutsSig = cutsTopology+cutsPhi+cutsLeptonVeto+cutsJetVeto+cutsTauId;
 
     SetStyle();
     bool logY = false;
-    double lumi = 36800;
+    double lumi = 35867;
+    //double lumi = 36800;
 
     TH1::SetDefaultSumw2();
     TH2::SetDefaultSumw2();
@@ -89,7 +90,7 @@ void PlotWTauNu() {
       "ST_tW_top_5f_inclusiveDecays_13TeV-powheg",         // topW              (16)
       "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg",     // antitopW          (17)
       "VVTo2L2Nu_13TeV_amcatnloFXFX",   // VVTo2L2Nu     (18)
-      "WWTo1L1Nu2Q_13TeV_amcatnloFXFX", // WWTo1L1Nu2Q   (19)
+      "WWToLNuQQ_13TeV_powheg", // WWTo1L1Nu2Q   (19)
       "WZTo1L1Nu2Q_13TeV_amcatnloFXFX", // WZTo1L1Nu2Q   (20)
       "WZTo1L3Nu_13TeV_amcatnloFXFX",   // WZTo1L3Nu     (21)
       "WZTo2L2Q_13TeV_amcatnloFXFX",    // WZTo2L2Q      (22)
@@ -136,7 +137,7 @@ void PlotWTauNu() {
 
     TString cuts[40];
     for (int i=0; i<40; ++i) {
-      cuts[i] = Weight+"("+CutsSig+")&&tauGenMatchDecay>=0";
+      cuts[i] = Weight+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0&&metFilters)";
     }
   
     cuts[0] = cutsTrigger+CutsSig+"&&metFilters";
@@ -145,14 +146,14 @@ void PlotWTauNu() {
     cuts[3] = "fakeAntiL"+iso[idx_iso]+"Up2*("+cutsTrigger+CutsBkg+"&&metFilters)";
     cuts[4] = "fakeAntiL"+iso[idx_iso]+"Up3*("+cutsTrigger+CutsBkg+"&&metFilters)";
 
-    cuts[5]  = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0)";
-    cuts[6]  = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay<0)";
-    cuts[7]  = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0)";
-    cuts[8]  = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0)";
-    cuts[9]  = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0)";
-    cuts[10] = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0)";
-    cuts[11] = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0)";
-    cuts[12] = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0)";
+    cuts[5]  = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0&&metFilters)";
+    cuts[6]  = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay<0&&metFilters)";
+    cuts[7]  = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0&&metFilters)";
+    cuts[8]  = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0&&metFilters)";
+    cuts[9]  = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0&&metFilters)";
+    cuts[10] = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0&&metFilters)";
+    cuts[11] = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0&&metFilters)";
+    cuts[12] = Weight+wnorm+"("+cutsTrigger+CutsSig+"&&tauGenMatchDecay>=0&&metFilters)";
 
     TH1D * hist[40];
 
