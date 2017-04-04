@@ -42,6 +42,7 @@
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-600To800_13TeV-madgraph 10
 
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WToTauNu_M-200_13TeV-pythia8 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WToMuNu_M-200_13TeV-pythia8 10
 
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_jesDown.conf WToTauNu_M-200_13TeV-pythia8_jesDown 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_jesUp.conf WToTauNu_M-200_13TeV-pythia8_jesUp 10
