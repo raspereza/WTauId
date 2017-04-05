@@ -16,7 +16,8 @@ void TauIDMeasurement() {
   loadWorkingPoints();
   initCuts();
   //loadFakeRates("output/WJetsToLNu_13TeV-madgraphMLM_fakeRate.root");
-  loadFakeRates("output/fakerates_FINAL.root");
+  loadFakeRates("output/fakerates_GenuineTauSubtraction.root");
+  //loadFakeRates("output/fakerates_FINAL.root");
 
   std::vector< std::pair<TString,std::vector<TString>> > samples;
   std::vector<TString> data_MET;
@@ -44,11 +45,37 @@ void TauIDMeasurement() {
 
   std::vector<TString> WToTauNu;
   WToTauNu.push_back("WToTauNu_M-200_13TeV-pythia8");
-  
+
+  std::vector<TString> WToTauNu_jesUp;
+  WToTauNu_jesUp.push_back("WToTauNu_M-200_13TeV-pythia8_jesUp");
+  std::vector<TString> WToTauNu_jesDown;
+  WToTauNu_jesDown.push_back("WToTauNu_M-200_13TeV-pythia8_jesDown");
+  std::vector<TString> WToTauNu_tauesUp;
+  WToTauNu_tauesUp.push_back("WToTauNu_M-200_13TeV-pythia8_tauesUp");
+  std::vector<TString> WToTauNu_tauesDown;
+  WToTauNu_tauesDown.push_back("WToTauNu_M-200_13TeV-pythia8_tauesDown");
+  std::vector<TString> WToTauNu_uesUp;
+  WToTauNu_uesUp.push_back("WToTauNu_M-200_13TeV-pythia8_uesUp");
+  std::vector<TString> WToTauNu_uesDown;
+  WToTauNu_uesDown.push_back("WToTauNu_M-200_13TeV-pythia8_uesDown");
+  std::vector<TString> fakeTaus_frUp;
+  fakeTaus_frUp.push_back("MET_Run2016");
+  std::vector<TString> fakeTaus_frDown;
+  fakeTaus_frDown.push_back("MET_Run2016");
+
+
   samples.push_back(make_pair("TrueTaus" , trueTaus));
   samples.push_back(make_pair("FakeTaus" , fakeTaus));
   samples.push_back(make_pair("WToTauNu" , WToTauNu));
-  samples.push_back(make_pair("data" , data_MET));
+  samples.push_back(make_pair("Data" , data_MET));
+  samples.push_back(make_pair("WToTauNu_jesUp" , WToTauNu_jesUp));
+  samples.push_back(make_pair("WToTauNu_jesDown" , WToTauNu_jesDown));
+  samples.push_back(make_pair("WToTauNu_tauesUp" , WToTauNu_tauesUp));
+  samples.push_back(make_pair("WToTauNu_tauesDown" , WToTauNu_tauesDown));
+  samples.push_back(make_pair("WToTauNu_uesUp" , WToTauNu_uesUp));
+  samples.push_back(make_pair("WToTauNu_uesDown" , WToTauNu_uesDown));
+  samples.push_back(make_pair("FakeTaus_frUp" , fakeTaus_frUp));
+  samples.push_back(make_pair("FakeTaus_frDown" , fakeTaus_frDown));
 
   TString var = "mttau";
 
@@ -68,11 +95,13 @@ void TauIDMeasurement() {
       
       for(unsigned int idx_list=0; idx_list<samples[i].second.size(); idx_list++){
 
-	cout<<"Sample : "<<samples[i].second[idx_list]<<endl;
+	cout<<".............. Sample : "<<samples[i].second[idx_list]<<endl;
 
 	TH1D* histo = new TH1D(samples[i].second[idx_list],samples[i].second[idx_list],10,0,1000);
 	selectionCuts select = sr_trueTaus;
-	if(samples[i].first.Contains("FakeTaus")) select =  cr_antiiso;
+	if(samples[i].first == "FakeTaus")        select =  cr_antiiso;
+	if(samples[i].first == "FakeTaus_frUp")   select =  cr_antiiso_up;
+	if(samples[i].first == "FakeTaus_frDown") select =  cr_antiiso_down;
 
 	makeSelection(dir+"/"+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,histo,var,var,var);
 	histoSamples->Add(histo);
@@ -81,12 +110,12 @@ void TauIDMeasurement() {
 	else if(samples[i].first.Contains("TrueTaus")) histoSamples->SetFillColor(TColor::GetColor("#6F2D35"));
 	else if(samples[i].first.Contains("WToTauNu")) histoSamples->SetFillColor(TColor::GetColor("#FFCC66"));
       }
-     
-      if(!samples[i].first.Contains("data")){
+
+      histoMap[samples[i].first] = histoSamples;
+      if(!samples[i].first.Contains("Data") && !samples[i].first.Contains("Up") && !samples[i].first.Contains("Down")){
 	stack->Add(histoSamples);
-	histoMap[samples[i].first] = histoSamples;
       }
-      else h_data = (TH1D*) histoSamples->Clone(); 
+      else if(samples[i].first.Contains("Data")) h_data = (TH1D*) histoSamples->Clone(); 
       cout<<samples[i].first<<" = "<<histoSamples->Integral()<<endl<<endl;
     }
 
@@ -102,7 +131,7 @@ void TauIDMeasurement() {
     upper->cd();
 
     stack->Draw("hist");
-    stack->GetYaxis()->SetRangeUser(0,1200);
+    stack->GetYaxis()->SetRangeUser(0,stack->GetMaximum()*1.5);
     stack->GetXaxis()->SetTitle("m_{T} [GeV]");
     stack->GetYaxis()->SetTitle("Events");
     gPad->Modified(); 
@@ -110,11 +139,11 @@ void TauIDMeasurement() {
       h_data->Draw("e1 same");
       bkgdErr->Draw("e2same");
     }
-    
+
     TLegend * leg = new TLegend(0.55,0.4,0.85,0.78);
     SetLegendStyle(leg);
     leg->SetTextSize(0.047);
-    leg->SetHeader(iso[idx_iso]+"Iso");
+    leg->SetHeader(iso[idx_iso]+" Id");
     if(h_data) leg->AddEntry(h_data,"Data","lp");
     if(histoMap["WToTauNu"]) leg->AddEntry(histoMap["WToTauNu"],"W#rightarrow#tau#nu","f");
     if(histoMap["FakeTaus"]) leg->AddEntry(histoMap["FakeTaus"],"bkgd (fake taus)","f");
@@ -147,6 +176,24 @@ void TauIDMeasurement() {
     canv->SetSelected(canv);
     canv->Update();
     canv->Print("figures/mttau_"+iso[idx_iso]+".png");
+
+    // Save all histograms in one file
+    TFile *out = new TFile("output/mttau_"+iso[idx_iso]+".root","RECREATE");
+    out->cd();
+    
+    histoMap["Data"]    ->Write("Data");
+    histoMap["FakeTaus"]->Write("FakeTaus");
+    histoMap["TrueTaus"]->Write("TrueTaus");
+    histoMap["WToTauNu"]->Write("WToTauNu");
+    histoMap["WToTauNu_jesUp"]->Write("WToTauNu_jesUp");
+    histoMap["WToTauNu_jesDown"]->Write("WToTauNu_jesDown");
+    histoMap["WToTauNu_tauesUp"]->Write("WToTauNu_tauesUp");
+    histoMap["WToTauNu_tauesDown"]->Write("WToTauNu_tauesDown");
+    histoMap["WToTauNu_uesUp"]->Write("WToTauNu_uesUp");
+    histoMap["WToTauNu_uesDown"]->Write("WToTauNu_uesDown");
+    histoMap["FakeTaus_frUp"]->Write("FakeTaus_frUp");
+    histoMap["FakeTaus_frDown"]->Write("FakeTaus_frDown");
+
   }
 
 }

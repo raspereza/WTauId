@@ -59,12 +59,13 @@ map<TString, double> xsecs = {
 void loadWorkingPoints()
 {
   iso.push_back("VTightMva");
-  iso.push_back("TightMva");
+  /* 
+ iso.push_back("TightMva");
   iso.push_back("MediumMva");
   iso.push_back("LooseMva");
   iso.push_back("Tight");
   iso.push_back("Medium");
-  iso.push_back("Loose");
+  iso.push_back("Loose");*/
 }
 // ----------------------------------------------------------------------------------------------------
 double getXSec(TString sampleName)
@@ -95,7 +96,7 @@ struct selectionCuts {
   float mttauHigh = 1000.;
   float recoilPtLow = 0.;
   bool pfJetTrigger=false;
-} sr, sr_trueTaus, cr_antiiso, cr_fakerate_den, cr_fakerate_num,cr_fakerate_dijet_den, cr_fakerate_dijet_num, cr_ewkFraction;
+} sr, sr_trueTaus, cr_antiiso, cr_fakerate_den, cr_fakerate_num,cr_fakerate_dijet_den, cr_fakerate_dijet_num, cr_ewkFraction, cr_antiiso_up, cr_antiiso_down;
 // ----------------------------------------------------------------------------------------------------
 void initCuts()
 {
@@ -141,7 +142,12 @@ void initCuts()
   cr_antiiso = sr;
   cr_antiiso.name = "cr_antiiso";
   cr_antiiso.tauIso = false;
-  
+
+  cr_antiiso_up = cr_antiiso;
+  cr_antiiso_up.name = "cr_antiiso_up";
+  cr_antiiso_down = cr_antiiso;
+  cr_antiiso_down.name = "cr_antiiso_down";
+
   // cr for ewk fraction
   cr_ewkFraction = cr_antiiso;
   cr_ewkFraction.name = "cr_ewkFraction"; 
@@ -242,7 +248,9 @@ double getFakeRates(float ratio, float jetPt, TString iso, TString err)
     if( ratio > h_fakerate->at(iso).GetXaxis()->GetBinLowEdge(i) && ratio < h_fakerate->at(iso).GetXaxis()->GetBinUpEdge(i)){
       for(int j=1; j<= h_fakerate->at(iso).GetNbinsY(); j++){
 	if( jetPt > h_fakerate->at(iso).GetYaxis()->GetBinLowEdge(j) && jetPt < h_fakerate->at(iso).GetYaxis()->GetBinUpEdge(j)){
-	  return h_fakerate->at(iso).GetBinContent(i,j);
+	  if(err == "up")        return h_fakerate->at(iso).GetBinContent(i,j) + h_fakerate->at(iso).GetBinError(i,j);
+	  else if(err == "down") return h_fakerate->at(iso).GetBinContent(i,j) - h_fakerate->at(iso).GetBinError(i,j);
+	  else                   return h_fakerate->at(iso).GetBinContent(i,j);
 	}
       }
     }
@@ -350,7 +358,9 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if(*mtmuon < sel.mtmuonLow || *mtmuon > sel.mtmuonHigh ) continue;
 
     Float_t fakerate = 1;
-    if(sel.name.Contains("cr_antiiso")) fakerate = getFakeRates(*tauPt/(*tauJetPt), *tauJetPt, iso,"");
+    if(sel.name == "cr_antiiso")      fakerate = getFakeRates(*tauPt/(*tauJetPt),*tauJetPt,iso,"");
+    if(sel.name == "cr_antiiso_up")   fakerate = getFakeRates(*tauPt/(*tauJetPt),*tauJetPt,iso,"up");
+    if(sel.name == "cr_antiiso_down") fakerate = getFakeRates(*tauPt/(*tauJetPt),*tauJetPt,iso,"down");
     if(sel.name.Contains("cr_fakerate")) *trigWeight = 1;
     if(!sel.name.Contains("cr_fakerate")){*mueffweight=1;*mutrigweight=1;}
 
