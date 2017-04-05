@@ -112,6 +112,9 @@ void ComputeFakeRate() {
 
       cout<<samples[i].first<<" : "<<num<<"/"<<den<<" = "<<num/den<<" +/- "<<numE/den<<" (nevents = "<<h_num->GetEntries()<<"/"<<h_den->GetEntries()<<")"<<endl<<endl;
       
+      // Subtract genuine taus
+      if(samples[i].first.Contains("SingleMu"))	h_num -> Add(histoMap["GenuineTaus_"+iso[idx_iso]],-1);
+
       // Statistical precision of fakerate:
       for(int i=1; i<=h_num->GetNbinsX(); i++)
 	{for(int j=1; j<=h_num->GetNbinsY(); j++)
@@ -121,9 +124,6 @@ void ComputeFakeRate() {
 	      cout<<"Numerator of "<<i<<". x-bin and "<<j<<". y-bin : "<<num_bin<<" +/- "<<numE_bin<<endl;	      
 	    }
 	}
-
-      // Subtract genuine taus
-      if(samples[i].first.Contains("SingleMu"))	h_num -> Add(histoMap["GenuineTaus_"+iso[idx_iso]],-1);
 
       h_fakerate_2d -> Divide(h_num,h_den);
       h_fakerate_2d_woTrig -> Divide(h_num_woTrig,h_den_woTrig);
