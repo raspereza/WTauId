@@ -31,15 +31,35 @@ void ComputeFakeRate() {
   wjets.push_back("WJetsToLNu_HT-400To600_13TeV-madgraphMLM-pythia8");
   wjets.push_back("WJetsToLNu_HT-600To800_13TeV-madgraphMLM-pythia8");
   wjets.push_back("WJetsToLNu_HT-800To1200_13TeV-madgraphMLM-pythia8");
-  
+
+  std::vector<TString> genuineTaus;
+  genuineTaus.push_back("TTJets_13TeV-powheg");
+  genuineTaus.push_back("ST_t-channel_top_4f_inclusiveDecays_13TeV-powheg");
+  genuineTaus.push_back("ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powheg");
+  genuineTaus.push_back("ST_tW_top_5f_inclusiveDecays_13TeV-powheg");
+  genuineTaus.push_back("ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg");
+  genuineTaus.push_back("VVTo2L2Nu_13TeV_amcatnloFXFX");
+  genuineTaus.push_back("WWToLNuQQ_13TeV_powheg");
+  genuineTaus.push_back("WZTo1L1Nu2Q_13TeV_amcatnloFXFX");
+  genuineTaus.push_back("WZTo1L3Nu_13TeV_amcatnloFXFX");
+  genuineTaus.push_back("WZTo2L2Q_13TeV_amcatnloFXFX");
+  genuineTaus.push_back("DYJetsToLL_M-50_13TeV-madgraphMLM");
+  genuineTaus.push_back("ZJetsToNuNu_HT-100To200_13TeV-madgraph");
+  genuineTaus.push_back("ZJetsToNuNu_HT-200To400_13TeV-madgraph");
+  genuineTaus.push_back("ZJetsToNuNu_HT-400To600_13TeV-madgraph");
+  genuineTaus.push_back("ZJetsToNuNu_HT-600To800_13TeV-madgraph");
+
+  samples.push_back(make_pair("GenuineTaus" , genuineTaus));
   samples.push_back(make_pair("WJetsToLNu_13TeV-madgraphMLM" , wjets));
   samples.push_back(make_pair("SingleMuon_Run2016" , data_SingleMuon));
   samples.push_back(make_pair("JetHT_Run2016" , data_JetHT));
 
+  std::map<TString,TH2D*> histoMap;
+
   for (unsigned int i=0; i<samples.size(); ++i) {
 
     TFile *fileOutput   = new TFile("output/"+samples[i].first+"_fakeRate.root","recreate");
-      
+
     for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
       cout<<endl<<"Process "<<iso[idx_iso]<<" : "<<endl;
@@ -58,12 +78,20 @@ void ComputeFakeRate() {
 	selectionCuts select = cr_fakerate_num;
 	cr_fakerate_dijet_num.pfJetTrigger = true;
 	if(samples[i].second[idx_list].Contains("JetHT")) select =  cr_fakerate_dijet_num;
- 	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,h_num,var1,var2,var3);
+	if(samples[i].first.Contains("Genuine")){
+	  select.tauGenMatchDecayLow   = 0;
+	  select.tauGenMatchDecayHigh  = 100000;
+	}
+	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,h_num,var1,var2,var3);
 	select = cr_fakerate_den;
 	cr_fakerate_dijet_den.pfJetTrigger = true;
 	if(samples[i].second[idx_list].Contains("JetHT")) select =  cr_fakerate_dijet_den;
+	if(samples[i].first.Contains("Genuine")){
+	  select.tauGenMatchDecayLow   = 0;
+	  select.tauGenMatchDecayHigh  = 100000;
+	}
 	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,h_den,var1,var2,var3);
-	
+
 	// wo Trigger
 	cr_fakerate_dijet_num.pfJetTrigger = false;
 	if(samples[i].second[idx_list].Contains("JetHT")) select =  cr_fakerate_dijet_num;
@@ -73,6 +101,9 @@ void ComputeFakeRate() {
  	if(samples[i].second[idx_list].Contains("JetHT")) select =  cr_fakerate_dijet_den;
 	makeSelection(dir+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,h_den_woTrig,var1,var2,var3);
       }
+
+      histoMap[samples[i].first + "_" + iso[idx_iso]] = (TH2D*) h_num -> Clone();
+      histoMap[samples[i].first + "_" + iso[idx_iso]] -> SetDirectory(0);
 
       double numE = 0;
       double denE = 0;
@@ -87,9 +118,12 @@ void ComputeFakeRate() {
 	    {
 	      double numE_bin = 0;
 	      double num_bin = h_num -> IntegralAndError(i,i,j,j,numE_bin);
-	      cout<<"Content in "<<i<<". x-bin and "<<j<<". y-bin : "<<num_bin<<" +/- "<<numE_bin<<endl;	      
+	      cout<<"Numerator of "<<i<<". x-bin and "<<j<<". y-bin : "<<num_bin<<" +/- "<<numE_bin<<endl;	      
 	    }
 	}
+
+      // Subtract genuine taus
+      if(samples[i].first.Contains("SingleMu"))	h_num -> Add(histoMap["GenuineTaus_"+iso[idx_iso]],-1);
 
       h_fakerate_2d -> Divide(h_num,h_den);
       h_fakerate_2d_woTrig -> Divide(h_num_woTrig,h_den_woTrig);
@@ -147,8 +181,8 @@ void ComputeFakeRate() {
       // Make 1d plots dependent on tauPt/tauJetPt 
       //TH1D* h = h_fakerate_2d -> ProjectionX("fakerate_projection_withTrig",1,nBinsJetPt);
       TH1D* h = h_fakerate_2d -> ProjectionY("fakerate_projection_withTrig",1,nBinsRatio);
-      TF1* f1 = new TF1("f1","[0]*exp([1]*x)");
-      h->Fit("f1");
+      //TF1* f1 = new TF1("f1","[0]*exp([1]*x)");
+      //h->Fit("f1");
       h->SetMaximum(1.);
       h->SetMinimum(0.00001);
       //TH1D* h_woTrig = h_fakerate_2d_woTrig -> ProjectionX("fakerate_projection_woTrig",1,nBinsJetPt);
