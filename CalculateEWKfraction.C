@@ -4,6 +4,8 @@
 
 void CalculateEWKfraction() {
 
+  bool recalculateEWKfraction = true;
+
   loadWorkingPoints();
   initCuts();
 
@@ -42,16 +44,16 @@ void CalculateEWKfraction() {
 	
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
-    if(iso[idx_iso] != "ghtMva") continue;
+    if(!recalculateEWKfraction) continue;
+    if(iso[idx_iso] != "TightMva") continue;
+
     cout<<endl<<"Process "<<iso[idx_iso]<<" : "<<endl;
     
     for (unsigned int i=0; i<samples.size(); ++i) {
 
-      TFile *fileOutput   = new TFile("output/"+samples[i].first+"_fakeRate.root","recreate");
-      
       // filling histograms
       histo[i]  = new TH1D("h_" + samples[i].first,"",nBins,bins); 
-    
+
       TString var = "tauPt";
       for(unsigned int idx_list=0; idx_list<samples[i].second.size(); idx_list++){
 	cout<<"---------- Sample "<<samples[i].second[idx_list]<<" processing. ---------- "<<endl;
@@ -103,8 +105,8 @@ void CalculateEWKfraction() {
   cout<<endl<<endl<<"Calculation of combined fake rate"<<endl<<endl;
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
     
-    TH2D *effJetHT    = (TH2D*)  DataFileJetHT->Get(iso[idx_iso]);
-    TH2D *effSingleMu = (TH2D*)  DataFileSingleMu->Get(iso[idx_iso]);
+    TH2D *effJetHT    = (TH2D*) DataFileJetHT->Get(iso[idx_iso]);
+    TH2D *effSingleMu = (TH2D*) DataFileSingleMu->Get(iso[idx_iso]);
     TH2D *effCombined = (TH2D*) effJetHT->Clone();
 
     for(int i=1; i<=effJetHT->GetNbinsX(); i++){
@@ -122,6 +124,8 @@ void CalculateEWKfraction() {
 	effCombined->SetBinError(i , j , combErr);
       }
     }
+
+    cout<<"Used EWK fraction = "<<ratio[0]<<endl;
     
     out->cd();
     effCombined -> SetName(iso[idx_iso]);
