@@ -41,15 +41,15 @@
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-400To600_13TeV-madgraph 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-600To800_13TeV-madgraph 10
 
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WToTauNu_M-200_13TeV-pythia8 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WToMuNu_M-200_13TeV-pythia8 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WToTauNu_M-200_13TeV-pythia8 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WToMuNu_M-200_13TeV-pythia8 2
 
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_jesDown.conf WToTauNu_M-200_13TeV-pythia8_jesDown 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_jesUp.conf WToTauNu_M-200_13TeV-pythia8_jesUp 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_uesDown.conf WToTauNu_M-200_13TeV-pythia8_uesDown 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_uesUp.conf WToTauNu_M-200_13TeV-pythia8_uesUp 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_tauesDown.conf WToTauNu_M-200_13TeV-pythia8_tauesDown 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_tauesUp.conf WToTauNu_M-200_13TeV-pythia8_tauesUp 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_jesDown.conf WToTauNu_M-200_13TeV-pythia8_jesDown 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_jesUp.conf WToTauNu_M-200_13TeV-pythia8_jesUp 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_uesDown.conf WToTauNu_M-200_13TeV-pythia8_uesDown 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_uesUp.conf WToTauNu_M-200_13TeV-pythia8_uesUp 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_tauesDown.conf WToTauNu_M-200_13TeV-pythia8_tauesDown 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_tauesUp.conf WToTauNu_M-200_13TeV-pythia8_tauesUp 2
 
 # For tauID (including trigger efficiencies + fake rate)
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer.conf MET_Run2016 20
