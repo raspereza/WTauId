@@ -104,7 +104,6 @@ void TauIDMeasurement() {
 	  select =  cr_antiiso;
 	  select.name = "cr_antiiso_" + samples[i].first(11,samples[i].first.Length()); 
 	}
-	
 	makeSelection(dir+"/"+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,histo,var,var,var);
 	histoSamples->Add(histo);
 	histoSamples->SetFillStyle(1001);
@@ -121,11 +120,40 @@ void TauIDMeasurement() {
       cout<<samples[i].first<<" = "<<histoSamples->Integral()<<endl<<endl;
     }
 
+    // ------------------ Computation of all uncertainties : START  -------
     TH1D * bkgdErr = (TH1D*)stack->GetStack()->Last()->Clone("bkgdErr");
     bkgdErr->SetFillStyle(3013);
     bkgdErr->SetFillColor(1);
     bkgdErr->SetMarkerStyle(21);
     bkgdErr->SetMarkerSize(0);  
+    double addErr = 0;
+    for(int i=1; i<=bkgdErr->GetNbinsX(); i++){
+      // 1.) Uncertainty on JES, TauES, UES
+      addErr = histoMap["WToTauNu_jesUp"]->GetBinContent(i) - histoMap["WToTauNu"]->GetBinContent(i); 
+      cout<<"addErr 1 = "<<addErr<<endl; 
+      bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));      
+      addErr = histoMap["WToTauNu_tauesUp"]->GetBinContent(i) - histoMap["WToTauNu"]->GetBinContent(i); 
+      cout<<"addErr 2 = "<<addErr<<endl; 
+      bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
+      addErr = histoMap["WToTauNu_uesUp"]->GetBinContent(i) - histoMap["WToTauNu"]->GetBinContent(i); 
+      cout<<"addErr 3 = "<<addErr<<endl; 
+      bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
+      // 2.) Tau normalization uncertainty
+      addErr = 0.3*histoMap["WToTauNu"]->GetBinContent(i);
+      cout<<"addErr 4 = "<<addErr<<endl; 
+      bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
+      // 3.) Fake rate uncertainty
+      map<TString,TH1D*>::iterator it;
+      for ( it = histoMap.begin(); it != histoMap.end(); it++ )
+	{
+	  if(it->first.Contains("FR") && it->first.Contains("Up")){
+	    addErr = it->second->GetBinContent(i) - histoMap["FakeTaus"]->GetBinContent(i);
+	    cout<<"addErr 5 = "<<addErr<<endl; 
+	    bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
+	  }    
+	}
+    }
+    // ------------------ Computation of all uncertainties : END  -------
 
     TCanvas * canv = new TCanvas("canv","",700,800);
     TPad* upper = new TPad("upper","pad",0,0.29,1,1);
@@ -133,7 +161,7 @@ void TauIDMeasurement() {
     upper->cd();
 
     stack->Draw("hist");
-    stack->GetYaxis()->SetRangeUser(0,stack->GetMaximum()*1.5);
+    stack->SetMaximum(stack->GetMaximum()*1.4);
     stack->GetXaxis()->SetTitle("m_{T} [GeV]");
     stack->GetYaxis()->SetTitle("Events");
     gPad->Modified(); 
@@ -163,15 +191,24 @@ void TauIDMeasurement() {
       ratioH->GetXaxis()->SetTitle("");
       ratioH->GetYaxis()->SetRangeUser(0.4,1.6);
     }
-    //TH1D * ratioErrH = (TH1D*)bkgdErr->Clone("ratioErrH");
-   
-    
+    TH1D * ratioErrH = (TH1D*)bkgdErr->Clone("ratioErrH");
+    for(int i=1; i<=bkgdErr->GetNbinsX(); i++){
+      ratioErrH->SetBinError(i,bkgdErr->GetBinError(i)/bkgdErr->GetBinContent(i));
+      if(bkgdErr->GetBinContent(i)==0) ratioErrH->SetBinError(i,0);
+      ratioErrH->SetBinContent(i,1);
+    }
+    ratioErrH->SetFillStyle(3013);
+    ratioErrH->SetFillColor(1);
+    ratioErrH->SetMarkerStyle(21);
+    ratioErrH->SetMarkerSize(0);  
+
     canv->cd();
     TPad * lower = new TPad("lower", "pad",0,0,1,0.30);
     lower->SetGridy();
     lower->Draw();
     lower->cd();
     if(h_data) ratioH->Draw("e1");
+    ratioErrH->Draw("e2 same");
     //ratioErrH->Draw("same");
     canv->cd();
     canv->Modified();
