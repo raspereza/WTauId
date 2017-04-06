@@ -53,7 +53,13 @@ map<TString, double> xsecs = {
 {"ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powheg", 80.95*3*0.108},
 {"ST_tW_top_5f_inclusiveDecays_13TeV-powheg"         , 35.6},
 {"ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg"     , 35.6},
-{"WToTauNu_M-200_13TeV-pythia8"                      , 1.3*6.37}
+{"WToTauNu_M-200_13TeV-pythia8"                      , 1.3*6.37},
+{"WToTauNu_M-200_13TeV-pythia8_jesUp"                , 1.3*6.37},
+{"WToTauNu_M-200_13TeV-pythia8_jesDown"              , 1.3*6.37},
+{"WToTauNu_M-200_13TeV-pythia8_tauesUp"              , 1.3*6.37},
+{"WToTauNu_M-200_13TeV-pythia8_tauesDown"            , 1.3*6.37},
+{"WToTauNu_M-200_13TeV-pythia8_uesUp"                , 1.3*6.37},
+{"WToTauNu_M-200_13TeV-pythia8_uesDown"              , 1.3*6.37}
 };
 // ----------------------------------------------------------------------------------------------------
 void loadWorkingPoints()
