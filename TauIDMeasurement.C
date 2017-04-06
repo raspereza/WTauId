@@ -15,7 +15,6 @@ void TauIDMeasurement() {
 
   loadWorkingPoints();
   initCuts();
-  //loadFakeRates("output/WJetsToLNu_13TeV-madgraphMLM_fakeRate.root");
   loadFakeRates("output/fakerates_GenuineTauSubtraction.root");
   //loadFakeRates("output/fakerates_FINAL.root");
 
@@ -58,12 +57,16 @@ void TauIDMeasurement() {
   WToTauNu_uesUp.push_back("WToTauNu_M-200_13TeV-pythia8_uesUp");
   std::vector<TString> WToTauNu_uesDown;
   WToTauNu_uesDown.push_back("WToTauNu_M-200_13TeV-pythia8_uesDown");
-  std::vector<TString> fakeTaus_frUp;
-  fakeTaus_frUp.push_back("MET_Run2016");
-  std::vector<TString> fakeTaus_frDown;
-  fakeTaus_frDown.push_back("MET_Run2016");
-
-
+  for(int i=1; i<=h_fakerate->at("TightMva").GetNbinsX(); i++){
+    for(int j=1; j<=h_fakerate->at("TightMva").GetNbinsY(); j++){
+      std::vector<TString> fakeTaus_FRUp;
+      fakeTaus_FRUp.push_back("MET_Run2016");
+      std::vector<TString> fakeTaus_FRDown;
+      fakeTaus_FRDown.push_back("MET_Run2016");
+      samples.push_back(make_pair(Form("FakeTaus_FR%i%iUp",i,j) , fakeTaus_FRUp));
+      samples.push_back(make_pair(Form("FakeTaus_FR%i%iDown",i,j) , fakeTaus_FRDown));
+    }
+  }
   samples.push_back(make_pair("TrueTaus" , trueTaus));
   samples.push_back(make_pair("FakeTaus" , fakeTaus));
   samples.push_back(make_pair("WToTauNu" , WToTauNu));
@@ -74,8 +77,6 @@ void TauIDMeasurement() {
   samples.push_back(make_pair("WToTauNu_tauesDown" , WToTauNu_tauesDown));
   samples.push_back(make_pair("WToTauNu_uesUp" , WToTauNu_uesUp));
   samples.push_back(make_pair("WToTauNu_uesDown" , WToTauNu_uesDown));
-  samples.push_back(make_pair("FakeTaus_frUp" , fakeTaus_frUp));
-  samples.push_back(make_pair("FakeTaus_frDown" , fakeTaus_frDown));
 
   TString var = "mttau";
 
@@ -99,10 +100,11 @@ void TauIDMeasurement() {
 
 	TH1D* histo = new TH1D(samples[i].second[idx_list],samples[i].second[idx_list],10,0,1000);
 	selectionCuts select = sr_trueTaus;
-	if(samples[i].first == "FakeTaus")        select =  cr_antiiso;
-	if(samples[i].first == "FakeTaus_frUp")   select =  cr_antiiso_up;
-	if(samples[i].first == "FakeTaus_frDown") select =  cr_antiiso_down;
-
+	if( samples[i].first.Contains("FakeTaus") ){
+	  select =  cr_antiiso;
+	  select.name = "cr_antiiso_" + samples[i].first(11,samples[i].first.Length()); 
+	}
+	
 	makeSelection(dir+"/"+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,histo,var,var,var);
 	histoSamples->Add(histo);
 	histoSamples->SetFillStyle(1001);
@@ -175,25 +177,31 @@ void TauIDMeasurement() {
     canv->Modified();
     canv->SetSelected(canv);
     canv->Update();
-    canv->Print("figures/mttau_"+iso[idx_iso]+".png");
+    canv->Print("figures/" + var + "_" + iso[idx_iso] + ".png");
+
+
+    // Get bin-by-bin uncertainties for WTauNu
+    TH1D* histo = 0;
+    for(int i =1; i<=histoMap["WToTauNu"]->GetNbinsX(); i++){
+      histo = (TH1D*) histoMap["WToTauNu"]->Clone();
+      histo->SetBinContent(i,histoMap["WToTauNu"]->GetBinContent(i)+histoMap["WToTauNu"]->GetBinError(i));
+      histo->SetName(Form("WToTauNu_Bin%iUp",i));
+      histoMap[histo->GetName()] = histo;
+      histo = (TH1D*) histoMap["WToTauNu"]->Clone();
+      histo->SetBinContent(i,histoMap["WToTauNu"]->GetBinContent(i)-histoMap["WToTauNu"]->GetBinError(i));
+      histo->SetName(Form("WToTauNu_Bin%iDown",i));
+      histoMap[histo->GetName()] = histo;
+    }
 
     // Save all histograms in one file
-    TFile *out = new TFile("output/mttau_"+iso[idx_iso]+".root","RECREATE");
+    TFile *out = new TFile("output/" + var + "_" + iso[idx_iso] + "_WToTauNu_shapes.root","RECREATE");
     out->cd();
-    
-    histoMap["Data"]    ->Write("Data");
-    histoMap["FakeTaus"]->Write("FakeTaus");
-    histoMap["TrueTaus"]->Write("TrueTaus");
-    histoMap["WToTauNu"]->Write("WToTauNu");
-    histoMap["WToTauNu_jesUp"]->Write("WToTauNu_jesUp");
-    histoMap["WToTauNu_jesDown"]->Write("WToTauNu_jesDown");
-    histoMap["WToTauNu_tauesUp"]->Write("WToTauNu_tauesUp");
-    histoMap["WToTauNu_tauesDown"]->Write("WToTauNu_tauesDown");
-    histoMap["WToTauNu_uesUp"]->Write("WToTauNu_uesUp");
-    histoMap["WToTauNu_uesDown"]->Write("WToTauNu_uesDown");
-    histoMap["FakeTaus_frUp"]->Write("FakeTaus_frUp");
-    histoMap["FakeTaus_frDown"]->Write("FakeTaus_frDown");
 
+    map<TString,TH1D*>::iterator it;
+    for ( it = histoMap.begin(); it != histoMap.end(); it++ )
+      {
+	histoMap[it->first]    ->Write(it->first);
+      }    
   }
 
 }
