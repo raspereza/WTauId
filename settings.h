@@ -59,7 +59,14 @@ map<TString, double> xsecs = {
 {"WToTauNu_M-200_13TeV-pythia8_tauesUp"              , 1.3*6.37},
 {"WToTauNu_M-200_13TeV-pythia8_tauesDown"            , 1.3*6.37},
 {"WToTauNu_M-200_13TeV-pythia8_uesUp"                , 1.3*6.37},
-{"WToTauNu_M-200_13TeV-pythia8_uesDown"              , 1.3*6.37}
+{"WToTauNu_M-200_13TeV-pythia8_uesDown"              , 1.3*6.37},
+{"WToMuNu_M-200_13TeV-pythia8"                       , 1.3*5.92},
+{"WToMuNu_M-200_13TeV-pythia8_jesUp"                 , 1.3*5.92},
+{"WToMuNu_M-200_13TeV-pythia8_jesDown"               , 1.3*5.92},
+{"WToMuNu_M-200_13TeV-pythia8_tauesUp"               , 1.3*5.92},
+{"WToMuNu_M-200_13TeV-pythia8_tauesDown"             , 1.3*5.92},
+{"WToMuNu_M-200_13TeV-pythia8_uesUp"                 , 1.3*5.92},
+{"WToMuNu_M-200_13TeV-pythia8_uesDown"               , 1.3*5.92}
 };
 // ----------------------------------------------------------------------------------------------------
 void loadWorkingPoints()
@@ -100,8 +107,10 @@ struct selectionCuts {
   float mttauLow=0;
   float mttauHigh = 1000.;
   float recoilPtLow = 0.;
-  bool pfJetTrigger=false;
-} sr, sr_trueTaus, cr_antiiso, cr_fakerate_den, cr_fakerate_num,cr_fakerate_dijet_den, cr_fakerate_dijet_num, cr_ewkFraction;
+  bool pfJetTrigger = false;
+  float muonAbsEtaHigh = 5.0;
+  float muonPtLow = 0.;
+} sr, sr_trueTaus, cr_antiiso, cr_fakerate_den, cr_fakerate_num,cr_fakerate_dijet_den, cr_fakerate_dijet_num, cr_ewkFraction, sr_munu;
 // ----------------------------------------------------------------------------------------------------
 void initCuts()
 {
@@ -143,6 +152,21 @@ void initCuts()
   sr_trueTaus.tauGenMatchDecayLow  = 0;
   sr_trueTaus.tauGenMatchDecayHigh = 1000000000;
   
+  // sr for W->munu selection
+  sr_munu = sr;
+  sr_munu.name = "sr_munu";
+  sr_munu.selection = 2;
+  sr_munu.nSelTausLow = 0;
+  sr_munu.nSelTausHigh = 0;
+  sr_munu.nMuonLow = 1;
+  sr_munu.nMuonHigh = 1;
+  sr_munu.metLow = 100;
+  sr_munu.muonAbsEtaHigh = 2.1;
+  sr_munu.muonPtLow = 120;
+  sr_munu.trigger = false;
+  sr_munu.nJetsCentral30Low  = 0;
+  sr_munu.nJetsCentral30High = 0;
+   
   // antiiso region
   cr_antiiso = sr;
   cr_antiiso.name = "cr_antiiso";
@@ -340,7 +364,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if(*recoilRatio < sel.recoilRatioLow || *recoilRatio > sel.recoilRatioHigh) continue;
     if(*recoilDPhi < sel.recoilDPhiLow) continue;
     if(*met < sel.metLow) continue;
-    if(*tauPt < sel.tauPtLow || *tauPt > sel.tauPtHigh) continue;
+    if((*tauPt < sel.tauPtLow || *tauPt > sel.tauPtHigh) && sel.selection!=2) continue;
     if(*metFilters != sel.metFilters) continue;
 
     if(*nMuon<sel.nMuonLow || *nMuon>sel.nMuonHigh) continue;
@@ -349,17 +373,18 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if(*nJetsCentral30<sel.nJetsCentral30Low || *nJetsCentral30>sel.nJetsCentral30High) continue;
     if(*nJetsForward30<sel.nJetsForward30Low || *nJetsForward30>sel.nJetsForward30High) continue;
 
-    if(*tauDM != sel.tauDM) continue;
-    if(*tauAntiMuonLoose3 != sel.tauAntiMuonLoose3) continue;
-    if(*tauAntiElectronLooseMVA6 != sel.tauAntiElectronLooseMVA6) continue;
-    if(*tauIso != sel.tauIso) continue;
-    if((*tauGenMatchDecay<sel.tauGenMatchDecayLow || *tauGenMatchDecay>sel.tauGenMatchDecayHigh) && !isData) continue;
+    if(*tauDM != sel.tauDM && sel.selection!=2) continue;
+    if(*tauAntiMuonLoose3 != sel.tauAntiMuonLoose3 && sel.selection!=2) continue;
+    if(*tauAntiElectronLooseMVA6 != sel.tauAntiElectronLooseMVA6 && sel.selection!=2) continue;
+    if(*tauIso != sel.tauIso && sel.selection!=2) continue;
+    if((*tauGenMatchDecay<sel.tauGenMatchDecayLow || *tauGenMatchDecay>sel.tauGenMatchDecayHigh) && !isData && sel.selection!=2) continue;
 
     if(*mtmuon < sel.mtmuonLow || *mtmuon > sel.mtmuonHigh ) continue;
+    if(abs(*muonEta) > sel.muonAbsEtaHigh) continue;
+    if(*muonPt < sel.muonPtLow) continue;
 
     Float_t fakerate = 1;
     if(sel.name.Contains("cr_antiiso")){
-      //cout<<"Substring = "<<sel.name(11,sel.name.Length())<<endl;;
       fakerate = getFakeRates( *tauPt/(*tauJetPt),*tauJetPt,iso, sel.name(11,sel.name.Length()) );
     }
     if(sel.name.Contains("cr_fakerate")) *trigWeight = 1;
