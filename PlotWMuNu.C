@@ -11,7 +11,7 @@ void PlotWMuNu() {
   TString Weight("genWeight*puWeight*mutrigweight*");
   TString wnorm("1.3*"); // K factor for W PYTHIA8 !
   float yUpper = 16000;
-  TString Cuts = "Selection==2&&recoilRatio<1.3&&recoilRatio>0.7&&recoilDPhi>2.4&&nSelTaus==0&&met>100&&TMath::Abs(muonEta)<2.1&&muonPt>120&&nElec==0&&nMuon<=1&&nJetsCentral30==0&&nJetsForward30==0";
+  TString Cuts = "Selection==2&recoilDPhi>2.8&&nSelTaus==0&&met>100&&TMath::Abs(muonEta)<2.1&&muonPt>120&&nElec==0&&nMuon==1&&nJetsCentral30==0&&nJetsForward30==0";
   TString xtitle = "m_{T} [GeV]";
   TString ytitle = "Events / 100 GeV";
 
