@@ -139,7 +139,7 @@ void TauIDMeasurement() {
       cout<<"addErr 3 = "<<addErr<<endl; 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
       // 2.) Tau normalization uncertainty
-      addErr = 0.3*histoMap["WToTauNu"]->GetBinContent(i);
+      addErr = 0.3*histoMap["TrueTaus"]->GetBinContent(i);
       cout<<"addErr 4 = "<<addErr<<endl; 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
       // 3.) Fake rate uncertainty
@@ -214,7 +214,7 @@ void TauIDMeasurement() {
     canv->Modified();
     canv->SetSelected(canv);
     canv->Update();
-    canv->Print("figures/" + var + "_" + iso[idx_iso] + ".png");
+    canv->Print("figures/" + var + "_" + iso[idx_iso] + "_WToTauNu.png");
 
 
     // Get bin-by-bin uncertainties for WTauNu
