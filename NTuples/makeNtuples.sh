@@ -51,6 +51,13 @@
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_tauesDown.conf WToTauNu_M-200_13TeV-pythia8_tauesDown 2
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_tauesUp.conf WToTauNu_M-200_13TeV-pythia8_tauesUp 2
 
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_jesDown.conf WToMuNu_M-200_13TeV-pythia8_jesDown 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_jesUp.conf WToMuNu_M-200_13TeV-pythia8_jesUp 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_uesDown.conf WToMuNu_M-200_13TeV-pythia8_uesDown 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_uesUp.conf WToMuNu_M-200_13TeV-pythia8_uesUp 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_tauesDown.conf WToMuNu_M-200_13TeV-pythia8_tauesDown 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_tauesUp.conf WToMuNu_M-200_13TeV-pythia8_tauesUp 2
+
 # For tauID (including trigger efficiencies + fake rate)
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer.conf MET_Run2016 20
 
