@@ -3,7 +3,7 @@
 #include "settings.h"
 #include <sstream> 
 
-void DatacardProducer() {
+void DatacardProducer_WToTauNu() {
 
   loadWorkingPoints();
   TString Variable = "mttau";
@@ -13,11 +13,11 @@ void DatacardProducer() {
     // ***************
     // Creating datacard inputs
     // *************** 
-    TString BaseName = "datacard_"+Variable+"_"+iso[idx_iso]+"_WTauNu";
+    TString BaseName = "datacard_"+Variable+"_"+iso[idx_iso]+"_WToTauNu";
     TString rootFileName =  Variable+"_"+iso[idx_iso]+"_WToTauNu_shapes.root";
 
     ostringstream str;
-    str << "output/" << BaseName << ".txt";
+    str << "output/datacards/" << BaseName << ".txt";
     string nn = str.str();
     const char * p = nn.c_str();
 
