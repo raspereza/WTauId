@@ -391,8 +391,8 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if(sel.name.Contains("cr_antiiso")){
       fakerate = getFakeRates( *tauPt/(*tauJetPt),*tauJetPt,iso, sel.name(11,sel.name.Length()) );
     }
-    if(sel.name.Contains("cr_fakerate")) *trigWeight = 1;
-    if(!sel.name.Contains("cr_fakerate")){*mueffweight=1;*mutrigweight=1;}
+    if(sel.name.Contains("cr_fakerate") || sel.name.Contains("sr_munu")) *trigWeight = 1;
+    if(!sel.name.Contains("cr_fakerate") && !sel.name.Contains("sr_munu")){*mueffweight=1;*mutrigweight=1;}
 
     // Stitching only for wjets MC
     if(filename.Contains("W") && filename.Contains("JetsToLNu") && !filename.Contains("HT")){
