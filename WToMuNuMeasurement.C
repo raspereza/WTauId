@@ -30,6 +30,9 @@ void WToMuNuMeasurement() {
   ewk.push_back("ZJetsToNuNu_HT-200To400_13TeV-madgraph");
   ewk.push_back("ZJetsToNuNu_HT-400To600_13TeV-madgraph");
   ewk.push_back("ZJetsToNuNu_HT-600To800_13TeV-madgraph");
+  ewk.push_back("WZJToLLLNu_13TeV_amcatnloFXFX");
+  ewk.push_back("ZZTo2L2Q_13TeV_amcatnloFXFX");
+  ewk.push_back("ZZTo4L_13TeV_powheg");
 
   std::vector<TString> tt;
   tt.push_back("TTJets_13TeV-powheg");
@@ -96,7 +99,7 @@ void WToMuNuMeasurement() {
       stack->Add(histoSamples);
     }
     else if(samples[i].first.Contains("Data")) h_data = (TH1D*) histoSamples->Clone(); 
-    cout<<samples[i].first<<" = "<<histoSamples->Integral()<<endl<<endl;
+    cout<<samples[i].first<<" = "<<histoSamples->GetSumOfWeights()<<" ( Entries = "<<histoSamples->GetEntries()<<" )"<<endl<<endl;
   }
 
   // ------------------ Computation of all uncertainties : START  -------
@@ -109,13 +112,10 @@ void WToMuNuMeasurement() {
   for(int i=1; i<=bkgdErr->GetNbinsX(); i++){
     // 1.) Uncertainty on JES, Mu, UES
     addErr = histoMap["WToMuNu_jesUp"]->GetBinContent(i) - histoMap["WToMuNu"]->GetBinContent(i); 
-    cout<<"addErr 1 = "<<addErr<<endl; 
     bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));      
     addErr = histoMap["WToMuNu_muUp"]->GetBinContent(i) - histoMap["WToMuNu"]->GetBinContent(i); 
-    cout<<"addErr 2 = "<<addErr<<endl; 
     bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
     addErr = histoMap["WToMuNu_uesUp"]->GetBinContent(i) - histoMap["WToMuNu"]->GetBinContent(i); 
-    cout<<"addErr 3 = "<<addErr<<endl; 
     bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
   }
   // ------------------ Computation of all uncertainties : END  -------
