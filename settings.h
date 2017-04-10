@@ -60,13 +60,16 @@ map<TString, double> xsecs = {
 {"WToTauNu_M-200_13TeV-pythia8_tauesDown"            , 1.3*6.37},
 {"WToTauNu_M-200_13TeV-pythia8_uesUp"                , 1.3*6.37},
 {"WToTauNu_M-200_13TeV-pythia8_uesDown"              , 1.3*6.37},
-{"WToMuNu_M-200_13TeV-pythia8"                       , 1.3*5.92},
-{"WToMuNu_M-200_13TeV-pythia8_jesUp"                 , 1.3*5.92},
-{"WToMuNu_M-200_13TeV-pythia8_jesDown"               , 1.3*5.92},
-{"WToMuNu_M-200_13TeV-pythia8_tauesUp"               , 1.3*5.92},
-{"WToMuNu_M-200_13TeV-pythia8_tauesDown"             , 1.3*5.92},
-{"WToMuNu_M-200_13TeV-pythia8_uesUp"                 , 1.3*5.92},
-{"WToMuNu_M-200_13TeV-pythia8_uesDown"               , 1.3*5.92}
+{"WToMuNu_M-200_13TeV-pythia8"                       , 1.3*6.32},
+{"WToMuNu_M-200_13TeV-pythia8_jesUp"                 , 1.3*6.32},
+{"WToMuNu_M-200_13TeV-pythia8_jesDown"               , 1.3*6.32},
+{"WToMuNu_M-200_13TeV-pythia8_muUp"                  , 1.3*6.32},
+{"WToMuNu_M-200_13TeV-pythia8_muDown"                , 1.3*6.32},
+{"WToMuNu_M-200_13TeV-pythia8_uesUp"                 , 1.3*6.32},
+{"WToMuNu_M-200_13TeV-pythia8_uesDown"               , 1.3*6.32},
+{"WZJToLLLNu_13TeV_amcatnloFXFX"                     , 4.708},
+{"ZZTo2L2Q_13TeV_amcatnloFXFX"                       , 3.22},
+{"ZZTo4L_13TeV_powheg"                               , 1.212}
 };
 // ----------------------------------------------------------------------------------------------------
 void loadWorkingPoints()
@@ -166,6 +169,7 @@ void initCuts()
   sr_munu.trigger = false;
   sr_munu.nJetsCentral30Low  = 0;
   sr_munu.nJetsCentral30High = 0;
+  sr_munu.tauPtLow = 0;
    
   // antiiso region
   cr_antiiso = sr;
@@ -357,7 +361,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   bool isData = filename.Contains("SingleMuon") || filename.Contains("JetHT") || filename.Contains("MET");
   while(myReader->Next()){
 
-    if(*trig != sel.trigger && sel.selection != 1  && sel.selection != 4) continue;
+    if(*trig != sel.trigger && sel.selection != 1  && sel.selection != 4 && sel.selection != 2) continue;
     if(sel.selection == 4 && (*pfJet80 != sel.pfJetTrigger && *pfJet140 != sel.pfJetTrigger && *pfJet60 != sel.pfJetTrigger && *pfJet40 != sel.pfJetTrigger)) continue;
 
     if(*Selection != sel.selection) continue;
