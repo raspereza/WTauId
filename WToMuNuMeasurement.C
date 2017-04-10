@@ -45,23 +45,23 @@ void WToMuNuMeasurement() {
   WToMuNu_jesUp.push_back("WToMuNu_M-200_13TeV-pythia8_jesUp");
   std::vector<TString> WToMuNu_jesDown;
   WToMuNu_jesDown.push_back("WToMuNu_M-200_13TeV-pythia8_jesDown");
-  std::vector<TString> WToMuNu_tauesUp;
-  WToMuNu_tauesUp.push_back("WToMuNu_M-200_13TeV-pythia8_tauesUp");
-  std::vector<TString> WToMuNu_tauesDown;
-  WToMuNu_tauesDown.push_back("WToMuNu_M-200_13TeV-pythia8_tauesDown");
+  std::vector<TString> WToMuNu_muUp;
+  WToMuNu_muUp.push_back("WToMuNu_M-200_13TeV-pythia8_muUp");
+  std::vector<TString> WToMuNu_muDown;
+  WToMuNu_muDown.push_back("WToMuNu_M-200_13TeV-pythia8_muDown");
   std::vector<TString> WToMuNu_uesUp;
   WToMuNu_uesUp.push_back("WToMuNu_M-200_13TeV-pythia8_uesUp");
   std::vector<TString> WToMuNu_uesDown;
   WToMuNu_uesDown.push_back("WToMuNu_M-200_13TeV-pythia8_uesDown");
 
+  samples.push_back(make_pair("Data" , data));
   samples.push_back(make_pair("EWK" , ewk));
   samples.push_back(make_pair("TT" , tt));
   samples.push_back(make_pair("WToMuNu" , WToMuNu));
-  samples.push_back(make_pair("Data" , data));
   samples.push_back(make_pair("WToMuNu_jesUp" , WToMuNu_jesUp));
   samples.push_back(make_pair("WToMuNu_jesDown" , WToMuNu_jesDown));
-  samples.push_back(make_pair("WToMuNu_tauesUp" , WToMuNu_tauesUp));
-  samples.push_back(make_pair("WToMuNu_tauesDown" , WToMuNu_tauesDown));
+  samples.push_back(make_pair("WToMuNu_muUp" , WToMuNu_muUp));
+  samples.push_back(make_pair("WToMuNu_muDown" , WToMuNu_muDown));
   samples.push_back(make_pair("WToMuNu_uesUp" , WToMuNu_uesUp));
   samples.push_back(make_pair("WToMuNu_uesDown" , WToMuNu_uesDown));
 
@@ -107,11 +107,11 @@ void WToMuNuMeasurement() {
   bkgdErr->SetMarkerSize(0);  
   double addErr = 0;
   for(int i=1; i<=bkgdErr->GetNbinsX(); i++){
-    // 1.) Uncertainty on JES, TauES, UES
+    // 1.) Uncertainty on JES, Mu, UES
     addErr = histoMap["WToMuNu_jesUp"]->GetBinContent(i) - histoMap["WToMuNu"]->GetBinContent(i); 
     cout<<"addErr 1 = "<<addErr<<endl; 
     bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));      
-    addErr = histoMap["WToMuNu_tauesUp"]->GetBinContent(i) - histoMap["WToMuNu"]->GetBinContent(i); 
+    addErr = histoMap["WToMuNu_muUp"]->GetBinContent(i) - histoMap["WToMuNu"]->GetBinContent(i); 
     cout<<"addErr 2 = "<<addErr<<endl; 
     bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
     addErr = histoMap["WToMuNu_uesUp"]->GetBinContent(i) - histoMap["WToMuNu"]->GetBinContent(i); 
@@ -139,7 +139,7 @@ void WToMuNuMeasurement() {
   SetLegendStyle(leg);
   leg->SetTextSize(0.047);
   if(h_data) leg->AddEntry(h_data,"Data","lp");
-  if(histoMap["WToMuNu"]) leg->AddEntry(histoMap["WToMuNu"],"W#rightarrow#tau#nu","f");
+  if(histoMap["WToMuNu"]) leg->AddEntry(histoMap["WToMuNu"],"W#rightarrow#mu#nu","f");
   if(histoMap["TT"])      leg->AddEntry(histoMap["TT"],"tt + single top","f");
   if(histoMap["EWK"])     leg->AddEntry(histoMap["EWK"],"electroweak","f");
   writeExtraText = true;
@@ -180,7 +180,7 @@ void WToMuNuMeasurement() {
   canv->Print("figures/" + var + "_WToMuNu.png");
 
 
-  // Get bin-by-bin uncertainties for WTauNu
+  // Get bin-by-bin uncertainties for WMuNu
   TH1D* histo = 0;
   for(int i =1; i<=histoMap["WToMuNu"]->GetNbinsX(); i++){
     histo = (TH1D*) histoMap["WToMuNu"]->Clone();
