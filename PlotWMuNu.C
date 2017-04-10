@@ -19,7 +19,7 @@ void PlotWMuNu() {
 
   bool logY = false;
 
-  double lumi = 35890;
+  double lumi = 35867;
   //  double lumi = 12892; // RunBCD
   //  double lumi = 23808; // RunEFGH
   //  double lumi = 4117; // RunE 
@@ -281,14 +281,14 @@ void PlotWMuNu() {
   InitHist(W,"","",TColor::GetColor("#FFCC66"),1001);
   histData->GetXaxis()->SetTitle(xtitle);
   histData->GetYaxis()->SetTitle(ytitle);
-  histData->GetYaxis()->SetTitleOffset(1.3);
-  histData->GetYaxis()->SetTitleSize(0.06);
+  //histData->GetYaxis()->SetTitleOffset(1.3);
+  //histData->GetYaxis()->SetTitleSize(0.06);
   if (yUpper<0) histData->GetYaxis()->SetRangeUser(0.,1.2*histData->GetMaximum());
   else  histData->GetYaxis()->SetRangeUser(0,yUpper);
 
   histData->SetMarkerSize(1.2);
-  histData->GetXaxis()->SetLabelSize(0);
-  histData->GetYaxis()->SetLabelSize(0.06);
+  //histData->GetXaxis()->SetLabelSize(0);
+  //histData->GetYaxis()->SetLabelSize(0.06);
 
   //  nData = histData->GetSum();
   //  float nMC   = TT->GetSum();
