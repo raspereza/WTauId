@@ -2,16 +2,16 @@
 #include "CMS_lumi.C"
 void PlotWMuNu() {
 
-  TString dir = "/nfs/dust/cms/user/rasp/Run/Run2016/TauID_2016/";
+  TString dir = "NTuples";
   TString DataFile = "SingleMuon_Run2016";
   TString Variable = "mtmuon";
   int nBins  =   10;
   float xmin =    0;
   float xmax = 1000;
-  TString Weight("genWeight*puWeight*mutrigweight*");
+  TString Weight("genWeight*puWeight*mueffweight*mutrigweight*");
   TString wnorm("1.3*"); // K factor for W PYTHIA8 !
-  float yUpper = 16000;
-  TString Cuts = "Selection==2&recoilDPhi>2.8&&nSelTaus==0&&met>100&&TMath::Abs(muonEta)<2.1&&muonPt>120&&nElec==0&&nMuon==1&&nJetsCentral30==0&&nJetsForward30==0";
+  float yUpper = 18000;
+  TString Cuts = "Selection==2&&recoilDPhi>2.8&&nSelTaus==0&&met>100&&TMath::Abs(muonEta)<2.1&&muonPt>120&&nElec==0&&nMuon==1&&nJetsCentral30==0&&nJetsForward30==0";
   TString xtitle = "m_{T} [GeV]";
   TString ytitle = "Events / 100 GeV";
 
@@ -19,7 +19,7 @@ void PlotWMuNu() {
 
   bool logY = false;
 
-  double lumi = 36800;
+  double lumi = 35890;
   //  double lumi = 12892; // RunBCD
   //  double lumi = 23808; // RunEFGH
   //  double lumi = 4117; // RunE 
@@ -29,7 +29,7 @@ void PlotWMuNu() {
 
   TH1::SetDefaultSumw2();
   TH2::SetDefaultSumw2();
-  TString sampleNames[25] = {
+  TString sampleNames[27] = {
     DataFile, // data (0)
     "WToMuNu_M-200_13TeV-pythia8",         // (1) W->MuNu
     "WToTauNu_M-200_13TeV-pythia8",        // (2) W->TauNu->MuNuNu
@@ -40,57 +40,61 @@ void PlotWMuNu() {
     "WToMuNu_M-200_13TeV-pythia8_muUp",    // (7) W->MuNu (MuES Up)
     "WToMuNu_M-200_13TeV-pythia8_muDown",  // (8) W->MuNu (MuES Down)
     "TTJets_13TeV-powheg",               // TTJets (9) 
-    "ST_t-channel_top_4f_leptonDecays_13TeV-powheg",     // t-channel_top     (10)
-    "ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg", // t-channel_antitop (11)
+    "ST_t-channel_top_4f_inclusiveDecays_13TeV-powheg",     // t-channel_top     (10)
+    "ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powheg", // t-channel_antitop (11)
     "ST_tW_top_5f_inclusiveDecays_13TeV-powheg",         // topW              (12)
     "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg",     // antitopW          (13)
     "VVTo2L2Nu_13TeV_amcatnloFXFX",   // VVTo2L2Nu    (14)
-    "WWTo1L1Nu2Q_13TeV_amcatnloFXFX", // WWTo1L1Nu2Q  (15)
+    "WWToLNuQQ_13TeV_powheg", // WWTo1L1Nu2Q  (15)
     "WZTo1L1Nu2Q_13TeV_amcatnloFXFX", // WZTo1L1Nu2Q  (16)
     "WZTo1L3Nu_13TeV_amcatnloFXFX",   // WZTo1L3Nu    (17)
     "WZTo2L2Q_13TeV_amcatnloFXFX",    // WZTo2L2Q     (18)
-    "DYJetsToLL_M-50_13TeV-madgraphMLM", // DYJetsToLL (19)
-    "ZJetsToNuNu_HT-100To200_13TeV-madgraph", // ZNuNu-HT100to200 (20)
-    "ZJetsToNuNu_HT-200To400_13TeV-madgraph", // ZNuNu-HT200to400 (21)
-    "ZJetsToNuNu_HT-400To600_13TeV-madgraph", // ZNuNu-HT400to600 (22)
-    "ZJetsToNuNu_HT-600To800_13TeV-madgraph",  // ZNuNu-HT600to800 (23)
-    ""
+    "WZJToLLLNu_13TeV_amcatnloFXFX",  // WZTo3L1Nu     (19) 
+    "ZZTo2L2Q_13TeV_amcatnloFXFX",    // ZZTo2L2Q      (20)
+    "ZZTo4L_13TeV_powheg",            // ZZTo4L        (21)
+    "DYJetsToLL_M-50_13TeV-madgraphMLM", // DYJetsToLL (22)
+    "ZJetsToNuNu_HT-100To200_13TeV-madgraph", // ZNuNu-HT100to200 (23)
+    "ZJetsToNuNu_HT-200To400_13TeV-madgraph", // ZNuNu-HT200to400 (24)
+    "ZJetsToNuNu_HT-400To600_13TeV-madgraph", // ZNuNu-HT400to600 (25)
+    "ZJetsToNuNu_HT-600To800_13TeV-madgraph"  // ZNuNu-HT600to800 (26)
   };
 
-  double xsec[25] = {1, // data (0)
-		     5.92, // (1) (W->MuNu)
+  double xsec[27] = {1, // data (0)
+		     6.32, // (1) (W->MuNu)
 		     6.37, // (2) (W->TauNu->MuNuNu)
-		     5.92, // (3) (W->MuNu JES Up)
-		     5.92, // (4) (W->MuNu JES Down)
-		     5.92, // (5) (W->MuNu UES Up)
-		     5.92, // (6) (W->MuNu UES Down)
-		     5.92, // (7) (W->MuNu MuonES Up)
-		     5.92, // (8) (W->MuNu MuonES Down)
- 		     831.76,     // TTJets (9)
-		     136.95*3*0.108, // t-channel_top     (10)
-		     80.95*3*0.108,  // t-channel_antitop (11)
-		     35.6,           // topW              (12)
-		     35.6,           // antitopW          (13)
+		     6.32, // (3) (W->MuNu JES Up)
+		     6.32, // (4) (W->MuNu JES Down)
+		     6.32, // (5) (W->MuNu UES Up)
+		     6.32, // (6) (W->MuNu UES Down)
+		     6.32, // (7) (W->MuNu MuonES Up)
+		     6.32, // (8) (W->MuNu MuonES Down)
+ 		     831.76, // TTJets (9)
+		     136.95, // t-channel_top     (10)
+		     80.95,  // t-channel_antitop (11)
+		     35.6,   // topW              (12)
+		     35.6,   // antitopW          (13)
 		     11.95,  // VVTo2L2Nu   (14)
 		     49.997, // WWTo1L1Nu2Q (15)
 		     10.71,  // WZTo1L1Nu2Q (16)
 		     3.05,   // WZTo1L3Nu   (17)
 		     5.595,  // WZTo2L2Q    (18)
-		     5765, // DYJets      (19)
-		     1.164*280.4, // ZNuNu-HT100to200 (20) 
-		     1.164*77.67, // ZNuNu-HT200to400 (21)
-		     1.164*10.73, // ZNuNu-HT400to600 (22) 
-		     1.164*4.116, // ZNuNu-HT600toInf (23)
-		     0
+		     4.708,  // WZTo3L1Nu   (19)
+		     3.22,   // ZZTo2L2Q    (20)
+		     1.212,  // ZZTo4L      (21)
+		     5765, // DYJets        (22)
+		     1.164*280.4, // ZNuNu-HT100to200 (23) 
+		     1.164*77.67, // ZNuNu-HT200to400 (24)
+		     1.164*10.73, // ZNuNu-HT400to600 (25) 
+		     1.164*4.116  // ZNuNu-HT600toInf (26)
   };
 
   TString cuts[31];
   cuts[0] = Cuts + "&&metFilters";
   //  cuts[0] = Cuts;
   for (int i=1; i<31; ++i) 
-    cuts[i] = Weight+"("+Cuts+")"; // No PU weight
+    cuts[i] = Weight+"("+Cuts+"&&metFilters)"; // No PU weight
   for (int i=1; i<9; ++i) 
-    cuts[i] = Weight+wnorm+"("+Cuts+")";
+    cuts[i] = Weight+wnorm+"("+Cuts+"&&metFilters)";
 
   TH1D * hist[31];
 
@@ -110,7 +114,7 @@ void PlotWMuNu() {
     }
   }
 
-  int nSamples = 24;
+  int nSamples = 27;
 
   // filling histograms
   for (int i=0; i<nSamples; ++i) {
@@ -148,7 +152,7 @@ void PlotWMuNu() {
     hist[9]->Add(hist[9],hist[i]);
 
   // adding up electroweak samples
-  for (int i=15; i<=23; ++i) 
+  for (int i=15; i<=26; ++i) 
     hist[14]->Add(hist[14],hist[i]);
   
   hist[1]->Add(hist[1],hist[2]); // adding W->TauNu->MuNuNu and W->MuNu
@@ -156,7 +160,6 @@ void PlotWMuNu() {
     hist[i]->Add(hist[i],hist[2]);
 
   TH1D * histData = (TH1D*)hist[0]->Clone("data_obs");
-  TH1D * QCD = (TH1D*)hist[22]->Clone("QCD");
   TH1D * W   = (TH1D*)hist[1]->Clone("W");
   TH1D * TT  = (TH1D*)hist[9]->Clone("TT");
   TH1D * EWK  = (TH1D*)hist[14]->Clone("EWK");
@@ -236,10 +239,9 @@ void PlotWMuNu() {
 
   std::cout << "Top : " << TT->GetSumOfWeights() << std::endl;
   std::cout << "EWK : " << EWK->GetSumOfWeights() << std::endl;
-  std::cout << "QCD : " << QCD->GetSumOfWeights() << std::endl;
   std::cout << "W   : " << W->GetSumOfWeights() << "(W->TauNu = " << hist[2]->GetSumOfWeights() << ")" << std::endl;
 
-  float nonW = EWK->GetSumOfWeights()+TT->GetSumOfWeights()+QCD->GetSumOfWeights();
+  float nonW = EWK->GetSumOfWeights()+TT->GetSumOfWeights();
   float Wmeas = histData->GetSumOfWeights() - nonW;
   float scale = Wmeas/W->GetSumOfWeights();
 
@@ -256,8 +258,7 @@ void PlotWMuNu() {
   }
 
   EWK->Add(EWK,TT);
-  QCD->Add(QCD,EWK);
-  W->Add(W,QCD);
+  W->Add(W,EWK);
   std::cout << "BKG : " << W->GetSumOfWeights() << std::endl;
   std::cout << "DAT : " << histData->GetSumOfWeights() << std::endl;
   std::cout << "Scale W = " << scale << std::endl;
@@ -271,14 +272,12 @@ void PlotWMuNu() {
   for (int iB=1; iB<=nBins; ++iB) {
     TT->SetBinError(iB,0);
     EWK->SetBinError(iB,0);
-    QCD->SetBinError(iB,0);
     W->SetBinError(iB,0);
   }
 
   InitData(histData);
   InitHist(TT,"","",TColor::GetColor("#9999CC"),1001);
   InitHist(EWK,"","",TColor::GetColor("#6F2D35"),1001);
-  InitHist(QCD,"","",TColor::GetColor("#FFCCFF"),1001);
   InitHist(W,"","",TColor::GetColor("#FFCC66"),1001);
   histData->GetXaxis()->SetTitle(xtitle);
   histData->GetYaxis()->SetTitle(ytitle);
@@ -321,7 +320,6 @@ void PlotWMuNu() {
 
   histData->Draw("e1");
   W->Draw("sameh");
-  QCD->Draw("sameh");
   EWK->Draw("sameh");
   TT->Draw("sameh");
   histData->Draw("e1same");
