@@ -5,7 +5,7 @@
 #include "THStack.h"
 #include "TLegend.h"
 
-void TauIDMeasurement() {
+void WToTauNuMeasurement() {
 
   TString dir("NTuples/");
 
