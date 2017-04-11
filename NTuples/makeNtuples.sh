@@ -37,10 +37,10 @@
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WZTo2L2Q_13TeV_amcatnloFXFX 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WZJToLLLNu_13TeV_amcatnloFXFX 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf DYJetsToLL_M-50_13TeV-madgraphMLM 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-100To200_13TeV-madgraph 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-200To400_13TeV-madgraph 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-400To600_13TeV-madgraph 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-600To800_13TeV-madgraph 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-100To200_13TeV-madgraph 5
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-200To400_13TeV-madgraph 5
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-400To600_13TeV-madgraph 5
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZJetsToNuNu_HT-600To800_13TeV-madgraph 5
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZZTo2L2Q_13TeV_amcatnloFXFX 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ZZTo4L_13TeV_powheg 10
 
