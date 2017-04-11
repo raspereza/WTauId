@@ -241,7 +241,10 @@ int getNEventsProcessed(TString filename)
 {
   TFile * file = new TFile(filename);
   TH1D * histWeightsH = (TH1D*)file->Get("histWeightsH");
-  return histWeightsH->GetSumOfWeights();
+  int nevents = histWeightsH->GetSumOfWeights();
+  file->Close();
+  delete file;
+  return nevents;
 }
 // ----------------------------------------------------------------------------------------------------
 void loadFakeRates(TString filename)
@@ -434,6 +437,8 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     }
   }
 
+  file->Close();
+  delete file;
   delete myReader;
 
 }
