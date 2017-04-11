@@ -384,8 +384,8 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if((*tauGenMatchDecay<sel.tauGenMatchDecayLow || *tauGenMatchDecay>sel.tauGenMatchDecayHigh) && !isData && sel.selection!=2) continue;
 
     if(*mtmuon < sel.mtmuonLow || *mtmuon > sel.mtmuonHigh ) continue;
-    if(abs(*muonEta) > sel.muonAbsEtaHigh) continue;
-    if(*muonPt < sel.muonPtLow) continue;
+    if(abs(*muonEta) > sel.muonAbsEtaHigh && sel.selection == 2) continue;
+    if(*muonPt < sel.muonPtLow && sel.selection == 2) continue;
 
     Float_t fakerate = 1;
     if(sel.name.Contains("cr_antiiso")){
