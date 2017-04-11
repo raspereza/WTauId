@@ -17,7 +17,7 @@
 #include "TH2.h"
 #include "TVector2.h"
 
-double luminosity = 35867;
+double luminosity = 35890;
 //double luminosity = 1.;
 //double luminosity = 36800;
 
