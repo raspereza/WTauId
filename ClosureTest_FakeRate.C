@@ -18,19 +18,7 @@ void ClosureTest_FakeRate() {
 
   std::vector<TString> obs;
   std::vector<TString> pred;
-  /*
-  obs.push_back("WJetsToLNu_13TeV-madgraphMLM");
-  obs.push_back("W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  obs.push_back("W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  obs.push_back("W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  obs.push_back("W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
 
-  pred.push_back("WJetsToLNu_13TeV-madgraphMLM");
-  pred.push_back("W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  pred.push_back("W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  pred.push_back("W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  pred.push_back("W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-  */
   obs.push_back("ZJetsToNuNu_HT-100To200_13TeV-madgraph");
   obs.push_back("ZJetsToNuNu_HT-200To400_13TeV-madgraph");
   obs.push_back("ZJetsToNuNu_HT-400To600_13TeV-madgraph");
@@ -78,16 +66,16 @@ void ClosureTest_FakeRate() {
     //const int nBins = 10;
     //double bins[nBins+1] = {0 , 0.4 , 0.5 , 0.6 , 0.7 , 0.75 , 0.8 , 0.85 , 0.9 , 0.95 , 2.};
     const int nBins  = 5;
-    float bins[nBins+1] = {100,150,200,250,300,500};  // tauPt binning
+    //float bins[nBins+1] = {100,150,200,250,300,500};  // tauPt binning
     //float bins[nBins+1] = {100,200,300,400,500,700};  // met binning
     //float bins[nBins+1] = {100,170,240,310,400,700};  // tauJetPt binning
-    //float bins[nBins+1] = {200,300,400,500,600,800};  // mttau binnign
+    float bins[nBins+1] = {200,300,400,500,600,800};  // mttau binning
     //float bins[nBins+1] = {0,0.5,1.1,2.3}; //tauEta binning
     TH1D * observation = new TH1D("observation","",nBins,bins); 
     TH1D * prediction  = new TH1D("prediction","",nBins,bins); 
 
     // Make selection and fill histograms for sr and cr
-    TString var = "tauPt";
+    TString var = "mttau";
     for (unsigned int i=0; i<obs.size(); ++i) {
       TH1D* histo = new TH1D("","",nBins,bins);
       makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,var,var,var);
@@ -165,7 +153,7 @@ void ClosureTest_FakeRate() {
     canv1->cd();
     canv1->SetSelected(canv1);
     canv1->Update();
-    canv1->Print("figures/"+(TString)observation->GetName()+"_"+iso[idx_iso]+"Iso_WTauNu_closure.png");
+    canv1->Print("figures/"+(TString)observation->GetName()+"_"+iso[idx_iso]+"_WToTauNu_closure.png");
     delete canv1;
     std::cout << std::endl;
 
