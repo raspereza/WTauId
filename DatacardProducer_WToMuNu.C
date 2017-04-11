@@ -43,9 +43,9 @@ void DatacardProducer_WToMuNu() {
   textFile << "-----------------" << endl;
   textFile << "shapes * * " <<rootFileName << "  $PROCESS    $PROCESS_$SYSTEMATIC " << endl;
   textFile << "-----------------" << endl;
-  textFile << setw(30) << "bin"     << setw(15) << "1"         << setw(15) << "1"        << setw(15) << "1"        << endl;
-  textFile << setw(30) << "process" << setw(15) << "WToMuNu"   << setw(15) << "TT"       << setw(15) << "EWK" << endl;
-  textFile << setw(30) << "process" << setw(15) << "0"         << setw(15) << "1"        << setw(15) << "2"        << endl;
+  textFile << setw(30) << "bin"     << setw(15) << "WMuNu"     << setw(15) << "WMuNu"    << setw(15) << "WMuNu" << endl;
+  textFile << setw(30) << "process" << setw(15) << "WToMuNu"   << setw(15) << "TT"       << setw(15) << "EWK"   << endl;
+  textFile << setw(30) << "process" << setw(15) << "0"         << setw(15) << "1"        << setw(15) << "2"     << endl;
   textFile << setw(30) << "rate"    << setw(15) << h_WToMuNu->Integral() << setw(15) << h_FakeTaus->Integral() << setw(15) << h_TrueTaus->Integral() << endl;
   textFile << "-----------------" << endl;
   textFile << setw(15) << "mu"  << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
