@@ -126,7 +126,7 @@ void WToMuNuMeasurement() {
   upper->cd();
 
   stack->Draw("hist");
-  stack->SetMaximum(stack->GetMaximum()*1.4);
+  stack->SetMaximum(stack->GetMaximum()*1.2);
   stack->GetXaxis()->SetTitle("m_{T} [GeV]");
   stack->GetYaxis()->SetTitle("Events");
   gPad->Modified(); 
@@ -138,7 +138,7 @@ void WToMuNuMeasurement() {
   TLegend * leg = new TLegend(0.55,0.4,0.85,0.78);
   SetLegendStyle(leg);
   leg->SetTextSize(0.047);
-  if(h_data) leg->AddEntry(h_data,"data_obs","lp");
+  if(h_data)              leg->AddEntry(h_data,"Data","lp");
   if(histoMap["WToMuNu"]) leg->AddEntry(histoMap["WToMuNu"],"W#rightarrow#mu#nu","f");
   if(histoMap["TT"])      leg->AddEntry(histoMap["TT"],"tt + single top","f");
   if(histoMap["EWK"])     leg->AddEntry(histoMap["EWK"],"electroweak","f");
@@ -154,6 +154,7 @@ void WToMuNuMeasurement() {
     ratioH->GetYaxis()->SetTitle("obs/exp");
     ratioH->GetXaxis()->SetTitle("");
     ratioH->GetYaxis()->SetRangeUser(0.4,1.6);
+    ratioH->GetYaxis()->CenterTitle();
   }
   TH1D * ratioErrH = (TH1D*)bkgdErr->Clone("ratioErrH");
   for(int i=1; i<=bkgdErr->GetNbinsX(); i++){
@@ -164,7 +165,7 @@ void WToMuNuMeasurement() {
   ratioErrH->SetFillStyle(3013);
   ratioErrH->SetFillColor(1);
   ratioErrH->SetMarkerStyle(21);
-  ratioErrH->SetMarkerSize(0);  
+  ratioErrH->SetMarkerSize(0);
 
   canv->cd();
   TPad * lower = new TPad("lower", "pad",0,0,1,0.30);
