@@ -55,8 +55,11 @@ void MakePostFitPlots() {
       h_FakeTaus -> SetBinContent(iB,h_FakeTaus_x->GetBinContent(iB));
       h_TrueTaus -> SetBinContent(iB,h_TrueTaus_x->GetBinContent(iB));
 
-      bkgdErr->SetBinContent(iB,h_total_x->GetBinContent(iB));
-      bkgdErr->SetBinError(iB,h_total_x->GetBinError(iB));
+      double tot = h_WToTauNu->GetBinContent(iB)+h_FakeTaus->GetBinContent(iB)+h_TrueTaus->GetBinContent(iB);
+      double tot_err = h_total_x->GetBinError(iB);
+      
+      bkgdErr->SetBinContent(iB,tot);
+      bkgdErr->SetBinError(iB,tot_err);
 
     }
 
