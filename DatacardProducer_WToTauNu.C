@@ -45,9 +45,9 @@ void DatacardProducer_WToTauNu() {
     textFile << "-----------------" << endl;
     textFile << "shapes * * " <<rootFileName << "  $PROCESS    $PROCESS_$SYSTEMATIC " << endl;
     textFile << "-----------------" << endl;
-    textFile << setw(30) << "bin"     << setw(15) << "WTauNu"    << setw(15) << "WTauNu"   << setw(15) << "WTauNu"   << endl;
-    textFile << setw(30) << "process" << setw(15) << "WToTauNu"  << setw(15) << "FakeTaus" << setw(15) << "TrueTaus" << endl;
-    textFile << setw(30) << "process" << setw(15) << "0"         << setw(15) << "1"        << setw(15) << "2"        << endl;
+    textFile << setw(30) << "bin"     << setw(15) << "WTauNu" << setw(15) << "WTauNu"   << setw(15) << "WTauNu"   << endl;
+    textFile << setw(30) << "process" << setw(15) << "W"      << setw(15) << "FakeTaus" << setw(15) << "TrueTaus" << endl;
+    textFile << setw(30) << "process" << setw(15) << "0"      << setw(15) << "1"        << setw(15) << "2"        << endl;
     textFile << setw(30) << "rate"    << setw(15) << h_WToTauNu->Integral() << setw(15) << h_FakeTaus->Integral() << setw(15) << h_TrueTaus->Integral() << endl;
     textFile << "-----------------" << endl;
     textFile << setw(15) << "taues" << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
@@ -64,7 +64,7 @@ void DatacardProducer_WToTauNu() {
       }
     }
     textFile << setw(15) << "BkgdNorm" << setw(15) << "lnN" << setw(15) << "-" << setw(15) << "-"<< setw(15) << "1.30" << endl;
-    textFile << "tauId  rateParam WTauNu WToTauNu  1  [0.5,1.0]" << endl;
+    textFile << "tauId  rateParam WTauNu W  1  [0.5,1.0]" << endl;
   
     // *******************
     // end creating datacard inputs

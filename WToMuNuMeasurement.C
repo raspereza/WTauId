@@ -186,11 +186,11 @@ void WToMuNuMeasurement() {
   for(int i =1; i<=histoMap["WToMuNu"]->GetNbinsX(); i++){
     histo = (TH1D*) histoMap["WToMuNu"]->Clone();
     histo->SetBinContent(i,histoMap["WToMuNu"]->GetBinContent(i)+histoMap["WToMuNu"]->GetBinError(i));
-    histo->SetName(Form("WToMuNu_Bin%i_WToMuNuUp",i));
+    histo->SetName(Form("W_Bin%i_WToMuNuUp",i));
     histoMap[histo->GetName()] = histo;
     histo = (TH1D*) histoMap["WToMuNu"]->Clone();
     histo->SetBinContent(i,histoMap["WToMuNu"]->GetBinContent(i)-histoMap["WToMuNu"]->GetBinError(i));
-    histo->SetName(Form("WToMuNu_Bin%i_WToMuNuDown",i));
+    histo->SetName(Form("W_Bin%i_WToMuNuDown",i));
     histoMap[histo->GetName()] = histo;
   }
   for(int i =1; i<=histoMap["TT"]->GetNbinsX(); i++){
