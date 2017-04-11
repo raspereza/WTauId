@@ -15,7 +15,7 @@ void DatacardProducer_WToMuNu() {
   TString rootFileName =  Variable+"_WToMuNu_shapes.root";
 
   ostringstream str;
-  str << "output/datacards/" << BaseName << ".txt";
+  str << "output/" << BaseName << ".txt";
   string nn = str.str();
   const char * p = nn.c_str();
 
@@ -26,7 +26,7 @@ void DatacardProducer_WToMuNu() {
   TH1D* h_FakeTaus = 0;
   TH1D* h_TrueTaus = 0;
   if(in){
-    in -> GetObject("Data",h_data);
+    in -> GetObject("data_obs",h_data);
     in -> GetObject("WToMuNu",h_WToMuNu);
     in -> GetObject("TT",h_FakeTaus);
     in -> GetObject("EWK",h_TrueTaus);

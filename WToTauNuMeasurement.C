@@ -70,7 +70,7 @@ void WToTauNuMeasurement() {
   samples.push_back(make_pair("TrueTaus" , trueTaus));
   samples.push_back(make_pair("FakeTaus" , fakeTaus));
   samples.push_back(make_pair("WToTauNu" , WToTauNu));
-  samples.push_back(make_pair("Data" , data_MET));
+  samples.push_back(make_pair("data_obs" , data_MET));
   samples.push_back(make_pair("WToTauNu_jesUp" , WToTauNu_jesUp));
   samples.push_back(make_pair("WToTauNu_jesDown" , WToTauNu_jesDown));
   samples.push_back(make_pair("WToTauNu_tauesUp" , WToTauNu_tauesUp));
@@ -113,10 +113,10 @@ void WToTauNuMeasurement() {
       }
 
       histoMap[samples[i].first] = histoSamples;
-      if(!samples[i].first.Contains("Data") && !samples[i].first.Contains("Up") && !samples[i].first.Contains("Down")){
+      if(!samples[i].first.Contains("data_obs") && !samples[i].first.Contains("Up") && !samples[i].first.Contains("Down")){
 	stack->Add(histoSamples);
       }
-      else if(samples[i].first.Contains("Data")) h_data = (TH1D*) histoSamples->Clone(); 
+      else if(samples[i].first.Contains("data_obs")) h_data = (TH1D*) histoSamples->Clone(); 
       cout<<samples[i].first<<" = "<<histoSamples->Integral()<<" ( Entries = "<<histoSamples->GetEntries()<<" ) "<<endl<<endl;
     }
 
@@ -169,7 +169,7 @@ void WToTauNuMeasurement() {
     SetLegendStyle(leg);
     leg->SetTextSize(0.047);
     leg->SetHeader(iso[idx_iso]+" Id");
-    if(h_data) leg->AddEntry(h_data,"Data","lp");
+    if(h_data) leg->AddEntry(h_data,"data_obs","lp");
     if(histoMap["WToTauNu"]) leg->AddEntry(histoMap["WToTauNu"],"W#rightarrow#tau#nu","f");
     if(histoMap["FakeTaus"]) leg->AddEntry(histoMap["FakeTaus"],"bkgd (fake taus)","f");
     if(histoMap["TrueTaus"]) leg->AddEntry(histoMap["TrueTaus"],"bkgd (true taus)","f");
@@ -217,11 +217,11 @@ void WToTauNuMeasurement() {
     for(int i =1; i<=histoMap["WToTauNu"]->GetNbinsX(); i++){
       histo = (TH1D*) histoMap["WToTauNu"]->Clone();
       histo->SetBinContent(i,histoMap["WToTauNu"]->GetBinContent(i)+histoMap["WToTauNu"]->GetBinError(i));
-      histo->SetName(Form("WToTauNu_Bin%iUp",i));
+      histo->SetName(Form("WToTauNu_Bin%i_WToTauNuUp",i));
       histoMap[histo->GetName()] = histo;
       histo = (TH1D*) histoMap["WToTauNu"]->Clone();
       histo->SetBinContent(i,histoMap["WToTauNu"]->GetBinContent(i)-histoMap["WToTauNu"]->GetBinError(i));
-      histo->SetName(Form("WToTauNu_Bin%iDown_WToTauNu",i));
+      histo->SetName(Form("WToTauNu_Bin%i_WToTauNuDown",i));
       histoMap[histo->GetName()] = histo;
     }
 

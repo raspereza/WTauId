@@ -57,7 +57,7 @@ void WToMuNuMeasurement() {
   std::vector<TString> WToMuNu_uesDown;
   WToMuNu_uesDown.push_back("WToMuNu_M-200_13TeV-pythia8_uesDown");
 
-  samples.push_back(make_pair("Data" , data));
+  samples.push_back(make_pair("data_obs" , data));
   samples.push_back(make_pair("EWK" , ewk));
   samples.push_back(make_pair("TT" , tt));
   samples.push_back(make_pair("WToMuNu" , WToMuNu));
@@ -95,10 +95,10 @@ void WToMuNuMeasurement() {
     }
 
     histoMap[samples[i].first] = histoSamples;
-    if(!samples[i].first.Contains("Data") && !samples[i].first.Contains("Up") && !samples[i].first.Contains("Down")){
+    if(!samples[i].first.Contains("data_obs") && !samples[i].first.Contains("Up") && !samples[i].first.Contains("Down")){
       stack->Add(histoSamples);
     }
-    else if(samples[i].first.Contains("Data")) h_data = (TH1D*) histoSamples->Clone(); 
+    else if(samples[i].first.Contains("data_obs")) h_data = (TH1D*) histoSamples->Clone(); 
     cout<<samples[i].first<<" = "<<histoSamples->GetSumOfWeights()<<" ( Entries = "<<histoSamples->GetEntries()<<" )"<<endl<<endl;
   }
 
@@ -138,7 +138,7 @@ void WToMuNuMeasurement() {
   TLegend * leg = new TLegend(0.55,0.4,0.85,0.78);
   SetLegendStyle(leg);
   leg->SetTextSize(0.047);
-  if(h_data) leg->AddEntry(h_data,"Data","lp");
+  if(h_data) leg->AddEntry(h_data,"data_obs","lp");
   if(histoMap["WToMuNu"]) leg->AddEntry(histoMap["WToMuNu"],"W#rightarrow#mu#nu","f");
   if(histoMap["TT"])      leg->AddEntry(histoMap["TT"],"tt + single top","f");
   if(histoMap["EWK"])     leg->AddEntry(histoMap["EWK"],"electroweak","f");
@@ -185,11 +185,11 @@ void WToMuNuMeasurement() {
   for(int i =1; i<=histoMap["WToMuNu"]->GetNbinsX(); i++){
     histo = (TH1D*) histoMap["WToMuNu"]->Clone();
     histo->SetBinContent(i,histoMap["WToMuNu"]->GetBinContent(i)+histoMap["WToMuNu"]->GetBinError(i));
-    histo->SetName(Form("WToMuNu_Bin%iUp",i));
+    histo->SetName(Form("WToMuNu_Bin%i_WToMuNuUp",i));
     histoMap[histo->GetName()] = histo;
     histo = (TH1D*) histoMap["WToMuNu"]->Clone();
     histo->SetBinContent(i,histoMap["WToMuNu"]->GetBinContent(i)-histoMap["WToMuNu"]->GetBinError(i));
-    histo->SetName(Form("WToMuNu_Bin%iDown_WToMuNu",i));
+    histo->SetName(Form("WToMuNu_Bin%i_WToMuNuDown",i));
     histoMap[histo->GetName()] = histo;
   }
 
