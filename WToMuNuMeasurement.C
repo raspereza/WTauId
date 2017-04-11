@@ -192,6 +192,26 @@ void WToMuNuMeasurement() {
     histo->SetName(Form("WToMuNu_Bin%i_WToMuNuDown",i));
     histoMap[histo->GetName()] = histo;
   }
+  for(int i =1; i<=histoMap["TT"]->GetNbinsX(); i++){
+    histo = (TH1D*) histoMap["TT"]->Clone();
+    histo->SetBinContent(i,histoMap["TT"]->GetBinContent(i)+histoMap["TT"]->GetBinError(i));
+    histo->SetName(Form("TT_Bin%i_TTUp",i));
+    histoMap[histo->GetName()] = histo;
+    histo = (TH1D*) histoMap["TT"]->Clone();
+    histo->SetBinContent(i,histoMap["TT"]->GetBinContent(i)-histoMap["TT"]->GetBinError(i));
+    histo->SetName(Form("TT_Bin%i_TTDown",i));
+    histoMap[histo->GetName()] = histo;
+  }
+  for(int i =1; i<=histoMap["EWK"]->GetNbinsX(); i++){
+    histo = (TH1D*) histoMap["EWK"]->Clone();
+    histo->SetBinContent(i,histoMap["EWK"]->GetBinContent(i)+histoMap["EWK"]->GetBinError(i));
+    histo->SetName(Form("EWK_Bin%i_EWKUp",i));
+    histoMap[histo->GetName()] = histo;
+    histo = (TH1D*) histoMap["EWK"]->Clone();
+    histo->SetBinContent(i,histoMap["EWK"]->GetBinContent(i)-histoMap["EWK"]->GetBinError(i));
+    histo->SetName(Form("EWK_Bin%i_EWKDown",i));
+    histoMap[histo->GetName()] = histo;
+  }
 
   // Save all histograms in one file
   TFile *out = new TFile("output/" + var + "_WToMuNu_shapes.root","RECREATE");

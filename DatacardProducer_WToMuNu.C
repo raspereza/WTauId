@@ -52,7 +52,9 @@ void DatacardProducer_WToMuNu() {
   textFile << setw(15) << "jes" << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
   textFile << setw(15) << "ues" << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
   for (int iB=3; iB<=h_data->GetNbinsX(); ++iB) {
-    textFile << setw(15) << Form("Bin%i_WToMuNu",iB) << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
+    textFile << setw(15) << Form("Bin%i_WToMuNu",iB) << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-"    << setw(15) << "-"    << endl;
+    textFile << setw(15) << Form("Bin%i_TT",iB)      << setw(15) << "shape" << setw(15) << "-"    << setw(15) << "1.00" << setw(15) << "-"    << endl;
+    textFile << setw(15) << Form("Bin%i_EWK",iB)     << setw(15) << "shape" << setw(15) << "-"    << setw(15) << "-"    << setw(15) << "1.00" << endl;
   }
   textFile << setw(15) << "TTNorm"  << setw(15) << "lnN" << setw(15) << "-"    << setw(15) << "1.15" << setw(15) << "-"    << endl;
   textFile << setw(15) << "EWKNorm" << setw(15) << "lnN" << setw(15) << "-"    << setw(15) << "-"    << setw(15) << "1.15" << endl;

@@ -224,6 +224,26 @@ void WToTauNuMeasurement() {
       histo->SetName(Form("WToTauNu_Bin%i_WToTauNuDown",i));
       histoMap[histo->GetName()] = histo;
     }
+    for(int i =1; i<=histoMap["FakeTaus"]->GetNbinsX(); i++){
+      histo = (TH1D*) histoMap["FakeTaus"]->Clone();
+      histo->SetBinContent(i,histoMap["FakeTaus"]->GetBinContent(i)+histoMap["FakeTaus"]->GetBinError(i));
+      histo->SetName(Form("FakeTaus_Bin%i_FakeTausUp",i));
+      histoMap[histo->GetName()] = histo;
+      histo = (TH1D*) histoMap["FakeTaus"]->Clone();
+      histo->SetBinContent(i,histoMap["FakeTaus"]->GetBinContent(i)-histoMap["FakeTaus"]->GetBinError(i));
+      histo->SetName(Form("FakeTaus_Bin%i_FakeTausDown",i));
+      histoMap[histo->GetName()] = histo;
+    }
+    for(int i =1; i<=histoMap["TrueTaus"]->GetNbinsX(); i++){
+      histo = (TH1D*) histoMap["TrueTaus"]->Clone();
+      histo->SetBinContent(i,histoMap["TrueTaus"]->GetBinContent(i)+histoMap["TrueTaus"]->GetBinError(i));
+      histo->SetName(Form("TrueTaus_Bin%i_TrueTausUp",i));
+      histoMap[histo->GetName()] = histo;
+      histo = (TH1D*) histoMap["TrueTaus"]->Clone();
+      histo->SetBinContent(i,histoMap["TrueTaus"]->GetBinContent(i)-histoMap["TrueTaus"]->GetBinError(i));
+      histo->SetName(Form("TrueTaus_Bin%i_TrueTausDown",i));
+      histoMap[histo->GetName()] = histo;
+    }
 
     // Save all histograms in one file
     TFile *out = new TFile("output/" + var + "_" + iso[idx_iso] + "_WToTauNu_shapes.root","RECREATE");

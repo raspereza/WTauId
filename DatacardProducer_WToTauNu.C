@@ -54,7 +54,9 @@ void DatacardProducer_WToTauNu() {
     textFile << setw(15) << "jes"   << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
     textFile << setw(15) << "ues"   << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
     for (int iB=3; iB<=h_data->GetNbinsX(); ++iB) {
-      textFile << setw(15) << Form("Bin%i_WToTauNu",iB) << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
+      textFile << setw(15) << Form("Bin%i_WToTauNu",iB) << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-"    << setw(15) << "-"    << endl;
+      textFile << setw(15) << Form("Bin%i_FakeTaus",iB) << setw(15) << "shape" << setw(15) << "-"    << setw(15) << "1.00" << setw(15) << "-"    << endl;
+      textFile << setw(15) << Form("Bin%i_TrueTaus",iB) << setw(15) << "shape" << setw(15) << "-"    << setw(15) << "-"    << setw(15) << "1.00" << endl;
     }
     for (int i=1; i<=4; ++i) {
       for (int j=1; j<=3; ++j) {
