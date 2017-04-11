@@ -421,6 +421,9 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if(isData) weight =1;
     if(isData && sel.name.Contains("cr_antiiso")) weight = fakerate;
 
+    //if(*tauDecay < 1 || *tauDecay>4) continue;
+    //if(*tauDecay != 10 ) continue;
+
     if( histo->InheritsFrom("TH2") ){
       if(variableToFill_1==variableToFill_2) ((TH2*) histo) -> Fill(abs(*var1), abs(*var3), weight);
       else                                   ((TH2*) histo) -> Fill(abs(*var1)/abs(*var2),abs(*var3), weight);
