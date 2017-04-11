@@ -96,7 +96,7 @@ void SetStyle()
   HttStyle->SetStripDecimals(kFALSE);
   HttStyle->SetLineStyleString(11,"20 10");
 
-  HttStyle->SetTitleSize  (35,"XY");
+  HttStyle->SetTitleSize  (30,"XY");
   HttStyle->SetTitleOffset(1.600,"X");
   HttStyle->SetTitleOffset(1.650,"Y");
   HttStyle->SetLabelOffset(0.010,"XY");
