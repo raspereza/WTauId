@@ -60,13 +60,13 @@ void WToMuNuMeasurement() {
   samples.push_back(make_pair("data_obs" , data));
   samples.push_back(make_pair("EWK" , ewk));
   samples.push_back(make_pair("TT" , tt));
-  samples.push_back(make_pair("WToMuNu" , WToMuNu));
-  samples.push_back(make_pair("WToMuNu_jesUp" , WToMuNu_jesUp));
-  samples.push_back(make_pair("WToMuNu_jesDown" , WToMuNu_jesDown));
-  samples.push_back(make_pair("WToMuNu_muUp" , WToMuNu_muUp));
-  samples.push_back(make_pair("WToMuNu_muDown" , WToMuNu_muDown));
-  samples.push_back(make_pair("WToMuNu_uesUp" , WToMuNu_uesUp));
-  samples.push_back(make_pair("WToMuNu_uesDown" , WToMuNu_uesDown));
+  samples.push_back(make_pair("W" , WToMuNu));
+  samples.push_back(make_pair("W_jesUp" , WToMuNu_jesUp));
+  samples.push_back(make_pair("W_jesDown" , WToMuNu_jesDown));
+  samples.push_back(make_pair("W_muUp" , WToMuNu_muUp));
+  samples.push_back(make_pair("W_muDown" , WToMuNu_muDown));
+  samples.push_back(make_pair("W_uesUp" , WToMuNu_uesUp));
+  samples.push_back(make_pair("W_uesDown" , WToMuNu_uesDown));
 
   TString var = "mtmuon";
 
@@ -89,9 +89,9 @@ void WToMuNuMeasurement() {
       makeSelection(dir+"/"+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),"Tight",select,histo,var,var,var);
       histoSamples->Add(histo);
       histoSamples->SetFillStyle(1001);
-      if(samples[i].first.Contains("TT")) histoSamples->SetFillColor(TColor::GetColor("#FFCCFF"));
+      if(samples[i].first.Contains("TT"))       histoSamples->SetFillColor(TColor::GetColor("#FFCCFF"));
       else if(samples[i].first.Contains("EWK")) histoSamples->SetFillColor(TColor::GetColor("#6F2D35"));
-      else if(samples[i].first.Contains("WToMuNu")) histoSamples->SetFillColor(TColor::GetColor("#FFCC66"));
+      else if(samples[i].first.Contains("W"))   histoSamples->SetFillColor(TColor::GetColor("#FFCC66"));
     }
 
     histoMap[samples[i].first] = histoSamples;
@@ -111,11 +111,11 @@ void WToMuNuMeasurement() {
   double addErr = 0;
   for(int i=1; i<=bkgdErr->GetNbinsX(); i++){
     // 1.) Uncertainty on JES, Mu, UES
-    addErr = histoMap["WToMuNu_jesUp"]->GetBinContent(i) - histoMap["WToMuNu"]->GetBinContent(i); 
+    addErr = histoMap["W_jesUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
     bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));      
-    addErr = histoMap["WToMuNu_muUp"]->GetBinContent(i) - histoMap["WToMuNu"]->GetBinContent(i); 
+    addErr = histoMap["W_muUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
     bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
-    addErr = histoMap["WToMuNu_uesUp"]->GetBinContent(i) - histoMap["WToMuNu"]->GetBinContent(i); 
+    addErr = histoMap["W_uesUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
     bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
   }
   // ------------------ Computation of all uncertainties : END  -------
@@ -138,10 +138,10 @@ void WToMuNuMeasurement() {
   TLegend * leg = new TLegend(0.55,0.4,0.85,0.78);
   SetLegendStyle(leg);
   leg->SetTextSize(0.047);
-  if(h_data)              leg->AddEntry(h_data,"Data","lp");
-  if(histoMap["WToMuNu"]) leg->AddEntry(histoMap["WToMuNu"],"W#rightarrow#mu#nu","f");
-  if(histoMap["TT"])      leg->AddEntry(histoMap["TT"],"tt + single top","f");
-  if(histoMap["EWK"])     leg->AddEntry(histoMap["EWK"],"electroweak","f");
+  if(h_data)          leg->AddEntry(h_data,"Data","lp");
+  if(histoMap["W"])   leg->AddEntry(histoMap["W"],"W#rightarrow#mu#nu","f");
+  if(histoMap["TT"])  leg->AddEntry(histoMap["TT"],"tt + single top","f");
+  if(histoMap["EWK"]) leg->AddEntry(histoMap["EWK"],"electroweak","f");
   writeExtraText = true;
   extraText = "Internal";
   CMS_lumi(upper,4,33); 
@@ -183,13 +183,13 @@ void WToMuNuMeasurement() {
 
   // Get bin-by-bin uncertainties for WMuNu
   TH1D* histo = 0;
-  for(int i =1; i<=histoMap["WToMuNu"]->GetNbinsX(); i++){
-    histo = (TH1D*) histoMap["WToMuNu"]->Clone();
-    histo->SetBinContent(i,histoMap["WToMuNu"]->GetBinContent(i)+histoMap["WToMuNu"]->GetBinError(i));
+  for(int i =1; i<=histoMap["W"]->GetNbinsX(); i++){
+    histo = (TH1D*) histoMap["W"]->Clone();
+    histo->SetBinContent(i,histoMap["W"]->GetBinContent(i)+histoMap["W"]->GetBinError(i));
     histo->SetName(Form("W_Bin%i_WToMuNuUp",i));
     histoMap[histo->GetName()] = histo;
-    histo = (TH1D*) histoMap["WToMuNu"]->Clone();
-    histo->SetBinContent(i,histoMap["WToMuNu"]->GetBinContent(i)-histoMap["WToMuNu"]->GetBinError(i));
+    histo = (TH1D*) histoMap["W"]->Clone();
+    histo->SetBinContent(i,histoMap["W"]->GetBinContent(i)-histoMap["W"]->GetBinError(i));
     histo->SetName(Form("W_Bin%i_WToMuNuDown",i));
     histoMap[histo->GetName()] = histo;
   }

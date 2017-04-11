@@ -69,14 +69,14 @@ void WToTauNuMeasurement() {
   }
   samples.push_back(make_pair("TrueTaus" , trueTaus));
   samples.push_back(make_pair("FakeTaus" , fakeTaus));
-  samples.push_back(make_pair("WToTauNu" , WToTauNu));
+  samples.push_back(make_pair("W" , WToTauNu));
   samples.push_back(make_pair("data_obs" , data_MET));
-  samples.push_back(make_pair("WToTauNu_jesUp" , WToTauNu_jesUp));
-  samples.push_back(make_pair("WToTauNu_jesDown" , WToTauNu_jesDown));
-  samples.push_back(make_pair("WToTauNu_tauesUp" , WToTauNu_tauesUp));
-  samples.push_back(make_pair("WToTauNu_tauesDown" , WToTauNu_tauesDown));
-  samples.push_back(make_pair("WToTauNu_uesUp" , WToTauNu_uesUp));
-  samples.push_back(make_pair("WToTauNu_uesDown" , WToTauNu_uesDown));
+  samples.push_back(make_pair("W_jesUp" , WToTauNu_jesUp));
+  samples.push_back(make_pair("W_jesDown" , WToTauNu_jesDown));
+  samples.push_back(make_pair("W_tauesUp" , WToTauNu_tauesUp));
+  samples.push_back(make_pair("W_tauesDown" , WToTauNu_tauesDown));
+  samples.push_back(make_pair("W_uesUp" , WToTauNu_uesUp));
+  samples.push_back(make_pair("W_uesDown" , WToTauNu_uesDown));
 
   TString var = "mttau";
 
@@ -91,9 +91,9 @@ void WToTauNuMeasurement() {
     for (unsigned int i=0; i<samples.size(); ++i) {
 
       cout<<"Process "<<samples[i].first<<endl;
-    
-      TH1D* histoSamples = new TH1D(samples[i].first,"",10,0,1000);
-      
+
+      TH1D* histoSamples = new TH1D(samples[i].first + "_" + iso[idx_iso],"",10,0,1000);
+
       for(unsigned int idx_list=0; idx_list<samples[i].second.size(); idx_list++){
 
 	cout<<".............. Sample : "<<samples[i].second[idx_list]<<endl;
@@ -109,14 +109,18 @@ void WToTauNuMeasurement() {
 	histoSamples->SetFillStyle(1001);
 	if(samples[i].first.Contains("FakeTaus")) histoSamples->SetFillColor(TColor::GetColor("#FFCCFF"));
 	else if(samples[i].first.Contains("TrueTaus")) histoSamples->SetFillColor(TColor::GetColor("#6F2D35"));
-	else if(samples[i].first.Contains("WToTauNu")) histoSamples->SetFillColor(TColor::GetColor("#FFCC66"));
+	else if(samples[i].first.Contains("W")) histoSamples->SetFillColor(TColor::GetColor("#FFCC66"));
+	delete histo;
       }
 
       histoMap[samples[i].first] = histoSamples;
       if(!samples[i].first.Contains("data_obs") && !samples[i].first.Contains("Up") && !samples[i].first.Contains("Down")){
 	stack->Add(histoSamples);
       }
-      else if(samples[i].first.Contains("data_obs")) h_data = (TH1D*) histoSamples->Clone(); 
+      else if(samples[i].first.Contains("data_obs")){
+	h_data = (TH1D*) histoSamples->Clone(); 
+	h_data -> SetDirectory(0);
+      }
       cout<<samples[i].first<<" = "<<histoSamples->Integral()<<" ( Entries = "<<histoSamples->GetEntries()<<" ) "<<endl<<endl;
     }
 
@@ -125,15 +129,15 @@ void WToTauNuMeasurement() {
     bkgdErr->SetFillStyle(3013);
     bkgdErr->SetFillColor(1);
     bkgdErr->SetMarkerStyle(21);
-    bkgdErr->SetMarkerSize(0);  
+    bkgdErr->SetMarkerSize(0);
     double addErr = 0;
     for(int i=1; i<=bkgdErr->GetNbinsX(); i++){
       // 1.) Uncertainty on JES, TauES, UES
-      addErr = histoMap["WToTauNu_jesUp"]->GetBinContent(i) - histoMap["WToTauNu"]->GetBinContent(i); 
+      addErr = histoMap["W_jesUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));      
-      addErr = histoMap["WToTauNu_tauesUp"]->GetBinContent(i) - histoMap["WToTauNu"]->GetBinContent(i); 
+      addErr = histoMap["W_tauesUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
-      addErr = histoMap["WToTauNu_uesUp"]->GetBinContent(i) - histoMap["WToTauNu"]->GetBinContent(i); 
+      addErr = histoMap["W_uesUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
       // 2.) Tau normalization uncertainty
       addErr = 0.3*histoMap["TrueTaus"]->GetBinContent(i);
@@ -149,7 +153,6 @@ void WToTauNuMeasurement() {
 	}
     }
     // ------------------ Computation of all uncertainties : END  -------
-
     TCanvas * canv = new TCanvas("canv","",700,800);
     TPad* upper = new TPad("upper","pad",0,0.29,1,1);
     upper->Draw();
@@ -170,7 +173,7 @@ void WToTauNuMeasurement() {
     leg->SetTextSize(0.047);
     leg->SetHeader(iso[idx_iso]+" Id");
     if(h_data) leg->AddEntry(h_data,"data_obs","lp");
-    if(histoMap["WToTauNu"]) leg->AddEntry(histoMap["WToTauNu"],"W#rightarrow#tau#nu","f");
+    if(histoMap["W"])        leg->AddEntry(histoMap["W"],"W#rightarrow#tau#nu","f");
     if(histoMap["FakeTaus"]) leg->AddEntry(histoMap["FakeTaus"],"bkgd (fake taus)","f");
     if(histoMap["TrueTaus"]) leg->AddEntry(histoMap["TrueTaus"],"bkgd (true taus)","f");
     writeExtraText = true;
@@ -214,13 +217,13 @@ void WToTauNuMeasurement() {
 
     // Get bin-by-bin uncertainties for WTauNu
     TH1D* histo = 0;
-    for(int i =1; i<=histoMap["WToTauNu"]->GetNbinsX(); i++){
-      histo = (TH1D*) histoMap["WToTauNu"]->Clone();
-      histo->SetBinContent(i,histoMap["WToTauNu"]->GetBinContent(i)+histoMap["WToTauNu"]->GetBinError(i));
+    for(int i =1; i<=histoMap["W"]->GetNbinsX(); i++){
+      histo = (TH1D*) histoMap["W"]->Clone();
+      histo->SetBinContent(i,histoMap["W"]->GetBinContent(i)+histoMap["W"]->GetBinError(i));
       histo->SetName(Form("W_Bin%i_WToTauNuUp",i));
       histoMap[histo->GetName()] = histo;
-      histo = (TH1D*) histoMap["WToTauNu"]->Clone();
-      histo->SetBinContent(i,histoMap["WToTauNu"]->GetBinContent(i)-histoMap["WToTauNu"]->GetBinError(i));
+      histo = (TH1D*) histoMap["W"]->Clone();
+      histo->SetBinContent(i,histoMap["W"]->GetBinContent(i)-histoMap["W"]->GetBinError(i));
       histo->SetName(Form("W_Bin%i_WToTauNuDown",i));
       histoMap[histo->GetName()] = histo;
     }

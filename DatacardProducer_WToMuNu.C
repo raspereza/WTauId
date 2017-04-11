@@ -27,9 +27,9 @@ void DatacardProducer_WToMuNu() {
   TH1D* h_TrueTaus = 0;
   if(in){
     in -> GetObject("data_obs",h_data);
-    in -> GetObject("WToMuNu",h_WToMuNu);
-    in -> GetObject("TT",h_FakeTaus);
-    in -> GetObject("EWK",h_TrueTaus);
+    in -> GetObject("W"       ,h_WToMuNu);
+    in -> GetObject("TT"      ,h_FakeTaus);
+    in -> GetObject("EWK"     ,h_TrueTaus);
   }
 
   std::ofstream textFile(p);
@@ -56,9 +56,10 @@ void DatacardProducer_WToMuNu() {
     textFile << setw(15) << Form("Bin%i_TT",iB)      << setw(15) << "shape" << setw(15) << "-"    << setw(15) << "1.00" << setw(15) << "-"    << endl;
     textFile << setw(15) << Form("Bin%i_EWK",iB)     << setw(15) << "shape" << setw(15) << "-"    << setw(15) << "-"    << setw(15) << "1.00" << endl;
   }
-  textFile << setw(15) << "TTNorm"  << setw(15) << "lnN" << setw(15) << "-"    << setw(15) << "1.15" << setw(15) << "-"    << endl;
-  textFile << setw(15) << "EWKNorm" << setw(15) << "lnN" << setw(15) << "-"    << setw(15) << "-"    << setw(15) << "1.15" << endl;
-  textFile << setw(15) << "MuEff"   << setw(15) << "lnN" << setw(15) << "1.04" << setw(15) << "1.04" << setw(15) << "1.04" << endl;
+  textFile << setw(15) << "TTNorm"  << setw(15) << "lnN" << setw(15) << "-"     << setw(15) << "1.15"  << setw(15) << "-"     << endl;
+  textFile << setw(15) << "EWKNorm" << setw(15) << "lnN" << setw(15) << "-"     << setw(15) << "-"     << setw(15) << "1.15"  << endl;
+  textFile << setw(15) << "MuEff"   << setw(15) << "lnN" << setw(15) << "1.04"  << setw(15) << "1.04"  << setw(15) << "1.04"  << endl;
+  textFile << setw(15) << "lumi"    << setw(15) << "lnN" << setw(15) << "1.027" << setw(15) << "1.027" << setw(15) << "1.027" << endl;
   
   // *******************
   // end creating datacard inputs

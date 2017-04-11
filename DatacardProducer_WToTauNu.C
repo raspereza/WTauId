@@ -29,7 +29,7 @@ void DatacardProducer_WToTauNu() {
     TH1D* h_TrueTaus = 0;
     if(in){
       in -> GetObject("data_obs",h_data);
-      in -> GetObject("WToTauNu",h_WToTauNu);
+      in -> GetObject("W"       ,h_WToTauNu);
       in -> GetObject("FakeTaus",h_FakeTaus);
       in -> GetObject("TrueTaus",h_TrueTaus);
     }
@@ -63,7 +63,8 @@ void DatacardProducer_WToTauNu() {
 	textFile << setw(15) << Form("FR%i%i",i,j) << setw(15) << "shape" << setw(15) << "-" << setw(15) << "1.00" << setw(15) << "-" << endl;
       }
     }
-    textFile << setw(15) << "BkgdNorm" << setw(15) << "lnN" << setw(15) << "-" << setw(15) << "-"<< setw(15) << "1.30" << endl;
+    textFile << setw(15) << "BkgdNorm" << setw(15) << "lnN" << setw(15) << "-"     << setw(15) << "-"     << setw(15) << "1.30"  << endl;
+    textFile << setw(15) << "lumi"     << setw(15) << "lnN" << setw(15) << "1.027" << setw(15) << "1.027" << setw(15) << "1.027" << endl;
     textFile << "tauId  rateParam WTauNu W  1  [0.5,1.0]" << endl;
   
     // *******************
