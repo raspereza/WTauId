@@ -33,6 +33,7 @@ void plotchannel(TString channel);
 
 void SetStyle()
 {
+  TGaxis::SetMaxDigits(4);
   TStyle *HttStyle = new TStyle("Htt-Style","The Perfect Style for Plots ;-)");
   gStyle = HttStyle;
 
@@ -77,7 +78,7 @@ void SetStyle()
   HttStyle->SetHistLineColor(1);
   HttStyle->SetHistLineStyle(0);
   HttStyle->SetHistLineWidth(2);
-  HttStyle->SetNdivisions(509);
+  HttStyle->SetNdivisions(505,"XY");
 
   // Functions
   HttStyle->SetFuncColor(1);
