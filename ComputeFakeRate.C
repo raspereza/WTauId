@@ -49,7 +49,7 @@ void ComputeFakeRate() {
   genuineTaus.push_back("ZJetsToNuNu_HT-400To600_13TeV-madgraph");
   genuineTaus.push_back("ZJetsToNuNu_HT-600To800_13TeV-madgraph");
 
-  samples.push_back(make_pair("GenuineTaus" , genuineTaus));
+  samples.push_back(make_pair("GenuineTausBkg" , genuineTaus));
   samples.push_back(make_pair("WJetsToLNu_13TeV-madgraphMLM" , wjets));
   samples.push_back(make_pair("SingleMuon_Run2016" , data_SingleMuon));
   samples.push_back(make_pair("JetHT_Run2016" , data_JetHT));
@@ -113,7 +113,7 @@ void ComputeFakeRate() {
       cout<<samples[i].first<<" : "<<num<<"/"<<den<<" = "<<num/den<<" +/- "<<numE/den<<" (nevents = "<<h_num->GetEntries()<<"/"<<h_den->GetEntries()<<")"<<endl<<endl;
       
       // Subtract genuine taus
-      if(samples[i].first.Contains("SingleMu"))	h_num -> Add(histoMap["GenuineTaus_"+iso[idx_iso]],-1);
+      if(samples[i].first.Contains("SingleMu"))	h_num -> Add(histoMap["GenuineTausBkg_"+iso[idx_iso]],-1);
 
       // Statistical precision of fakerate:
       for(int i=1; i<=h_num->GetNbinsX(); i++)
