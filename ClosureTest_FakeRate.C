@@ -108,31 +108,13 @@ void ClosureTest_FakeRate() {
     cout<<"Prediction  : "<<nPred<<" +/- "<<predE<<" (nevents = "<<prediction ->GetEntries()<<") "<<endl;
 
     TCanvas * canv1 = MakeCanvas("canv1", "", 700, 800);
-    TPad * upper = new TPad("upper", "pad",0,0.31,1,1);
+    TPad * upper = new TPad("upper", "pad",0,0.29,1,1);
     upper->Draw();
     upper->cd();
-    upper->SetFillColor(0);
-    upper->SetBorderMode(0);
-    upper->SetBorderSize(10);
-    upper->SetTickx(1);
-    upper->SetTicky(1);
-    upper->SetLeftMargin(0.17);
-    upper->SetRightMargin(0.05);
-    upper->SetBottomMargin(0.02);
-    upper->SetFrameFillStyle(0);
-    upper->SetFrameLineStyle(0);
-    upper->SetFrameLineWidth(2);
-    upper->SetFrameBorderMode(0);
-    upper->SetFrameBorderSize(10);
-    upper->SetFrameFillStyle(0);
-    upper->SetFrameLineStyle(0);
-    upper->SetFrameLineWidth(2);
-    upper->SetFrameBorderMode(0);
-    upper->SetFrameBorderSize(10);
-    //upper->SetLogy();
-
+    observation->GetYaxis()->SetTitle("Events");
     prediction->SetLineColor(kRed);
     prediction->SetMarkerColor(kRed);
+    prediction->SetFillStyle(0);
 
     observation->SetMinimum(0);
     observation->GetXaxis()->SetTitle(observation->GetName());
@@ -164,47 +146,14 @@ void ClosureTest_FakeRate() {
     ratioH->SetMarkerSize(1.2);
     ratioH->SetLineColor(1);
     ratioH->GetYaxis()->SetRangeUser(0.0,2.);
-    ratioH->GetYaxis()->SetNdivisions(505);
-    ratioH->GetXaxis()->SetLabelFont(42);
-    ratioH->GetXaxis()->SetLabelOffset(0.04);
-    ratioH->GetXaxis()->SetLabelSize(0.14);
-    ratioH->GetXaxis()->SetTitleSize(0.13);
-    ratioH->GetXaxis()->SetTitleOffset(1.2);
     ratioH->GetYaxis()->SetTitle("obs/exp");
-    ratioH->GetYaxis()->SetLabelFont(42);
-    ratioH->GetYaxis()->SetLabelOffset(0.015);
-    ratioH->GetYaxis()->SetLabelSize(0.13);
-    ratioH->GetYaxis()->SetTitleSize(0.14);
-    ratioH->GetYaxis()->SetTitleOffset(0.5);
-    ratioH->GetXaxis()->SetTickLength(0.07);
-    ratioH->GetYaxis()->SetTickLength(0.04);
-    ratioH->GetYaxis()->SetLabelOffset(0.01);
-
+    ratioH->GetXaxis()->SetTitle("");
+    ratioH->GetYaxis()->CenterTitle();
     // ------------>Primitives in pad: lower
-    TPad * lower = new TPad("lower", "pad",0,0,1,0.28);
+    TPad * lower = new TPad("lower", "pad",0,0,1,0.30);
     lower->Draw();
     lower->cd();
-    lower->SetFillColor(0);
-    lower->SetBorderMode(0);
-    lower->SetBorderSize(10);
     lower->SetGridy();
-    lower->SetTickx(1);
-    lower->SetTicky(1);
-    lower->SetLeftMargin(0.17);
-    lower->SetRightMargin(0.05);
-    lower->SetTopMargin(0.026);
-    lower->SetBottomMargin(0.35);
-    lower->SetFrameFillStyle(0);
-    lower->SetFrameLineStyle(0);
-    lower->SetFrameLineWidth(2);
-    lower->SetFrameBorderMode(0);
-    lower->SetFrameBorderSize(10);
-    lower->SetFrameFillStyle(0);
-    lower->SetFrameLineStyle(0);
-    lower->SetFrameLineWidth(2);
-    lower->SetFrameBorderMode(0);
-    lower->SetFrameBorderSize(10);
-
     ratioH->Draw("e1");
     TLine *line = new TLine(bins[0],1,bins[nBins],1);
     line->Draw("same");
