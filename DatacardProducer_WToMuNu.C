@@ -44,15 +44,15 @@ void DatacardProducer_WToMuNu() {
   textFile << "shapes * * " <<rootFileName << "  $PROCESS    $PROCESS_$SYSTEMATIC " << endl;
   textFile << "-----------------" << endl;
   textFile << setw(30) << "bin"     << setw(15) << "1"         << setw(15) << "1"        << setw(15) << "1"        << endl;
-  textFile << setw(30) << "process" << setw(15) << "WToMuNu"  << setw(15) << "TT"   << setw(15) << "EWK" << endl;
+  textFile << setw(30) << "process" << setw(15) << "WToMuNu"   << setw(15) << "TT"       << setw(15) << "EWK" << endl;
   textFile << setw(30) << "process" << setw(15) << "0"         << setw(15) << "1"        << setw(15) << "2"        << endl;
   textFile << setw(30) << "rate"    << setw(15) << h_WToMuNu->Integral() << setw(15) << h_FakeTaus->Integral() << setw(15) << h_TrueTaus->Integral() << endl;
   textFile << "-----------------" << endl;
-  textFile << setw(15) << "mu" << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
-  textFile << setw(15) << "jes"   << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
-  textFile << setw(15) << "ues"   << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
+  textFile << setw(15) << "mu"  << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
+  textFile << setw(15) << "jes" << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
+  textFile << setw(15) << "ues" << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
   for (int iB=3; iB<=h_data->GetNbinsX(); ++iB) {
-    textFile << setw(15) << Form("Bin%i",iB) << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
+    textFile << setw(15) << Form("Bin%i_WToMuNu",iB) << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
   }
   textFile << setw(15) << "TTNorm"  << setw(15) << "lnN" << setw(15) << "-"    << setw(15) << "1.15" << setw(15) << "-"    << endl;
   textFile << setw(15) << "EWKNorm" << setw(15) << "lnN" << setw(15) << "-"    << setw(15) << "-"    << setw(15) << "1.15" << endl;

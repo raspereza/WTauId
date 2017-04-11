@@ -221,7 +221,7 @@ void WToTauNuMeasurement() {
       histoMap[histo->GetName()] = histo;
       histo = (TH1D*) histoMap["WToTauNu"]->Clone();
       histo->SetBinContent(i,histoMap["WToTauNu"]->GetBinContent(i)-histoMap["WToTauNu"]->GetBinError(i));
-      histo->SetName(Form("WToTauNu_Bin%iDown",i));
+      histo->SetName(Form("WToTauNu_Bin%iDown_WToTauNu",i));
       histoMap[histo->GetName()] = histo;
     }
 
