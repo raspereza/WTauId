@@ -73,10 +73,10 @@ void SetStyle()
 
   // Histograms
   HttStyle->SetHistFillColor(2);
-  HttStyle->SetHistFillStyle(0);
+  //HttStyle->SetHistFillStyle(0);
   HttStyle->SetHistLineColor(1);
   HttStyle->SetHistLineStyle(0);
-  HttStyle->SetHistLineWidth(3);
+  HttStyle->SetHistLineWidth(2);
   HttStyle->SetNdivisions(509);
 
   // Functions
@@ -111,6 +111,8 @@ void SetStyle()
   HttStyle->SetTitleFont  (43,"XY");
 
   HttStyle->SetOptStat    (0);
+
+  gROOT->ForceStyle();
   return;
 }
 
