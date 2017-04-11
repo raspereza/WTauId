@@ -82,7 +82,7 @@ void WToTauNuMeasurement() {
 
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
-    cout<<endl<<"-------------------"<<iso[idx_iso]<<"-----------------"<<endl;
+    cout<<endl<<"--------------------------------------  "<<iso[idx_iso]<<"  ------------------------------------"<<endl;
 
     THStack *stack = new THStack(iso[idx_iso],"");
     TH1D* h_data = 0;
@@ -117,7 +117,7 @@ void WToTauNuMeasurement() {
 	stack->Add(histoSamples);
       }
       else if(samples[i].first.Contains("Data")) h_data = (TH1D*) histoSamples->Clone(); 
-      cout<<samples[i].first<<" = "<<histoSamples->Integral()<<endl<<endl;
+      cout<<samples[i].first<<" = "<<histoSamples->Integral()<<" ( Entries = "<<histoSamples->GetEntries()<<" ) "<<endl<<endl;
     }
 
     // ------------------ Computation of all uncertainties : START  -------
@@ -130,17 +130,13 @@ void WToTauNuMeasurement() {
     for(int i=1; i<=bkgdErr->GetNbinsX(); i++){
       // 1.) Uncertainty on JES, TauES, UES
       addErr = histoMap["WToTauNu_jesUp"]->GetBinContent(i) - histoMap["WToTauNu"]->GetBinContent(i); 
-      cout<<"addErr 1 = "<<addErr<<endl; 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));      
       addErr = histoMap["WToTauNu_tauesUp"]->GetBinContent(i) - histoMap["WToTauNu"]->GetBinContent(i); 
-      cout<<"addErr 2 = "<<addErr<<endl; 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
       addErr = histoMap["WToTauNu_uesUp"]->GetBinContent(i) - histoMap["WToTauNu"]->GetBinContent(i); 
-      cout<<"addErr 3 = "<<addErr<<endl; 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
       // 2.) Tau normalization uncertainty
       addErr = 0.3*histoMap["TrueTaus"]->GetBinContent(i);
-      cout<<"addErr 4 = "<<addErr<<endl; 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
       // 3.) Fake rate uncertainty
       map<TString,TH1D*>::iterator it;
@@ -148,9 +144,8 @@ void WToTauNuMeasurement() {
 	{
 	  if(it->first.Contains("FR") && it->first.Contains("Up")){
 	    addErr = it->second->GetBinContent(i) - histoMap["FakeTaus"]->GetBinContent(i);
-	    cout<<"addErr 5 = "<<addErr<<endl; 
 	    bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
-	  }    
+	  }
 	}
     }
     // ------------------ Computation of all uncertainties : END  -------
@@ -239,6 +234,6 @@ void WToTauNuMeasurement() {
       {
 	histoMap[it->first]    ->Write(it->first);
       }    
+    delete canv;
   }
-
 }
