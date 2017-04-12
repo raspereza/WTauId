@@ -15,15 +15,22 @@ void MakePostFitPlots() {
     TString inputFileName = "mttau_"+iso[idx_iso]+"_WToTauNu_shapes";
     TString mlfitFileName = "mlfit_Combined_"+iso[idx_iso];
     TFile * inputs = new TFile("output/"+inputFileName+".root");
-    TFile * mlfit  = new TFile("datacards/"+mlfitFileName+".root"); 
-
+    if(!inputs){
+      cout<<"File "<<inputFileName<<".root not available. Please Check."<<endl;
+      exit(-1);      
+    }
+    TFile * mlfit  = new TFile("datacards/"+mlfitFileName+".root");
+    if(!mlfit){
+      cout<<"File "<<mlfitFileName<<".root not available. Please Check."<<endl;
+      exit(-1);      
+    }
     TH1F * h_Data       = (TH1F*)inputs->Get("data_obs");
     TH1F * h_FakeTaus   = (TH1F*)inputs->Get("FakeTaus");
-    TH1F * h_WToTauNu   = (TH1F*)inputs->Get("WToTauNu");
+    TH1F * h_WToTauNu   = (TH1F*)inputs->Get("W");
     TH1F * h_TrueTaus   = (TH1F*)inputs->Get("TrueTaus");
     TH1F * h_FakeTaus_x = (TH1F*)mlfit->Get("shapes_fit_s/ch2/FakeTaus");
     TH1F * h_TrueTaus_x = (TH1F*)mlfit->Get("shapes_fit_s/ch2/TrueTaus");
-    TH1F * h_WToTauNu_x = (TH1F*)mlfit->Get("shapes_fit_s/ch2/WToTauNu");
+    TH1F * h_WToTauNu_x = (TH1F*)mlfit->Get("shapes_fit_s/ch2/W");
     TH1F * h_total_x    = (TH1F*)mlfit->Get("shapes_fit_s/ch2/total");
 
     float WNORM  = h_WToTauNu_x->Integral();
