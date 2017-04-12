@@ -258,7 +258,7 @@ void loadFakeRates(TString filename)
   }
 
   TIter next(f1->GetListOfKeys());
-  TKey *key;
+  TKey *key = 0;
 
   while ((key = (TKey*)next())) 
     {
@@ -268,9 +268,11 @@ void loadFakeRates(TString filename)
       h->SetDirectory(0);
       //fakerateFunc = (TF2*) h->GetFunction("f2d");
       h_fakerate -> insert( std::make_pair(h->GetName(),*h) );
+      delete h;
     }
   f1->Close();
   delete f1;
+  delete key;
 }
 // ----------------------------------------------------------------------------------------------------
 double getFakeRates(float ratio, float jetPt, TString iso, TString err)
@@ -357,7 +359,12 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   TTreeReaderValue< Float_t >  var1(             *myReader,       variableToFill_1);
   TTreeReaderValue< Float_t >  var2(             *myReader,       variableToFill_2);
   TTreeReaderValue< Float_t >  var3(             *myReader,       variableToFill_3);
-  
+
+  // Read Met reweighting histo
+  //TH1D* h_met = 0;
+  //TFile *f_met = new TFile("output/met_"+iso+"_WToTauNu_closure.root");
+  //if(f_met) f_met->GetObject("ratioH",h_met);
+
   int nevtsProcessed = getNEventsProcessed(filename);
   double norm = xsec*luminosity/nevtsProcessed;
 
@@ -426,6 +433,11 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
 
     //if(*tauDecay < 1 || *tauDecay>4) continue;
     //if(*tauDecay != 10 ) continue;
+
+    // Reweight according to MET distribution
+    //if(sel.name.Contains("cr_antiiso") && isData){
+    //weight = weight*h_met->GetBinContent(h_met->FindBin(*met));
+    //}
 
     if( histo->InheritsFrom("TH2") ){
       if(variableToFill_1==variableToFill_2) ((TH2*) histo) -> Fill(abs(*var1), abs(*var3), weight);
