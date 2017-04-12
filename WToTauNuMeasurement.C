@@ -15,7 +15,8 @@ void WToTauNuMeasurement() {
 
   loadWorkingPoints();
   initCuts();
-  loadFakeRates("output/fakerates_GenuineTauSubtraction.root");
+  loadFakeRates("output/FakeRates_2017_04_12/fakerates_2017_04_12.root");
+  //loadFakeRates("output/fakerates_GenuineTauSubtraction.root");
   //loadFakeRates("output/fakerates_FINAL.root");
 
   std::vector< std::pair<TString,std::vector<TString>> > samples;
