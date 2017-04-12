@@ -160,7 +160,7 @@ void WToTauNuMeasurement() {
     upper->cd();
 
     stack->Draw("hist");
-    stack->SetMaximum(stack->GetMaximum()*1.4);
+    stack->SetMaximum(stack->GetMaximum()*1.2);
     stack->GetXaxis()->SetTitle("m_{T} [GeV]");
     stack->GetYaxis()->SetTitle("Events");
     gPad->Modified(); 
