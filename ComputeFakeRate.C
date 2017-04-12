@@ -58,7 +58,9 @@ void ComputeFakeRate() {
 
   for (unsigned int i=0; i<samples.size(); ++i) {
 
-    TFile *fileOutput   = new TFile("output/"+samples[i].first+"_fakeRate.root","recreate");
+    TFile *fileOutput     = new TFile("output/"+samples[i].first+"_fakeRate.root","recreate");
+    TFile *fileOutputUp   = new TFile("output/"+samples[i].first+"_fakeRate_Up.root","recreate");
+    TFile *fileOutputDown = new TFile("output/"+samples[i].first+"_fakeRate_Down.root","recreate");
 
     for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
@@ -206,6 +208,23 @@ void ComputeFakeRate() {
       h_fakerate_2d->Write(iso[idx_iso]);
       delete canv;
       cout<<endl;
+
+      // Save also up- and downward variations
+      TH1D* h_fakerate_2d_up = (TH1D*) h_fakerate_2d->Clone();
+      TH1D* h_fakerate_2d_down = (TH1D*) h_fakerate_2d->Clone();
+      for(int i=1; i<h_fakerate_2d->GetNbinsX(); i++){
+	for(int j=1; j<h_fakerate_2d->GetNbinsY(); j++){
+	  h_fakerate_2d_up->SetBinContent(i,j , h_fakerate_2d->GetBinContent(i,j) + h_fakerate_2d->GetBinError(i,j) );
+	  h_fakerate_2d_down->SetBinContent(i,j , h_fakerate_2d->GetBinContent(i,j) - h_fakerate_2d->GetBinError(i,j) );
+	}
+      }
+      fileOutputUp->cd("");
+      h_fakerate_2d_up->SetName(iso[idx_iso]);
+      h_fakerate_2d_up->Write(iso[idx_iso]);
+      fileOutputDown->cd("");
+      h_fakerate_2d_down->SetName(iso[idx_iso]);
+      h_fakerate_2d_down->Write(iso[idx_iso]);
+
     }
     fileOutput->Close();
   }

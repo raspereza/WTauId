@@ -83,8 +83,23 @@ void ClosureTest_FakeRate() {
       observation->SetName(histo->GetName());
     }
     for (unsigned int i=0; i<pred.size(); ++i) {
+      loadFakeRates("output/WJetsToLNu_13TeV-madgraphMLM_fakeRate.root");
       TH1D* histo = new TH1D("pred_" + pred[i],"",nBins,bins);
       makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,var,var,var);
+
+      loadFakeRates("output/WJetsToLNu_13TeV-madgraphMLM_fakeRate_Up.root");
+      TH1D* histoUp = new TH1D("pred_" + pred[i] + "_Up","",nBins,bins);
+      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histoUp,var,var,var);
+
+      loadFakeRates("output/WJetsToLNu_13TeV-madgraphMLM_fakeRate_Down.root");
+      TH1D* histoDown = new TH1D("pred_" + pred[i] + "_Down","",nBins,bins);
+      makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histoDown,var,var,var);
+
+      // Set correct uncertainties
+      for(int i=1; i<histo->GetNbinsX(); i++){
+	histo->SetBinError(i , sqrt( pow(histo->GetBinError(i),2) + pow(abs(histoUp->GetBinContent(i) - histoDown->GetBinContent(i))/2,2)) );
+      }
+
       prediction->Add(histo);
     }
 
@@ -155,6 +170,14 @@ void ClosureTest_FakeRate() {
     canv1->Update();
     canv1->Print("figures/"+(TString)observation->GetName()+"_"+iso[idx_iso]+"_WToTauNu_closure.png");
     delete canv1;
+
+    // Save ratio plot as root file
+    TFile *outFile = new TFile("output/"+(TString)observation->GetName()+"_"+iso[idx_iso]+"_WToTauNu_closure.root","RECREATE");
+    outFile -> cd();
+    ratioH  -> Write();
+    outFile -> Close();
+    delete outFile;
+
     std::cout << std::endl;
 
   }
