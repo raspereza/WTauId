@@ -57,7 +57,7 @@ void ClosureTest_FakeRate() {
   
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
-    cout<<endl<<endl<<"Processing "<<iso[idx_iso]<<endl<<endl;
+    cout<<endl<<endl<<"........................... Processing "<<iso[idx_iso]<<endl;
 
     SetStyle();
     TH1::SetDefaultSumw2();
@@ -71,19 +71,19 @@ void ClosureTest_FakeRate() {
     //float bins[nBins+1] = {100,170,240,310,400,700};  // tauJetPt binning
     float bins[nBins+1] = {200,300,400,500,600,800};  // mttau binning
     //float bins[nBins+1] = {0,0.5,1.1,2.3}; //tauEta binning
-    TH1D * observation = new TH1D("observation","",nBins,bins); 
-    TH1D * prediction  = new TH1D("prediction","",nBins,bins); 
+    TH1D * observation = new TH1D("observation_"+iso[idx_iso],"",nBins,bins); 
+    TH1D * prediction  = new TH1D("prediction_"+iso[idx_iso],"",nBins,bins); 
 
     // Make selection and fill histograms for sr and cr
     TString var = "mttau";
     for (unsigned int i=0; i<obs.size(); ++i) {
-      TH1D* histo = new TH1D("","",nBins,bins);
+      TH1D* histo = new TH1D("obs_" + obs[i],"",nBins,bins);
       makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,var,var,var);
       observation->Add(histo);
       observation->SetName(histo->GetName());
     }
     for (unsigned int i=0; i<pred.size(); ++i) {
-      TH1D* histo = new TH1D("","",nBins,bins);
+      TH1D* histo = new TH1D("pred_" + pred[i],"",nBins,bins);
       makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,var,var,var);
       prediction->Add(histo);
     }
@@ -115,7 +115,7 @@ void ClosureTest_FakeRate() {
     TLegend * leg = new TLegend(0.55,0.4,0.85,0.78);
     SetLegendStyle(leg);
     leg->SetTextSize(0.047);
-    leg->SetHeader(iso[idx_iso]+"Iso");
+    leg->SetHeader(iso[idx_iso]);
     leg->AddEntry(observation,"observation","lp");
     leg->AddEntry(prediction,"prediction","lp");
     leg->Draw();
