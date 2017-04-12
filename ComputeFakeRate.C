@@ -170,7 +170,6 @@ void ComputeFakeRate() {
       h_fakerate_2d->Draw("COLZ");
 
       TLegend * leg = new TLegend(0.25,0.7,0.85,0.9);
-      gStyle->SetLegendTextSize(0.04);
       SetLegendStyle(leg);
       leg->SetHeader(iso[idx_iso]);
       leg->AddEntry(h_fakerate_2d,samples[i].first,"lp");
