@@ -63,6 +63,8 @@ void ClosureTest_FakeRate() {
     TH1::SetDefaultSumw2();
     TH2::SetDefaultSumw2();
 
+    TString var = "mttau";
+
     //const int nBins = 10;
     //double bins[nBins+1] = {0 , 0.4 , 0.5 , 0.6 , 0.7 , 0.75 , 0.8 , 0.85 , 0.9 , 0.95 , 2.};
     const int nBins  = 5;
@@ -75,7 +77,6 @@ void ClosureTest_FakeRate() {
     TH1D * prediction  = new TH1D("prediction_"+iso[idx_iso],"",nBins,bins); 
 
     // Make selection and fill histograms for sr and cr
-    TString var = "mttau";
     for (unsigned int i=0; i<obs.size(); ++i) {
       TH1D* histo = new TH1D("obs_" + obs[i],"",nBins,bins);
       makeSelection(dir+"/"+obs[i]+".root", "NTuple", obs_xsec[i],iso[idx_iso],sr,histo,var,var,var);
@@ -83,6 +84,7 @@ void ClosureTest_FakeRate() {
       observation->SetName(histo->GetName());
     }
     for (unsigned int i=0; i<pred.size(); ++i) {
+
       loadFakeRates("output/WJetsToLNu_13TeV-madgraphMLM_fakeRate.root");
       TH1D* histo = new TH1D("pred_" + pred[i],"",nBins,bins);
       makeSelection(dir+"/"+pred[i]+".root","NTuple",pred_xsec[i],iso[idx_iso],cr_antiiso,histo,var,var,var);
