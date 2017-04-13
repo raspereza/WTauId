@@ -251,7 +251,7 @@ void loadFakeRates(TString filename)
 {
   h_fakerate = new map<TString,TH2D>();
 
-  TFile *f1 = TFile::Open(filename);
+  TFile *f1 = new TFile(filename,"READ");
   if(!f1){
     cout<<"File "<<filename<<" does not exists. Exiting."<<endl;
     exit(-1);
@@ -263,15 +263,14 @@ void loadFakeRates(TString filename)
   while ((key = (TKey*)next())) 
     {
       TClass *c = gROOT->GetClass(key->GetClassName());
-      if (!c->InheritsFrom("TH2")) continue; 
+      if (!c->InheritsFrom("TH2")) continue;
       TH2D *h = (TH2D*) key->ReadObj();
       h->SetDirectory(0);
       //fakerateFunc = (TF2*) h->GetFunction("f2d");
       h_fakerate -> insert( std::make_pair(h->GetName(),*h) );
       delete h;
     }
-  f1->Close();
-  delete f1;
+  if(f1) delete f1;
   delete key;
 }
 // ----------------------------------------------------------------------------------------------------
