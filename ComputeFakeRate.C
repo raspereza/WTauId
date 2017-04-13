@@ -212,8 +212,8 @@ void ComputeFakeRate() {
       // Save also up- and downward variations
       TH1D* h_fakerate_2d_up = (TH1D*) h_fakerate_2d->Clone();
       TH1D* h_fakerate_2d_down = (TH1D*) h_fakerate_2d->Clone();
-      for(int i=1; i<h_fakerate_2d->GetNbinsX(); i++){
-	for(int j=1; j<h_fakerate_2d->GetNbinsY(); j++){
+      for(int i=1; i<=h_fakerate_2d->GetNbinsX(); i++){
+	for(int j=1; j<=h_fakerate_2d->GetNbinsY(); j++){
 	  h_fakerate_2d_up->SetBinContent(i,j , h_fakerate_2d->GetBinContent(i,j) + h_fakerate_2d->GetBinError(i,j) );
 	  h_fakerate_2d_down->SetBinContent(i,j , h_fakerate_2d->GetBinContent(i,j) - h_fakerate_2d->GetBinError(i,j) );
 	}
