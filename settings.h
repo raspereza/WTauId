@@ -250,7 +250,6 @@ int getNEventsProcessed(TString filename)
 void loadFakeRates(TString filename)
 {
   h_fakerate = new map<TString,TH2D>();
-
   TFile *f1 = new TFile(filename,"READ");
   if(!f1){
     cout<<"File "<<filename<<" does not exists. Exiting."<<endl;
@@ -270,7 +269,6 @@ void loadFakeRates(TString filename)
       h_fakerate -> insert( std::make_pair(h->GetName(),*h) );
       delete h;
     }
-  if(f1) delete f1;
   delete key;
 }
 // ----------------------------------------------------------------------------------------------------
