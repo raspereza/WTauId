@@ -25,11 +25,11 @@
 # For n_EWK (including trigger efficiencies)
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer.conf MET_Run2016 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WJetsToLNu_13TeV-madgraphMLM 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf TTJets_13TeV-powheg 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ST_t-channel_top_4f_inclusiveDecays_13TeV-powheg 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powheg 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ST_tW_top_5f_inclusiveDecays_13TeV-powheg 10
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg 10
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf TTJets_13TeV-powheg 5
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ST_t-channel_top_4f_inclusiveDecays_13TeV-powheg 5
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powheg 5
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ST_tW_top_5f_inclusiveDecays_13TeV-powheg 5
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg 5
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf VVTo2L2Nu_13TeV_amcatnloFXFX 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WWToLNuQQ_13TeV_powheg 10
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_MC.conf WZTo1L1Nu2Q_13TeV_amcatnloFXFX 10
