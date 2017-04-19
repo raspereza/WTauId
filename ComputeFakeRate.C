@@ -58,7 +58,7 @@ void ComputeFakeRate() {
 
   for (unsigned int idx_sample=0; idx_sample<samples.size(); ++idx_sample) {
 
-    TFile *fileOutput     = new TFile("output/"+samples[idx_sample].first+"_fakeRate_1prong0pizeros.root","recreate");
+    TFile *fileOutput     = new TFile("output/"+samples[idx_sample].first+"_fakeRate.root","recreate");
     TFile *fileOutputUp   = new TFile("output/"+samples[idx_sample].first+"_fakeRate_Up.root","recreate");
     TFile *fileOutputDown = new TFile("output/"+samples[idx_sample].first+"_fakeRate_Down.root","recreate");
 
