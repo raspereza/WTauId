@@ -151,7 +151,7 @@ void ClosureTest_FakeRate() {
     ratioH->SetMarkerSize(1.2);
     ratioH->SetLineColor(1);
     ratioH->GetYaxis()->SetRangeUser(0.0,2.);
-    ratioH->GetYaxis()->SetTitle("obs/exp");
+    ratioH->GetYaxis()->SetTitle("obs/pred");
     ratioH->GetXaxis()->SetTitle("");
     ratioH->GetYaxis()->CenterTitle();
     // ------------>Primitives in pad: lower
