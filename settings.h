@@ -353,6 +353,15 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   TTreeReaderValue< Bool_t  >  pfJet60(          *myReader,       "pfJet60");
   TTreeReaderValue< Bool_t  >  pfJet80(          *myReader,       "pfJet80");
   TTreeReaderValue< Bool_t  >  pfJet140(         *myReader,       "pfJet140");
+  Bool_t *pfJet200, *pfJet260, *pfJet320, *pfJet400, *pfJet450, *pfJet500;
+  if(filename.Contains("JetHT")){
+    TTreeReaderValue< Bool_t  >  pfJet200(         *myReader,       "pfJet200");
+    TTreeReaderValue< Bool_t  >  pfJet260(         *myReader,       "pfJet260");
+    TTreeReaderValue< Bool_t  >  pfJet320(         *myReader,       "pfJet320");
+    TTreeReaderValue< Bool_t  >  pfJet400(         *myReader,       "pfJet400");
+    TTreeReaderValue< Bool_t  >  pfJet450(         *myReader,       "pfJet450");
+    TTreeReaderValue< Bool_t  >  pfJet500(         *myReader,       "pfJet500");
+  }
   TTreeReaderValue< Float_t >  var1(             *myReader,       variableToFill_1);
   TTreeReaderValue< Float_t >  var2(             *myReader,       variableToFill_2);
   TTreeReaderValue< Float_t >  var3(             *myReader,       variableToFill_3);
@@ -368,8 +377,8 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   bool isData = filename.Contains("SingleMuon") || filename.Contains("JetHT") || filename.Contains("MET");
   while(myReader->Next()){
 
-    if(*trig != sel.trigger && sel.selection != 1  && sel.selection != 4 && sel.selection != 2) continue;
-    if(sel.selection == 4 && (*pfJet80 != sel.pfJetTrigger && *pfJet140 != sel.pfJetTrigger && *pfJet60 != sel.pfJetTrigger && *pfJet40 != sel.pfJetTrigger)) continue;
+    if(*trig != sel.trigger && sel.selection == 3) continue;
+    if(sel.selection == 4 && (*pfJet40 != sel.pfJetTrigger && *pfJet60 != sel.pfJetTrigger && *pfJet80 != sel.pfJetTrigger && *pfJet140 != sel.pfJetTrigger && *pfJet200 != sel.pfJetTrigger && *pfJet260 != sel.pfJetTrigger && *pfJet320 != sel.pfJetTrigger && *pfJet400 != sel.pfJetTrigger && *pfJet450 != sel.pfJetTrigger && *pfJet500 != sel.pfJetTrigger)) continue;
 
     if(*Selection != sel.selection) continue;
     if(*recoilRatio < sel.recoilRatioLow || *recoilRatio > sel.recoilRatioHigh) continue;
