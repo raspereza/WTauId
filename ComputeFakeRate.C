@@ -8,7 +8,6 @@ void ComputeFakeRate() {
   loadWorkingPoints();
   initCuts();
 
-  TString dir("NTuples/");
   SetStyle();
   TH1::SetDefaultSumw2();
   TH2::SetDefaultSumw2();

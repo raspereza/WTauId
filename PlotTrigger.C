@@ -1,4 +1,5 @@
 #include "HttStylesNew.cc"
+#include "settings.h"
 
 TGraphAsymmErrors * ComputeTriggerEfficiency(TTree * tree,
 					     TString variable,
@@ -38,8 +39,6 @@ Double_t FitFunc(Double_t * x,
 
 void PlotTrigger() {
 
-  TString dir = "NTuples";
-  
   TString numerator   = "IsW>0.5&&trigger>0.5";
   TString denominator = "IsW>0.5";
   TString mhtRange[4] = {"&&mhtNoMu<130",

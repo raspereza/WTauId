@@ -17,6 +17,8 @@
 #include "TH2.h"
 #include "TVector2.h"
 
+TString dir = "NTuples/"
+
 TString tauDecayMode = "";
 //TString tauDecayMode = "_3prong0pizeros";
 //TString tauDecayMode = "_1prong0pizeros";
