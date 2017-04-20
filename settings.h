@@ -17,6 +17,11 @@
 #include "TH2.h"
 #include "TVector2.h"
 
+TString tauDecayMode = "";
+//TString tauDecayMode = "_3prong0pizeros";
+//TString tauDecayMode = "_1prong0pizeros";
+//TString tauDecayMode = "_1prongUpTo4pizeros";
+
 double luminosity = 35890;
 //double luminosity = 1.;
 //double luminosity = 36800;
@@ -444,8 +449,9 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     if(isData) weight =1;
     if(isData && sel.name.Contains("cr_antiiso")) weight = fakerate;
 
-    //if(*tauDecay < 1 || *tauDecay>4) continue;
-    //if(*tauDecay != 10 ) continue;
+    if((*tauDecay < 1 || *tauDecay>4) && sel.selection != 2 && tauDecayMode == "_1prongUpTo4pizeros") continue;
+    if(*tauDecay != 0 && sel.selection != 2 && tauDecayMode == "_1prong0pizeros") continue;
+    if(*tauDecay != 10 && sel.selection != 2 && tauDecayMode == "_3prong0pizeros") continue;
 
     // Reweight according to MET distribution
     //if(sel.name.Contains("cr_antiiso") && isData){
