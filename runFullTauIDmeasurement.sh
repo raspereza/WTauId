@@ -24,3 +24,6 @@ root -l -b -q MakePostFitPlots.C
 
 # In case you want to do a measurement seperately in the tau decay modes, you need to specify the tau decay mode in setting.h (variable tauDecayMode) and in RunCombine.sh
 # Afterwards run all relevant steps again.
+
+# If you want to do a closure test for different fake rates, please run makeClosure.sh
+# If you have already the fake rate file and only want to change the tested variable please run only "root -l -b -q ClosureTest_FakeRate.C".
