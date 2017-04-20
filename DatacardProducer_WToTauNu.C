@@ -14,10 +14,10 @@ void DatacardProducer_WToTauNu() {
     // Creating datacard inputs
     // *************** 
     TString BaseName = "datacard_"+Variable+"_"+iso[idx_iso]+"_WToTauNu";
-    TString rootFileName =  Variable+"_"+iso[idx_iso]+"_WToTauNu_shapes.root";
+    TString rootFileName =  Variable+"_"+iso[idx_iso]+"_WToTauNu_shapes" + tauDecayMode + ".root";
 
     ostringstream str;
-    str << "output/" << BaseName << ".txt";
+    str << "output/" << BaseName << tauDecayMode << ".txt";
     string nn = str.str();
     const char * p = nn.c_str();
 
@@ -65,7 +65,7 @@ void DatacardProducer_WToTauNu() {
     }
     textFile << setw(15) << "BkgdNorm" << setw(15) << "lnN" << setw(15) << "-"     << setw(15) << "-"     << setw(15) << "1.30"  << endl;
     textFile << setw(15) << "lumi"     << setw(15) << "lnN" << setw(15) << "1.027" << setw(15) << "1.027" << setw(15) << "1.027" << endl;
-    textFile << "tauId  rateParam WTauNu W  1  [0.5,1.5]" << endl;
+    textFile << "tauId  rateParam WTauNu W  1  [0.0,1.5]" << endl;
   
     // *******************
     // end creating datacard inputs
