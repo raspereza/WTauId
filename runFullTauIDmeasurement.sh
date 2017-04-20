@@ -22,7 +22,10 @@ cd ..
 # Make postfit plots 
 root -l -b -q MakePostFitPlots.C
 
-# In case you want to do a measurement seperately in the tau decay modes, you need to specify the tau decay mode in setting.h (variable tauDecayMode) and in RunCombine.sh
+# For the measurement the fake rates saved in output/FakeRates_FinerBinning/ are used. This can be seen in WToTauNuMeasurement.C
+# If you want to change this, please change the filename in loadFakeRates();
+
+# In case you want to do a measurement separately in the tau decay modes, you need to specify the tau decay mode in setting.h (variable tauDecayMode) and in RunCombine.sh
 # Afterwards run all relevant steps again.
 
 # If you want to do a closure test for different fake rates, please run makeClosure.sh
