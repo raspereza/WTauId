@@ -15,7 +15,7 @@ void WToTauNuMeasurement() {
 
   loadWorkingPoints();
   initCuts();
-  loadFakeRates("output/FakeRates_2017_04_12/fakerates_2017_04_12.root");
+  loadFakeRates("output/FakeRates_FinerBinning/fakerates" + tauDecayMode + "_FinerBinning.root");
   //loadFakeRates("output/fakerates_GenuineTauSubtraction.root");
   //loadFakeRates("output/fakerates_FINAL.root");
 
@@ -173,7 +173,7 @@ void WToTauNuMeasurement() {
     SetLegendStyle(leg);
     leg->SetTextSize(0.047);
     leg->SetHeader(iso[idx_iso]+" Id");
-    if(h_data) leg->AddEntry(h_data,"data_obs","lp");
+    if(h_data)               leg->AddEntry(h_data,"Data","lp");
     if(histoMap["W"])        leg->AddEntry(histoMap["W"],"W#rightarrow#tau#nu","f");
     if(histoMap["FakeTaus"]) leg->AddEntry(histoMap["FakeTaus"],"bkgd (fake taus)","f");
     if(histoMap["TrueTaus"]) leg->AddEntry(histoMap["TrueTaus"],"bkgd (true taus)","f");
@@ -213,7 +213,7 @@ void WToTauNuMeasurement() {
     canv->Modified();
     canv->SetSelected(canv);
     canv->Update();
-    canv->Print("figures/" + var + "_" + iso[idx_iso] + "_WToTauNu.png");
+    canv->Print("figures/" + var + "_" + iso[idx_iso] + "_WToTauNu" + tauDecayMode + ".png");
 
 
     // Get bin-by-bin uncertainties for WTauNu
@@ -250,7 +250,7 @@ void WToTauNuMeasurement() {
     }
 
     // Save all histograms in one file
-    TFile *out = new TFile("output/" + var + "_" + iso[idx_iso] + "_WToTauNu_shapes.root","RECREATE");
+    TFile *out = new TFile("output/" + var + "_" + iso[idx_iso] + "_WToTauNu_shapes" + tauDecayMode + ".root","RECREATE");
     out->cd();
 
     map<TString,TH1D*>::iterator it;
