@@ -4,7 +4,6 @@
 void MakePostFitPlots() {
 
   SetStyle();
-
   loadWorkingPoints();
 
   TString xtitle = "m_{T} (GeV)";
@@ -12,14 +11,14 @@ void MakePostFitPlots() {
 
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
-    TString inputFileName = "mttau_"+iso[idx_iso]+"_WToTauNu_shapes";
+    TString inputFileName = "mttau_"+iso[idx_iso]+"_WToTauNu_shapes" + tauDecayMode;
     TString mlfitFileName = "mlfit_Combined_"+iso[idx_iso];
     TFile * inputs = new TFile("output/"+inputFileName+".root");
     if(!inputs){
       cout<<"File "<<inputFileName<<".root not available. Please Check."<<endl;
       exit(-1);      
     }
-    TFile * mlfit  = new TFile("datacards/"+mlfitFileName+".root");
+    TFile * mlfit  = new TFile("datacards/"+mlfitFileName+tauDecayMode+".root");
     if(!mlfit){
       cout<<"File "<<mlfitFileName<<".root not available. Please Check."<<endl;
       exit(-1);      
@@ -78,6 +77,10 @@ void MakePostFitPlots() {
     stack->Add(h_TrueTaus);
     stack->Add(h_FakeTaus);
     stack->Add(h_WToTauNu);
+
+    // Set error of two first bins to zero
+    bkgdErr->SetBinError(1,0);
+    bkgdErr->SetBinError(2,0);
 
     h_Data->GetXaxis()->SetTitle(xtitle);
     h_Data->GetYaxis()->SetTitle(ytitle);
