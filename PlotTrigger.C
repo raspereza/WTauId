@@ -135,20 +135,17 @@ void PlotTrigger() {
     effMC[i]->Fit("mcFunc"+bins[i],"R");
 
     TCanvas * canv = new TCanvas("canv"+bins[i],"",700,500);
-    TH2F * frame = new TH2F("frame"+bins[i],"",2,0,xmax+1,2,0,1.1);
-    frame->GetYaxis()->SetTitle("Trigger Efficiency");
-    frame->GetXaxis()->SetTitle("E_{T,no#mu}^{mis} [GeV]");
-    frame->GetYaxis()->SetTitleOffset(1.3);
-    frame->Draw();
-    effData[i]->Draw("psame");
+    effData[i]->GetYaxis()->SetTitle("Trigger Efficiency");
+    effData[i]->GetXaxis()->SetTitle("E_{T,no#mu}^{mis} [GeV]");
+    effData[i]->GetYaxis()->SetTitleOffset(1.2);
+    effData[i]->GetXaxis()->SetTitleOffset(1.1);
+    effData[i]->Draw("ap");
     effMC[i]->Draw("psame");
-    //  canv->SetLogx(true);
-    //  canv->SetLogy(true);
 
     TLegend * leg = NULL; 
-    if (i==0) leg = new TLegend(0.2,0.6,0.6,0.85);
+    if (i==0) leg = new TLegend(0.2,0.65,0.6,0.9);
     else leg = new TLegend(0.5,0.2,0.9,0.45);
-    leg->SetFillColor(0);
+    SetLegendStyle(leg);
     leg->SetTextSize(0.05);
     leg->SetHeader("single #mu events, ");
     leg->SetHeader(HTlabel[i]);
