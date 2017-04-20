@@ -11,6 +11,7 @@ void ComputeFakeRate() {
   SetStyle();
   TH1::SetDefaultSumw2();
   TH2::SetDefaultSumw2();
+
   const int nBinsRatio =4;
   double binsRatio[nBinsRatio+1] = { 0.0 , 0.75 , 0.825 , 0.9 , 2. };
   const int nBinsJetPt = 5;
@@ -57,9 +58,9 @@ void ComputeFakeRate() {
 
   for (unsigned int idx_sample=0; idx_sample<samples.size(); ++idx_sample) {
 
-    TFile *fileOutput     = new TFile("output/"+samples[idx_sample].first+"_fakeRate.root","recreate");
-    TFile *fileOutputUp   = new TFile("output/"+samples[idx_sample].first+"_fakeRate_Up.root","recreate");
-    TFile *fileOutputDown = new TFile("output/"+samples[idx_sample].first+"_fakeRate_Down.root","recreate");
+    TFile *fileOutput     = new TFile("output/"+samples[idx_sample].first+"_fakeRate"+tauDecayMode+".root","recreate");
+    TFile *fileOutputUp   = new TFile("output/"+samples[idx_sample].first+"_fakeRate_Up"+tauDecayMode+".root","recreate");
+    TFile *fileOutputDown = new TFile("output/"+samples[idx_sample].first+"_fakeRate_Down"+tauDecayMode+".root","recreate");
 
     for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
@@ -143,13 +144,16 @@ void ComputeFakeRate() {
 	    {
 	      double numE_bin = 0;
 	      double num_bin = h_num -> IntegralAndError(i,i,j,j,numE_bin);
-	      cout<<"Numerator of "<<i<<". x-bin and "<<j<<". y-bin : "<<num_bin<<" +/- "<<numE_bin<<endl;	      
+	      double denE_bin = 0;
+	      double den_bin = h_den -> IntegralAndError(i,i,j,j,denE_bin);
+	      cout<<"Numerator   of "<<i<<". x-bin and "<<j<<". y-bin : "<<num_bin<<" +/- "<<numE_bin<<endl;
+	      //cout<<"Denominator of "<<i<<". x-bin and "<<j<<". y-bin : "<<den_bin<<" +/- "<<denE_bin<<endl;
+
 	    }
 	}
 
       h_fakerate_2d -> Divide(h_num,h_den);
       h_fakerate_2d_woTrig -> Divide(h_num_woTrig,h_den_woTrig);
-
 
       // %%%%%%%%%%%%%%%%%% Plotting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       h_fakerate_2d->GetXaxis()->SetTitle("pt (tau) / pt (jet faking the tau)");
