@@ -1,5 +1,8 @@
 #!/bin/bash
 tauDecayMode=""
+#tauDecayMode="_3prong0pizeros"
+#tauDecayMode="_1prong0pizeros"
+#tauDecayMode="_1prongUpTo4pizeros"
 
 # Combine datacards
 combineCards.py ../output/datacard_mtmuon_WToMuNu.txt ../output/datacard_mttau_LooseMva_WToTauNu${tauDecayMode}.txt > datacard_LooseMva_Combined${tauDecayMode}.txt
@@ -11,12 +14,19 @@ combineCards.py ../output/datacard_mtmuon_WToMuNu.txt ../output/datacard_mttau_M
 combineCards.py ../output/datacard_mtmuon_WToMuNu.txt ../output/datacard_mttau_Tight_WToTauNu${tauDecayMode}.txt > datacard_Tight_Combined${tauDecayMode}.txt
 
 # Run Combine
+echo -e  "\n\n\n\n"
 ./Fitting.csh VTightMva | tee output_VTightMva${tauDecayMode}.txt
+echo -e  "\n\n\n\n"
 ./Fitting.csh TightMva | tee output_TightMva${tauDecayMode}.txt
+echo -e  "\n\n\n\n"
 ./Fitting.csh MediumMva | tee output_MediumMva${tauDecayMode}.txt
+echo -e  "\n\n\n\n"
 ./Fitting.csh LooseMva | tee output_LooseMva${tauDecayMode}.txt
+echo -e  "\n\n\n\n"
 ./Fitting.csh Tight | tee output_Tight${tauDecayMode}.txt
+echo -e  "\n\n\n\n"
 ./Fitting.csh Medium | tee output_Medium${tauDecayMode}.txt
+echo -e  "\n\n\n\n"
 ./Fitting.csh Loose | tee output_Loose${tauDecayMode}.txt
 
 # Read results and output it on the screen
