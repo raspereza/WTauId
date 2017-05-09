@@ -51,8 +51,12 @@
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_jesUp.conf WToTauNu_M-200_13TeV-pythia8_jesUp 2
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_uesDown.conf WToTauNu_M-200_13TeV-pythia8_uesDown 2
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_uesUp.conf WToTauNu_M-200_13TeV-pythia8_uesUp 2
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_tauesDown.conf WToTauNu_M-200_13TeV-pythia8_tauesDown 2
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_tauesUp.conf WToTauNu_M-200_13TeV-pythia8_tauesUp 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_taues_1prong0pizerosDown.conf WToTauNu_M-200_13TeV-pythia8_taues_1prong0pizerosDown 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_taues_1prong0pizerosUp.conf WToTauNu_M-200_13TeV-pythia8_taues_1prong0pizerosUp 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_taues_1prongUpTo4pizerosDown.conf WToTauNu_M-200_13TeV-pythia8_taues_1prongUpTo4pizerosDown 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_taues_1prongUpTo4pizerosUp.conf WToTauNu_M-200_13TeV-pythia8_taues_1prongUpTo4pizerosUp 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_taues_3prong0pizerosDown.conf WToTauNu_M-200_13TeV-pythia8_taues_3prong0pizerosDown 2
+./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_taues_3prong0pizerosUp.conf WToTauNu_M-200_13TeV-pythia8_taues_3prong0pizerosUp 2
 
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_jesDown.conf WToMuNu_M-200_13TeV-pythia8_jesDown 2
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_jesUp.conf WToMuNu_M-200_13TeV-pythia8_jesUp 2
