@@ -48,10 +48,18 @@ void WToTauNuMeasurement() {
   WToTauNu_jesUp.push_back("WToTauNu_M-200_13TeV-pythia8_jesUp");
   std::vector<TString> WToTauNu_jesDown;
   WToTauNu_jesDown.push_back("WToTauNu_M-200_13TeV-pythia8_jesDown");
-  std::vector<TString> WToTauNu_tauesUp;
-  WToTauNu_tauesUp.push_back("WToTauNu_M-200_13TeV-pythia8_tauesUp");
-  std::vector<TString> WToTauNu_tauesDown;
-  WToTauNu_tauesDown.push_back("WToTauNu_M-200_13TeV-pythia8_tauesDown");
+  std::vector<TString> WToTauNu_taues_1prong0pizerosUp;
+  WToTauNu_taues_1prong0pizerosUp.push_back("WToTauNu_M-200_13TeV-pythia8_taues_1prong0pizerosUp");
+  std::vector<TString> WToTauNu_taues_1prong0pizerosDown;
+  WToTauNu_taues_1prong0pizerosDown.push_back("WToTauNu_M-200_13TeV-pythia8_taues_1prong0pizerosDown");
+  std::vector<TString> WToTauNu_taues_1prongUpTo4pizerosUp;
+  WToTauNu_taues_1prongUpTo4pizerosUp.push_back("WToTauNu_M-200_13TeV-pythia8_taues_1prongUpTo4pizerosUp");
+  std::vector<TString> WToTauNu_taues_1prongUpTo4pizerosDown;
+  WToTauNu_taues_1prongUpTo4pizerosDown.push_back("WToTauNu_M-200_13TeV-pythia8_taues_1prongUpTo4pizerosDown");
+  std::vector<TString> WToTauNu_taues_3prong0pizerosUp;
+  WToTauNu_taues_3prong0pizerosUp.push_back("WToTauNu_M-200_13TeV-pythia8_taues_3prong0pizerosUp");
+  std::vector<TString> WToTauNu_taues_3prong0pizerosDown;
+  WToTauNu_taues_3prong0pizerosDown.push_back("WToTauNu_M-200_13TeV-pythia8_taues_3prong0pizerosDown");
   std::vector<TString> WToTauNu_uesUp;
   WToTauNu_uesUp.push_back("WToTauNu_M-200_13TeV-pythia8_uesUp");
   std::vector<TString> WToTauNu_uesDown;
@@ -72,8 +80,12 @@ void WToTauNuMeasurement() {
   samples.push_back(make_pair("data_obs" , data_MET));
   samples.push_back(make_pair("W_jesUp" , WToTauNu_jesUp));
   samples.push_back(make_pair("W_jesDown" , WToTauNu_jesDown));
-  samples.push_back(make_pair("W_tauesUp" , WToTauNu_tauesUp));
-  samples.push_back(make_pair("W_tauesDown" , WToTauNu_tauesDown));
+  samples.push_back(make_pair("W_taues_1prong0pizerosUp" , WToTauNu_taues_1prong0pizerosUp));
+  samples.push_back(make_pair("W_taues_1prong0pizerosDown" , WToTauNu_taues_1prong0pizerosDown));
+  samples.push_back(make_pair("W_taues_1prongUpTo4pizerosUp" , WToTauNu_taues_1prongUpTo4pizerosUp));
+  samples.push_back(make_pair("W_taues_1prongUpTo4pizerosDown" , WToTauNu_taues_1prongUpTo4pizerosDown));
+  samples.push_back(make_pair("W_taues_3prong0pizerosUp" , WToTauNu_taues_3prong0pizerosUp));
+  samples.push_back(make_pair("W_taues_3prong0pizerosDown" , WToTauNu_taues_3prong0pizerosDown));
   samples.push_back(make_pair("W_uesUp" , WToTauNu_uesUp));
   samples.push_back(make_pair("W_uesDown" , WToTauNu_uesDown));
 
@@ -134,7 +146,11 @@ void WToTauNuMeasurement() {
       // 1.) Uncertainty on JES, TauES, UES
       addErr = histoMap["W_jesUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));      
-      addErr = histoMap["W_tauesUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
+      addErr = histoMap["W_taues_1prong0pizerosUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
+      bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
+      addErr = histoMap["W_taues_1prongUpTo4pizerosUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
+      bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
+      addErr = histoMap["W_taues_3prong0pizerosUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
       addErr = histoMap["W_uesUp"]->GetBinContent(i) - histoMap["W"]->GetBinContent(i); 
       bkgdErr->SetBinError(i,sqrt( pow(bkgdErr->GetBinError(i),2) + pow(addErr,2)));
