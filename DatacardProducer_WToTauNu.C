@@ -45,27 +45,29 @@ void DatacardProducer_WToTauNu() {
     textFile << "-----------------" << endl;
     textFile << "shapes * * " <<rootFileName << "  $PROCESS    $PROCESS_$SYSTEMATIC " << endl;
     textFile << "-----------------" << endl;
-    textFile << setw(30) << "bin"     << setw(15) << "WTauNu" << setw(15) << "WTauNu"   << setw(15) << "WTauNu"   << endl;
-    textFile << setw(30) << "process" << setw(15) << "W"      << setw(15) << "FakeTaus" << setw(15) << "TrueTaus" << endl;
-    textFile << setw(30) << "process" << setw(15) << "0"      << setw(15) << "1"        << setw(15) << "2"        << endl;
-    textFile << setw(30) << "rate"    << setw(15) << h_WToTauNu->Integral() << setw(15) << h_FakeTaus->Integral() << setw(15) << h_TrueTaus->Integral() << endl;
+    textFile << setw(45) << "bin"     << setw(15) << "WTauNu" << setw(15) << "WTauNu"   << setw(15) << "WTauNu"   << endl;
+    textFile << setw(45) << "process" << setw(15) << "W"      << setw(15) << "FakeTaus" << setw(15) << "TrueTaus" << endl;
+    textFile << setw(45) << "process" << setw(15) << "0"      << setw(15) << "1"        << setw(15) << "2"        << endl;
+    textFile << setw(45) << "rate"    << setw(15) << h_WToTauNu->Integral() << setw(15) << h_FakeTaus->Integral() << setw(15) << h_TrueTaus->Integral() << endl;
     textFile << "-----------------" << endl;
-    textFile << setw(15) << "taues" << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
-    textFile << setw(15) << "jes"   << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
-    textFile << setw(15) << "ues"   << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
+    textFile << setw(30) << "taues_1prong0pizeros"     << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
+    textFile << setw(30) << "taues_1prongUpTo4pizeros" << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
+    textFile << setw(30) << "taues_3prong0pizeros"     << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
+    textFile << setw(30) << "jes"                      << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
+    textFile << setw(30) << "ues"                      << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-" << setw(15) << "-" << endl;
     for (int iB=3; iB<=h_data->GetNbinsX(); ++iB) {
-      textFile << setw(15) << Form("Bin%i_WToTauNu",iB) << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-"    << setw(15) << "-"    << endl;
-      textFile << setw(15) << Form("Bin%i_FakeTaus",iB) << setw(15) << "shape" << setw(15) << "-"    << setw(15) << "1.00" << setw(15) << "-"    << endl;
-      textFile << setw(15) << Form("Bin%i_TrueTaus",iB) << setw(15) << "shape" << setw(15) << "-"    << setw(15) << "-"    << setw(15) << "1.00" << endl;
+      textFile << setw(30) << Form("Bin%i_WToTauNu",iB) << setw(15) << "shape" << setw(15) << "1.00" << setw(15) << "-"    << setw(15) << "-"    << endl;
+      textFile << setw(30) << Form("Bin%i_FakeTaus",iB) << setw(15) << "shape" << setw(15) << "-"    << setw(15) << "1.00" << setw(15) << "-"    << endl;
+      textFile << setw(30) << Form("Bin%i_TrueTaus",iB) << setw(15) << "shape" << setw(15) << "-"    << setw(15) << "-"    << setw(15) << "1.00" << endl;
     }
     for (int i=1; i<=4; ++i) {
       for (int j=1; j<=3; ++j) {
-	textFile << setw(15) << Form("FR%i%i",i,j) << setw(15) << "shape" << setw(15) << "-" << setw(15) << "1.00" << setw(15) << "-" << endl;
+	textFile << setw(30) << Form("FR%i%i",i,j) << setw(15) << "shape" << setw(15) << "-" << setw(15) << "1.00" << setw(15) << "-" << endl;
       }
     }
     textFile << setw(15) << "BkgdNorm" << setw(15) << "lnN" << setw(15) << "-"     << setw(15) << "-"     << setw(15) << "1.30"  << endl;
     textFile << setw(15) << "lumi"     << setw(15) << "lnN" << setw(15) << "1.027" << setw(15) << "1.027" << setw(15) << "1.027" << endl;
-    textFile << "tauId  rateParam WTauNu W  1  [0.0,1.5]" << endl;
+    textFile << "tauId  rateParam WTauNu W  1  [0.0,2.0]" << endl;
   
     // *******************
     // end creating datacard inputs
