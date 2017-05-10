@@ -82,23 +82,24 @@ void MakePostFitPlots() {
     bkgdErr->SetBinError(1,0);
     bkgdErr->SetBinError(2,0);
 
-    h_Data->GetXaxis()->SetTitle(xtitle);
+    h_Data->GetXaxis()->SetTitle("");
     h_Data->GetYaxis()->SetTitle(ytitle);
+    h_Data->GetXaxis()->SetLabelSize(0.);
 
     TCanvas * canv1 = MakeCanvas("canv1", "", 700, 800);
-    TPad * upper = new TPad("upper", "pad",0,0.31,1,1);
+    TPad * upper = new TPad("upper", "pad",0,0.19,1,1);
     upper->Draw();
     upper->cd();
     h_Data  -> Draw("e1");
     stack   -> Draw("hist same");
     h_Data  -> Draw("e1 same");
     bkgdErr -> Draw("e2 same");
-    
-    TLegend * leg = new TLegend(0.55,0.4,0.85,0.78);
+
+    TLegend * leg = new TLegend(0.52,0.4,0.82,0.78);
     SetLegendStyle(leg);
     leg->SetTextSize(0.047);
     leg->SetHeader(iso[idx_iso]);
-    leg->AddEntry(h_Data,"Observed","lp");
+    leg->AddEntry(h_Data,"Data","lp");
     leg->AddEntry(h_WToTauNu,"W#rightarrow#tau#nu","f");
     leg->AddEntry(h_FakeTaus,"bkgd (fake taus)","f");
     leg->AddEntry(h_TrueTaus,"bkgd (true taus)","f");
@@ -114,15 +115,13 @@ void MakePostFitPlots() {
     canv1->cd();
 
     TH1F * ratioH = (TH1F*)h_Data->Clone("ratioH");
-    ratioH->SetMarkerColor(1);
-    ratioH->SetMarkerStyle(20);
-    ratioH->SetMarkerSize(1.2);
-    ratioH->SetLineColor(1);
-    ratioH->GetYaxis()->SetRangeUser(0.201,1.799);
+    ratioH->GetYaxis()->SetRangeUser(0.4,1.6);
     ratioH->GetYaxis()->SetNdivisions(505);
-    ratioH->GetXaxis()->SetTitle("");
+    ratioH->GetXaxis()->SetTitle("m_{T} [GeV]");
     ratioH->GetYaxis()->SetTitle("Obs./Exp.");
-    ratioH->GetYaxis()->CenterTitle();    
+    ratioH->GetYaxis()->CenterTitle();
+    ratioH->GetXaxis()->SetTitleOffset(3.5);
+    ratioH->GetXaxis()->SetLabelSize(30);
 
     ratioH->Divide((TH1D*)stack->GetStack()->Last());
     TH1D * ratioErrH = (TH1D*)bkgdErr->Clone("ratioErrH");
@@ -133,7 +132,8 @@ void MakePostFitPlots() {
     }
 
     // ------------>Primitives in pad: lower
-    TPad * lower = new TPad("lower", "pad",0,0,1,0.30);
+    TPad * lower = new TPad("lower", "pad",0,0,1,0.31);
+    lower->SetBottomMargin(0.32);
     lower->Draw();
     lower->cd();
     lower->SetGridy();
@@ -148,7 +148,7 @@ void MakePostFitPlots() {
     canv1->cd();
     canv1->SetSelected(canv1);
     canv1->Update();
-    canv1->Print("figures/"+inputFileName+"_postfit.png");
+    canv1->Print("figures/"+inputFileName+"_postfit.pdf");
     //canv1->Print("figures/"+inputFileName+"_postfit.pdf","Portrait pdf");
   }
 }
