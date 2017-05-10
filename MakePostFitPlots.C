@@ -85,6 +85,7 @@ void MakePostFitPlots() {
     h_Data->GetXaxis()->SetTitle("");
     h_Data->GetYaxis()->SetTitle(ytitle);
     h_Data->GetXaxis()->SetLabelSize(0.);
+    //h_Data->SetMaximum(1400);
 
     TCanvas * canv1 = MakeCanvas("canv1", "", 700, 800);
     TPad * upper = new TPad("upper", "pad",0,0.19,1,1);
@@ -95,9 +96,8 @@ void MakePostFitPlots() {
     h_Data  -> Draw("e1 same");
     bkgdErr -> Draw("e2 same");
 
-    TLegend * leg = new TLegend(0.52,0.4,0.82,0.78);
+    TLegend * leg = new TLegend(0.56,0.48,0.83,0.82);
     SetLegendStyle(leg);
-    leg->SetTextSize(0.047);
     leg->SetHeader(iso[idx_iso]);
     leg->AddEntry(h_Data,"Data","lp");
     leg->AddEntry(h_WToTauNu,"W#rightarrow#tau#nu","f");
