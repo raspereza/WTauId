@@ -173,20 +173,21 @@ void WToTauNuMeasurement() {
     upper->Draw();
     upper->cd();
 
-    stack->Draw("hist");
-    stack->SetMaximum(stack->GetMaximum()*1.2);
-    stack->GetXaxis()->SetTitle("");
-    stack->GetYaxis()->SetTitle("Events");
-    stack->GetXaxis()->SetLabelSize(0.);
+    h_data->SetMaximum(h_data->GetMaximum()*1.2);
+    h_data->GetXaxis()->SetTitle("");
+    h_data->GetYaxis()->SetTitle("Events");
+    h_data->GetXaxis()->SetLabelSize(0.);
+    //h_data->SetMaximum(1400);
+    h_data->Draw("e1");
+    stack->Draw("hist same");
     gPad->Modified(); 
     if(h_data){
       h_data->Draw("e1 same");
       bkgdErr->Draw("e2same");
     }
 
-    TLegend * leg = new TLegend(0.52,0.4,0.82,0.78);
+    TLegend * leg = new TLegend(0.56,0.48,0.83,0.82);
     SetLegendStyle(leg);
-    leg->SetTextSize(0.047);
     leg->SetHeader(iso[idx_iso]);
     if(h_data)               leg->AddEntry(h_data,"Data","lp");
     if(histoMap["W"])        leg->AddEntry(histoMap["W"],"W#rightarrow#tau#nu","f");
