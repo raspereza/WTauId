@@ -169,30 +169,31 @@ void WToTauNuMeasurement() {
     }
     // ------------------ Computation of all uncertainties : END  -------
     TCanvas * canv = new TCanvas("canv","",700,800);
-    TPad* upper = new TPad("upper","pad",0,0.29,1,1);
+    TPad* upper = new TPad("upper","pad",0,0.19,1,1);
     upper->Draw();
     upper->cd();
 
     stack->Draw("hist");
     stack->SetMaximum(stack->GetMaximum()*1.2);
-    stack->GetXaxis()->SetTitle("m_{T} [GeV]");
+    stack->GetXaxis()->SetTitle("");
     stack->GetYaxis()->SetTitle("Events");
+    stack->GetXaxis()->SetLabelSize(0.);
     gPad->Modified(); 
     if(h_data){
       h_data->Draw("e1 same");
       bkgdErr->Draw("e2same");
     }
 
-    TLegend * leg = new TLegend(0.55,0.4,0.85,0.78);
+    TLegend * leg = new TLegend(0.52,0.4,0.82,0.78);
     SetLegendStyle(leg);
     leg->SetTextSize(0.047);
-    leg->SetHeader(iso[idx_iso]+" Id");
+    leg->SetHeader(iso[idx_iso]);
     if(h_data)               leg->AddEntry(h_data,"Data","lp");
     if(histoMap["W"])        leg->AddEntry(histoMap["W"],"W#rightarrow#tau#nu","f");
     if(histoMap["FakeTaus"]) leg->AddEntry(histoMap["FakeTaus"],"bkgd (fake taus)","f");
     if(histoMap["TrueTaus"]) leg->AddEntry(histoMap["TrueTaus"],"bkgd (true taus)","f");
     writeExtraText = true;
-    extraText = "Internal";
+    extraText = "Preliminary";
     CMS_lumi(upper,4,33); 
     leg->Draw("same");
 
@@ -200,9 +201,12 @@ void WToTauNuMeasurement() {
     if(h_data){
       ratioH = (TH1D*) h_data->Clone("ratioH");
       ratioH->Divide((TH1D*)stack->GetStack()->Last());
-      ratioH->GetYaxis()->SetTitle("obs/exp");
-      ratioH->GetXaxis()->SetTitle("");
+      ratioH->GetYaxis()->SetTitle("Obs./Exp.");
+      ratioH->GetXaxis()->SetTitle("m_{T} [GeV]");
+      ratioH->GetXaxis()->SetTitleOffset(3.5);
+      ratioH->GetYaxis()->SetNdivisions(505);
       ratioH->GetYaxis()->SetRangeUser(0.4,1.6);
+      ratioH->GetYaxis()->CenterTitle();
     }
     TH1D * ratioErrH = (TH1D*)bkgdErr->Clone("ratioErrH");
     for(int i=1; i<=bkgdErr->GetNbinsX(); i++){
@@ -216,7 +220,8 @@ void WToTauNuMeasurement() {
     ratioErrH->SetMarkerSize(0);  
 
     canv->cd();
-    TPad * lower = new TPad("lower", "pad",0,0,1,0.30);
+    TPad * lower = new TPad("lower", "pad",0,0.0,1,0.31);
+    lower->SetBottomMargin(0.32);
     lower->SetGridy();
     lower->Draw();
     lower->cd();
@@ -227,8 +232,7 @@ void WToTauNuMeasurement() {
     canv->Modified();
     canv->SetSelected(canv);
     canv->Update();
-    canv->Print("figures/" + var + "_" + iso[idx_iso] + "_WToTauNu" + tauDecayMode + ".png");
-
+    canv->Print("figures/" + var + "_" + iso[idx_iso] + "_WToTauNu" + tauDecayMode + "_prefit.pdf");
 
     // Get bin-by-bin uncertainties for WTauNu
     TH1D* histo = 0;
