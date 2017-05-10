@@ -186,7 +186,7 @@ void WToTauNuMeasurement() {
       bkgdErr->Draw("e2same");
     }
 
-    TLegend * leg = new TLegend(0.56,0.48,0.83,0.82);
+    TLegend * leg = new TLegend(0.56,0.49,0.83,0.83);
     SetLegendStyle(leg);
     leg->SetHeader(iso[idx_iso]);
     if(h_data)               leg->AddEntry(h_data,"Data","lp");

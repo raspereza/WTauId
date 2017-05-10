@@ -96,7 +96,7 @@ void MakePostFitPlots() {
     h_Data  -> Draw("e1 same");
     bkgdErr -> Draw("e2 same");
 
-    TLegend * leg = new TLegend(0.56,0.48,0.83,0.82);
+    TLegend * leg = new TLegend(0.56,0.49,0.83,0.83);
     SetLegendStyle(leg);
     leg->SetHeader(iso[idx_iso]);
     leg->AddEntry(h_Data,"Data","lp");
