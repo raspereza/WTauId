@@ -78,7 +78,7 @@ void SetStyle()
   HttStyle->SetHistLineColor(1);
   HttStyle->SetHistLineStyle(0);
   HttStyle->SetHistLineWidth(2);
-  HttStyle->SetNdivisions(505,"XY");
+  HttStyle->SetNdivisions(506,"XY");
 
   // Functions
   HttStyle->SetFuncColor(1);
@@ -98,14 +98,14 @@ void SetStyle()
   HttStyle->SetLineStyleString(11,"20 10");
 
   HttStyle->SetTitleSize  (30,"XY");
-  HttStyle->SetTitleOffset(1.600,"X");
-  HttStyle->SetTitleOffset(1.650,"Y");
+  HttStyle->SetTitleOffset(1.60,"X");
+  HttStyle->SetTitleOffset(2.10,"Y");
   HttStyle->SetLabelOffset(0.010,"XY");
   HttStyle->SetLabelFont  (43,"XY");
-  HttStyle->SetLabelSize  (25,"XY");
+  HttStyle->SetLabelSize  (30,"XY");
 
   HttStyle->SetTextFont   (43);
-  HttStyle->SetTextSize   (20);
+  HttStyle->SetTextSize   (25);
 
   HttStyle->SetStatFont   (43);
   HttStyle->SetTitleFont  (43);
