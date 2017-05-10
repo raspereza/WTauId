@@ -201,6 +201,7 @@ void SetLegendStyle(TLegend* leg)
   leg->SetFillStyle (0);
   leg->SetFillColor (0);
   leg->SetBorderSize(0);
+  leg->SetTextSize(0.045);
 }
 
 void CMSPrelim(const char* dataset, double lowX, double lowY)
