@@ -173,7 +173,9 @@ void WToTauNuMeasurement() {
     upper->Draw();
     upper->cd();
 
-    h_data->SetMaximum(h_data->GetMaximum()*1.2);
+    if(stack->GetMaximum()>h_data->GetMaximum()){    
+      h_data->SetMaximum(stack->GetMaximum()*1.2);
+    }
     h_data->GetXaxis()->SetTitle("");
     h_data->GetYaxis()->SetTitle("Events");
     h_data->GetXaxis()->SetLabelSize(0.);
@@ -208,6 +210,7 @@ void WToTauNuMeasurement() {
       ratioH->GetYaxis()->SetNdivisions(505);
       ratioH->GetYaxis()->SetRangeUser(0.4,1.6);
       ratioH->GetYaxis()->CenterTitle();
+      ratioH->GetXaxis()->SetLabelSize(30);
     }
     TH1D * ratioErrH = (TH1D*)bkgdErr->Clone("ratioErrH");
     for(int i=1; i<=bkgdErr->GetNbinsX(); i++){
