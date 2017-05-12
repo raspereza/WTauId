@@ -206,6 +206,7 @@ void WToTauNuMeasurement() {
       ratioH->Divide((TH1D*)stack->GetStack()->Last());
       ratioH->GetYaxis()->SetTitle("Obs./Exp.");
       ratioH->GetXaxis()->SetTitle("m_{T} [GeV]");
+      //ratioH->GetXaxis()->SetTitle(var);
       ratioH->GetXaxis()->SetTitleOffset(3.5);
       ratioH->GetYaxis()->SetNdivisions(505);
       ratioH->GetYaxis()->SetRangeUser(0.4,1.6);
