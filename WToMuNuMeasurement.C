@@ -119,14 +119,15 @@ void WToMuNuMeasurement() {
   // ------------------ Computation of all uncertainties : END  -------
 
   TCanvas * canv = new TCanvas("canv","",700,800);
-  TPad* upper = new TPad("upper","pad",0,0.29,1,1);
+  TPad* upper = new TPad("upper","pad",0,0.19,1,1);
   upper->Draw();
   upper->cd();
 
   stack->Draw("hist");
   stack->SetMaximum(stack->GetMaximum()*1.2);
-  stack->GetXaxis()->SetTitle("m_{T} [GeV]");
+  stack->GetXaxis()->SetTitle("");
   stack->GetYaxis()->SetTitle("Events");
+  stack->GetXaxis()->SetLabelSize(0.);
   gPad->Modified(); 
   if(h_data){
     h_data->Draw("e1 same");
@@ -149,10 +150,14 @@ void WToMuNuMeasurement() {
   if(h_data){
     ratioH = (TH1D*) h_data->Clone("ratioH");
     ratioH->Divide((TH1D*)stack->GetStack()->Last());
-    ratioH->GetYaxis()->SetTitle("obs/exp");
-    ratioH->GetXaxis()->SetTitle("");
+    ratioH->GetYaxis()->SetTitle("Obs./Exp.");
+    ratioH->GetXaxis()->SetTitle("m_{T} [GeV]");
+    //ratioH->GetXaxis()->SetTitle(var);
+    ratioH->GetXaxis()->SetTitleOffset(3.5);
+    ratioH->GetYaxis()->SetNdivisions(505);
     ratioH->GetYaxis()->SetRangeUser(0.4,1.6);
     ratioH->GetYaxis()->CenterTitle();
+    ratioH->GetXaxis()->SetLabelSize(30);
   }
   TH1D * ratioErrH = (TH1D*)bkgdErr->Clone("ratioErrH");
   for(int i=1; i<=bkgdErr->GetNbinsX(); i++){
@@ -166,7 +171,8 @@ void WToMuNuMeasurement() {
   ratioErrH->SetMarkerSize(0);
 
   canv->cd();
-  TPad * lower = new TPad("lower", "pad",0,0,1,0.30);
+  TPad * lower = new TPad("lower", "pad",0,0,1,0.31);
+  lower->SetBottomMargin(0.32);
   lower->SetGridy();
   lower->Draw();
   lower->cd();
@@ -176,7 +182,7 @@ void WToMuNuMeasurement() {
   canv->Modified();
   canv->SetSelected(canv);
   canv->Update();
-  canv->Print("figures/" + var + "_WToMuNu.png");
+  canv->Print("figures/" + var + "_WToMuNu.pdf");
 
 
   // Get bin-by-bin uncertainties for WMuNu
