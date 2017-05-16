@@ -317,6 +317,7 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   TTreeReaderValue< UInt_t  >  run(              *myReader,       "run");
   TTreeReaderValue< UInt_t  >  lumi(             *myReader,       "luminosityBlock");
   TTreeReaderValue< Float_t >  mttau(            *myReader,       "mttau");
+  //TTreeReaderValue< Float_t >  mtgen(            *myReader,       "mtgen");
   TTreeReaderValue< Float_t >  puWeight(         *myReader,       "puWeight");
   TTreeReaderValue< Float_t >  genWeight(        *myReader,       "genWeight");
   TTreeReaderValue< Float_t >  trigWeight(       *myReader,       "trigWeight");
@@ -331,6 +332,9 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   TTreeReaderValue< Float_t >  tauPt(            *myReader,       "tauPt");
   TTreeReaderValue< Float_t >  tauEta(           *myReader,       "tauEta");
   TTreeReaderValue< Float_t >  tauPhi(           *myReader,       "tauPhi");
+  //TTreeReaderValue< Float_t >  genTauWPt(        *myReader,       "genTauWPt");
+  //TTreeReaderValue< Float_t >  genTauWEta(       *myReader,       "genTauWEta");
+  //TTreeReaderValue< Float_t >  genTauWPhi(       *myReader,       "genTauWPhi");
   TTreeReaderValue< Float_t >  tauJetPt(         *myReader,       "tauJetPt");
   TTreeReaderValue< Float_t >  tauJetEta(        *myReader,       "tauJetEta");
   TTreeReaderValue< Bool_t  >  tauJetTightId(    *myReader,       "tauJetTightId");
@@ -388,6 +392,11 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   //TH1D* h_met = 0;
   //TFile *f_met = new TFile("output/met_"+iso+"_WToTauNu_closure.root");
   //if(f_met) f_met->GetObject("ratioH",h_met);
+
+  TH2D* h_weights = 0;
+  TFile *f_weights = new TFile("output/ReweightingWeights_muonPt_mtmuon_WToMuNu.root");
+  if(f_weights) f_weights->GetObject("weights",h_weights);
+  else cout<<"File not available"<<endl;
 
   int nevtsProcessed = getNEventsProcessed(filename);
   double norm = xsec*luminosity/nevtsProcessed;
@@ -463,6 +472,29 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     //if(sel.name.Contains("cr_antiiso") && isData){
     //weight = weight*h_met->GetBinContent(h_met->FindBin(*met));
     //}
+
+    
+    // Reweight mtmuon-muontPt
+    /*
+    if(filename.Contains("WToTauNu") && !isData){
+      double rew_weight = h_weights->GetBinContent(h_weights->GetXaxis()->FindBin(*genTauWPt),h_weights->GetYaxis()->FindBin(*mtgen));
+  
+      //if(*mttau>500 && *mttau<600){
+      //	cout<<"genTauWPt  = "<<*genTauWPt<<endl;
+      //	cout<<"mtgen      = "<<*mtgen<<endl;
+      //	cout<<"rew_weight = "<<rew_weight<<endl<<endl;
+      //      }
+
+	//cout<<"weight = "<<weight<<endl;
+      if(rew_weight != 0) weight = weight*rew_weight;
+      //else{
+      //	cout<<"weight is zero"<<endl;
+      //cout<<"mttau = "<<*mttau<<endl;
+      //}
+      //cout<<"weight = "<<weight<<endl<<endl;
+    }
+    */
+
 
     if( histo->InheritsFrom("TH2") ){
       if(variableToFill_1==variableToFill_2) ((TH2*) histo) -> Fill(abs(*var1), abs(*var3), weight);
