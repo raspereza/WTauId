@@ -65,7 +65,3 @@
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_muDown.conf WToMuNu_M-200_13TeV-pythia8_muDown 2
 ./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer_muUp.conf WToMuNu_M-200_13TeV-pythia8_muUp 2
 
-# For tauID (including trigger efficiencies + fake rate)
-./qsub_seq.sh AnalysisNTupleProducer analysisNTupleProducer.conf MET_Run2016 20
-
-
