@@ -7,13 +7,17 @@ root -l -b -q PlotTrigger.C
 root -l -b -q ComputeFakeRate.C
 root -l -b -q CalculateEWKfraction.C   # This script calculates the EWK fraction and combines the SingleMu and JetHT fake rates
 
-# Run W -> tau nu and W -> mu nu measurements and create a root file including all relevant systematics
+# Run W -> tau nu measurement and create a root file including all relevant systematics
 root -l -b -q WToTauNuMeasurement.C
+# Make W -> tau nu datacard
+root -l -b -q DatacardProducer_WToTauNu.C
+
+# Run W -> mu nu measurement and create a root file including all relevant systematics
 root -l -b -q WToMuNuMeasurement.C
+# Make W -> mu nu datacard
+root -l -b -q DatacardProducer_WToMuNu.C
 
 # Make datacards and run Combine
-root -l -b -q DatacardProducer_WToTauNu.C
-root -l -b -q DatacardProducer_WToMuNu.C
 iniCMSSW_7_4_7
 cd datacards
 source RunCombine.sh
