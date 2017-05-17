@@ -64,6 +64,7 @@ void WToTauNuMeasurement() {
   WToTauNu_uesUp.push_back("WToTauNu_M-200_13TeV-pythia8_uesUp");
   std::vector<TString> WToTauNu_uesDown;
   WToTauNu_uesDown.push_back("WToTauNu_M-200_13TeV-pythia8_uesDown");
+
   for(int i=1; i<=h_fakerate->at("TightMva").GetNbinsX(); i++){
     for(int j=1; j<=h_fakerate->at("TightMva").GetNbinsY(); j++){
       std::vector<TString> fakeTaus_FRUp;
@@ -93,7 +94,7 @@ void WToTauNuMeasurement() {
 
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
-    cout<<endl<<"--------------------------------------  "<<iso[idx_iso]<<"  ------------------------------------"<<endl;
+    cout<<endl<<endl<<"--------------------------------------  "<<iso[idx_iso]<<"  ------------------------------------"<<endl;
 
     THStack *stack = new THStack(iso[idx_iso],"");
     TH1D* h_data = 0;
@@ -116,6 +117,7 @@ void WToTauNuMeasurement() {
 	  select.name = "cr_antiiso_" + samples[i].first(11,samples[i].first.Length()); 
 	}
 	makeSelection(dir+"/"+samples[i].second[idx_list]+".root","NTuple",getXSec(samples[i].second[idx_list]),iso[idx_iso],select,histo,var,var,var);
+	//cout<<"------------------------------------------------------------- Mean "<<var<<" = "<<histo->GetMean()<<endl;
 	histoSamples->Add(histo);
 	histoSamples->SetFillStyle(1001);
 	if(samples[i].first.Contains("FakeTaus")) histoSamples->SetFillColor(TColor::GetColor("#FFCCFF"));
