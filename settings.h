@@ -16,6 +16,7 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "TVector2.h"
+#include "TLorentzVector.h"
 
 TString dir = "NTuples/";
 
@@ -335,6 +336,11 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
   //TTreeReaderValue< Float_t >  genTauWPt(        *myReader,       "genTauWPt");
   //TTreeReaderValue< Float_t >  genTauWEta(       *myReader,       "genTauWEta");
   //TTreeReaderValue< Float_t >  genTauWPhi(       *myReader,       "genTauWPhi");
+  //TTreeReaderValue< Float_t >  genTauWE(         *myReader,       "genTauWE");
+  TTreeReaderValue< Float_t >  lepWPt(           *myReader,       "lepWPt");
+  TTreeReaderValue< Float_t >  lepWEta(          *myReader,       "lepWEta");
+  TTreeReaderValue< Float_t >  lepWPhi(          *myReader,       "lepWPhi");
+  //TTreeReaderValue< Float_t >  lepWE(            *myReader,      "lepWE");
   TTreeReaderValue< Float_t >  tauJetPt(         *myReader,       "tauJetPt");
   TTreeReaderValue< Float_t >  tauJetEta(        *myReader,       "tauJetEta");
   TTreeReaderValue< Bool_t  >  tauJetTightId(    *myReader,       "tauJetTightId");
@@ -478,14 +484,6 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     /*
     if(filename.Contains("WToTauNu") && !isData){
       double rew_weight = h_weights->GetBinContent(h_weights->GetXaxis()->FindBin(*genTauWPt),h_weights->GetYaxis()->FindBin(*mtgen));
-  
-      //if(*mttau>500 && *mttau<600){
-      //	cout<<"genTauWPt  = "<<*genTauWPt<<endl;
-      //	cout<<"mtgen      = "<<*mtgen<<endl;
-      //	cout<<"rew_weight = "<<rew_weight<<endl<<endl;
-      //      }
-
-	//cout<<"weight = "<<weight<<endl;
       if(rew_weight != 0) weight = weight*rew_weight;
       //else{
       //	cout<<"weight is zero"<<endl;
@@ -494,7 +492,26 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
       //cout<<"weight = "<<weight<<endl<<endl;
     }
     */
-
+    /*
+    TLorentzVector genTau;
+    genTau.SetPtEtaPhiE(*genTauWPt,*genTauWEta,*genTauWPhi,*genTauWE);
+    TLorentzVector genVisTau;
+    genVisTau.SetPtEtaPhiE(*lepWPt,*lepWEta,*lepWPhi,*lepWE);
+    TLorentzVector genNu;
+    genNu = genTau - genVisTau;
+    TVector3 tauBoost = genTau.Vect();
+    tauBoost = (1./genTau.E()) * tauBoost;
+    //genNu.Boost(-1.*tauBoost);
+    //double angle = genNu.Vect().Angle(tauBoost);
+    //double angle = genNu.Vect()*tauBoost/(genNu.Vect().Mag() * tauBoost.Mag());
+    double angle = genNu.Pt()/genVisTau.Pt();
+    *var1 = angle;
+    *var2 = angle;
+    *var3 = angle;
+    */
+    
+    if(*genTauWPt>400 && *genTauWPt<500) continue;
+    if(isData) continue;
 
     if( histo->InheritsFrom("TH2") ){
       if(variableToFill_1==variableToFill_2) ((TH2*) histo) -> Fill(abs(*var1), abs(*var3), weight);
