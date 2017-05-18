@@ -510,8 +510,8 @@ void makeSelection(TString filename, TString treename, double xsec, TString iso,
     *var3 = angle;
     */
     
-    if(*genTauWPt>400 && *genTauWPt<500) continue;
-    if(isData) continue;
+    //if(*genTauWPt>400 && *genTauWPt<500) continue;
+    //if(isData) continue;
 
     if( histo->InheritsFrom("TH2") ){
       if(variableToFill_1==variableToFill_2) ((TH2*) histo) -> Fill(abs(*var1), abs(*var3), weight);
