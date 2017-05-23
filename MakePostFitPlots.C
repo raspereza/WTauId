@@ -97,6 +97,7 @@ void MakePostFitPlots() {
     bkgdErr -> Draw("e2 same");
 
     TLegend * leg = new TLegend(0.56,0.49,0.83,0.83);
+    //TLegend * leg = new TLegend(0.19,0.49,0.45,0.83); // for last tau pt bin figure
     SetLegendStyle(leg);
     leg->SetHeader(iso[idx_iso]);
     leg->AddEntry(h_Data,"Data","lp");
