@@ -1,5 +1,12 @@
 # WTauId
 
+##########################################################
+#########################################################
+IMPORTANT: To run the updated analysis code, run  runFullTauIDmeasurement.sh
+##########################################################
+#########################################################
+
+
 This is collection of RooT macros used to perform measurements
 of the tauId efficiency with W*->tau+v events.
 
@@ -154,4 +161,3 @@ This will create mlfit_tauId_MediumIso.root. This file
 is then used to plot posfit distributions of fitted variables
 (mT(mu,MET) in the W*->mu+v control region and mT(tau,MET) 
 in the W*->tau+v signal region).
-
