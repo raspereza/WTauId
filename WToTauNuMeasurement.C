@@ -92,10 +92,8 @@ void WToTauNuMeasurement() {
 
   TString var = "mttau";
 
-  int nbins = 10;
-  double xmin = 0;
-  double xmax = 1000;
-  
+  const int nbins = 10;
+  double bins[nbins+1] = { 0 , 100 , 200 , 300 , 400 , 500 , 600 , 700 , 800 , 900 , 1000 };
 
   for(unsigned int idx_iso=0; idx_iso<iso.size(); idx_iso++){
 
@@ -109,13 +107,13 @@ void WToTauNuMeasurement() {
 
       cout<<"Process "<<samples[i].first<<endl;
 
-      TH1D* histoSamples = new TH1D(samples[i].first + "_" + iso[idx_iso],"",nbins,xmin,xmax);
+      TH1D* histoSamples = new TH1D(samples[i].first + "_" + iso[idx_iso],"",nbins,bins);
 
       for(unsigned int idx_list=0; idx_list<samples[i].second.size(); idx_list++){
 
 	cout<<".............. Sample : "<<samples[i].second[idx_list]<<endl;
 
-	TH1D* histo = new TH1D(samples[i].second[idx_list],samples[i].second[idx_list],nbins,xmin,xmax);
+	TH1D* histo = new TH1D(samples[i].second[idx_list],samples[i].second[idx_list],nbins,bins);
 	selectionCuts select = sr_trueTaus;
 	if( samples[i].first.Contains("FakeTaus") ){
 	  select =  cr_antiiso;
