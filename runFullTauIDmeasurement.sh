@@ -34,3 +34,8 @@ root -l -b -q MakePostFitPlots.C
 
 # If you want to do a closure test for different fake rates, please run makeClosure.sh
 # If you have already the fake rate file and only want to change the tested variable please run only "root -l -b -q ClosureTest_FakeRate.C".
+
+# To get the final results for r and the correlation between r and tauId do
+# root -l mlfit_Combined_TightMva.root
+# fit_s->Print()
+# fit_s->correlation("r","tauId")
